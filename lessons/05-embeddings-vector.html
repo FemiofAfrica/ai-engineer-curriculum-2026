@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 5 — Embeddings &amp; Vector Search</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #4a4a6a;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --accent-dim: #e0e7ff;
+    --border: #e2e8f0;
+    --success: #22c55e;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --terminal-header: #334155;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.1);
+    --flow-bg: #eef2ff;
+    --pill-bg: #eef2ff;
+    --pill-text: #6366f1;
+    --check-bg: #eef2ff;
+  }
+  .dark {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #818cf8;
+    --accent-light: #1e1b4b;
+    --accent-dim: #312e81;
+    --border: #334155;
+    --success: #4ade80;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --code-bg: #0d1117;
+    --code-text: #c9d1d9;
+    --terminal-header: #161b22;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.5);
+    --flow-bg: #1e1b4b;
+    --pill-bg: #312e81;
+    --pill-text: #a5b4fc;
+    --check-bg: #1e1b4b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; transition: background .3s, color .3s; }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Theme toggle */
+  .theme-toggle { position: fixed; top: 1rem; right: 1.5rem; z-index: 100; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: .5rem; cursor: pointer; color: var(--text); font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: background .2s; }
+  .theme-toggle:hover { background: var(--accent-light); }
+
+  /* Hero */
+  .hero { text-align: center; padding: 3rem 0 1.5rem; }
+  .hero .module-badge { display: inline-block; background: var(--accent); color: #fff; font-size: .75rem; font-weight: 600; padding: .25rem .75rem; border-radius: 6px; margin-bottom: .75rem; letter-spacing: .02em; }
+  .hero h1 { font-size: 2.25rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .5rem; }
+  .hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 640px; margin: 0 auto 1.5rem; }
+  .hero .tagline { font-style: italic; color: var(--accent); font-size: 1rem; padding: 1rem 1.25rem; background: var(--accent-light); border-radius: var(--radius); border-left: 3px solid var(--accent); text-align: left; }
+
+  /* Objectives */
+  .objectives { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 2rem 0; }
+  .objectives h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: .75rem; display: flex; align-items: center; gap: .5rem; }
+  .objectives ul { padding-left: 1.25rem; }
+  .objectives li { margin-bottom: .35rem; color: var(--text-secondary); font-size: .92rem; }
+
+  /* Section titles */
+  .section-title { font-size: 1.35rem; font-weight: 600; margin: 2.5rem 0 1rem; padding-bottom: .35rem; border-bottom: 2px solid var(--accent); display: inline-block; }
+  .section-subtitle { font-size: 1.1rem; font-weight: 600; margin: 1.75rem 0 .75rem; color: var(--text); }
+
+  /* Flow row */
+  .flow-row { display: flex; align-items: center; justify-content: center; gap: .5rem; flex-wrap: wrap; background: var(--flow-bg); padding: 1.25rem 1.5rem; border-radius: var(--radius); margin: 1.5rem 0; border: 1px solid var(--border); }
+  .flow-step { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .5rem 1rem; font-size: .82rem; font-weight: 500; white-space: nowrap; color: var(--text); box-shadow: var(--shadow); }
+  .flow-step .highlight { color: var(--accent); }
+  .flow-arrow { color: var(--text-secondary); font-size: 1rem; font-weight: 300; }
+
+  /* SVG diagram container */
+  .diagram-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 1.5rem 0; overflow-x: auto; }
+  .diagram-container h3 { font-size: .92rem; color: var(--text-secondary); text-align: center; margin-bottom: 1rem; font-weight: 500; }
+
+  /* Card grid */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .card .card-icon { font-size: 1.75rem; margin-bottom: .5rem; }
+  .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
+  .card p { font-size: .88rem; color: var(--text-secondary); line-height: 1.6; }
+  .card ul { padding-left: 1.1rem; font-size: .85rem; color: var(--text-secondary); margin-top: .5rem; }
+  .card ul li { margin-bottom: .3rem; }
+  .card .tag { display: inline-block; font-size: .72rem; font-weight: 600; padding: .15rem .5rem; border-radius: 4px; background: var(--accent-dim); color: var(--accent); margin: .35rem .25rem 0 0; }
+
+  /* Terminal code blocks */
+  .terminal-block { background: var(--code-bg); border-radius: var(--radius-sm); margin: 1rem 0; overflow: hidden; box-shadow: var(--shadow); }
+  .terminal-header { background: var(--terminal-header); padding: .5rem 1rem; display: flex; align-items: center; gap: .5rem; border-bottom: 1px solid var(--border); }
+  .terminal-header .dots { display: flex; gap: 5px; }
+  .terminal-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .terminal-header .dot.red { background: #ff5f56; }
+  .terminal-header .dot.yellow { background: #ffbd2e; }
+  .terminal-header .dot.green { background: #27c93f; }
+  .terminal-header .filename { color: #8b949e; font-size: .78rem; font-family: var(--mono); margin-left: .5rem; flex: 1; }
+  .terminal-body { padding: 1rem 1.25rem; overflow-x: auto; }
+  .terminal-body pre { margin: 0; font-family: var(--mono); font-size: .82rem; line-height: 1.6; color: var(--code-text); white-space: pre; }
+  .terminal-body code { font-family: var(--mono); }
+  .token-keyword { color: #ff7b72; }
+  .token-string { color: #a5d6ff; }
+  .token-comment { color: #8b949e; font-style: italic; }
+  .token-function { color: #d2a8ff; }
+  .token-number { color: #79c0ff; }
+  .token-operator { color: #ffa657; }
+
+  /* Inline code */
+  p code, li code { background: var(--accent-light); padding: .1rem .35rem; border-radius: 4px; font-family: var(--mono); font-size: .82em; color: var(--accent); }
+
+  /* Table */
+  .info-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .9rem; border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); }
+  .info-table thead { background: var(--accent); color: #fff; }
+  .info-table th, .info-table td { padding: .6rem .8rem; text-align: left; border-bottom: 1px solid var(--border); }
+  .info-table tbody tr { background: var(--card-bg); }
+  .info-table tbody tr:nth-child(even) { background: var(--accent-light); }
+  .info-table tbody tr:hover { filter: brightness(.95); }
+
+  /* Pitfalls */
+  .pitfall { background: var(--card-bg); border: 1px solid var(--danger); border-left: 4px solid var(--danger); border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin: .75rem 0; box-shadow: var(--shadow); }
+  .pitfall h4 { color: var(--danger); font-size: .92rem; margin-bottom: .3rem; display: flex; align-items: center; gap: .5rem; }
+  .pitfall p { font-size: .88rem; color: var(--text-secondary); }
+
+  /* Warning callout */
+  .callout { background: var(--accent-light); border: 1px solid var(--accent-dim); border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin: 1rem 0; border-left: 4px solid var(--accent); }
+  .callout h4 { font-size: .92rem; margin-bottom: .3rem; color: var(--text); }
+  .callout p { font-size: .88rem; color: var(--text-secondary); }
+  .callout.warn { border-left-color: var(--warn); background: #fefce8; }
+  .dark .callout.warn { background: #422006; }
+  .callout.warn h4 { color: var(--warn); }
+
+  /* Checklist */
+  .checklist { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 1.5rem 0; }
+  .checklist h3 { margin-bottom: .75rem; font-size: 1.05rem; display: flex; align-items: center; gap: .5rem; }
+  .checklist .progress-bar { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 1rem; overflow: hidden; }
+  .checklist .progress-fill { height: 100%; background: var(--success); border-radius: 3px; transition: width .4s; width: 0%; }
+  .checklist .progress-text { font-size: .82rem; color: var(--text-secondary); margin-bottom: .75rem; }
+  .checklist label { display: flex; align-items: flex-start; gap: .75rem; padding: .45rem 0; cursor: pointer; font-size: .9rem; border-bottom: 1px solid var(--border); transition: opacity .2s; }
+  .checklist label:last-child { border-bottom: none; }
+  .checklist input[type="checkbox"] { margin-top: .25rem; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+  .checklist .checked { text-decoration: line-through; color: var(--text-secondary); opacity: .5; }
+
+  /* Exercises */
+  .exercise { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 1.5rem 0; }
+  .exercise h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: .75rem; display: flex; align-items: center; gap: .5rem; }
+  .exercise h3 .ex-num { background: var(--accent); color: #fff; font-size: .75rem; font-weight: 600; padding: .15rem .5rem; border-radius: 5px; }
+  .exercise .instructions { font-size: .92rem; line-height: 1.7; }
+  .exercise .instructions ol, .exercise .instructions ul { padding-left: 1.25rem; margin: .5rem 0; }
+  .exercise .instructions li { margin-bottom: .35rem; }
+  .exercise .success-criteria { background: var(--check-bg); border-radius: var(--radius-sm); padding: 1rem; margin-top: 1rem; }
+  .exercise .success-criteria h4 { font-size: .88rem; color: var(--accent); font-weight: 600; margin-bottom: .4rem; }
+  .exercise .success-criteria ul { padding-left: 1.1rem; }
+  .exercise .success-criteria li { font-size: .85rem; color: var(--text-secondary); margin-bottom: .25rem; }
+
+  /* Verdict badge */
+  .verdict { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: .8rem; font-weight: 500; padding: .2rem .6rem; border-radius: 5px; margin-top: .5rem; }
+  .verdict.good { background: #dcfce7; color: #16a34a; }
+  .dark .verdict.good { background: #14532d; color: #4ade80; }
+  .verdict.bad { background: #fee2e2; color: #dc2626; }
+  .dark .verdict.bad { background: #450a0a; color: #f87171; }
+  .verdict.warn { background: #fef9c3; color: #ca8a04; }
+  .dark .verdict.warn { background: #422006; color: #fbbf24; }
+
+  /* Metric cards */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .metric-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem; text-align: center; box-shadow: var(--shadow); }
+  .metric-card .metric-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .metric-card .metric-label { font-size: .82rem; color: var(--text-secondary); margin-top: .25rem; }
+
+  /* Glossary inline */
+  .glossary-term { cursor: help; border-bottom: 1px dashed var(--accent); }
+
+  /* Buttons */
+  .btn { display: inline-block; background: var(--accent); color: #fff; padding: .65rem 1.5rem; border-radius: var(--radius-sm); text-decoration: none; font-weight: 600; font-size: .9rem; transition: opacity .2s; border: none; cursor: pointer; }
+  .btn:hover { opacity: .85; }
+  .btn-sm { padding: .4rem 1rem; font-size: .8rem; }
+
+  /* Comparison table for metrics */
+  .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .compare-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; box-shadow: var(--shadow); }
+  .compare-item h4 { font-size: .9rem; margin-bottom: .35rem; }
+  .compare-item .formula { font-family: var(--mono); font-size: .8rem; background: var(--accent-light); padding: .15rem .4rem; border-radius: 4px; color: var(--accent); display: inline-block; margin-bottom: .25rem; }
+  .compare-item p { font-size: .84rem; color: var(--text-secondary); }
+  .compare-item .best-for { font-size: .78rem; color: var(--success); font-weight: 500; }
+
+  /* Index trade-off table alternative */
+  .tradeoff-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; margin: 1rem 0; }
+  @media (max-width: 640px) { .tradeoff-row { grid-template-columns: 1fr; } }
+  .tradeoff-cell { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .75rem 1rem; text-align: center; box-shadow: var(--shadow); }
+  .tradeoff-cell h4 { font-size: .85rem; margin-bottom: .25rem; }
+  .tradeoff-cell .speed { font-size: .8rem; font-weight: 600; }
+  .tradeoff-cell .speed.fast { color: var(--success); }
+  .tradeoff-cell .speed.medium { color: var(--warn); }
+  .tradeoff-cell .speed.slow { color: var(--danger); }
+  .tradeoff-cell .desc { font-size: .78rem; color: var(--text-secondary); }
+
+  /* Highlight box */
+  .highlight-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin: 1rem 0; box-shadow: var(--shadow); }
+  .highlight-box h4 { font-size: .95rem; margin-bottom: .4rem; color: var(--accent); }
+  .highlight-box p { font-size: .88rem; color: var(--text-secondary); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.6rem; }
+    .container { padding: 1rem; }
+    .flow-row { gap: .25rem; padding: .75rem; }
+    .flow-step { font-size: .72rem; padding: .35rem .6rem; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Print */
+  @media print {
+    .theme-toggle { display: none; }
+    .checklist input[type="checkbox"] { -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="module-badge">Module 5 / 9</div>
+  <h1>Embeddings &amp; Vector Search</h1>
+  <p class="subtitle">Turn meaning into math. Learn how semantic vectors power retrieval, search, and the foundation of every RAG pipeline.</p>
+  <div class="tagline">"Vector search doesn't find keywords — it finds meaning. A search for 'car' can match 'vehicle' because they sit close in semantic space."</div>
+</div>
+
+<!-- OBJECTIVES -->
+<div class="objectives">
+  <h2>🎯 What You'll Learn</h2>
+  <ul>
+    <li>What embeddings are — dense vector representations of semantic meaning</li>
+    <li>How embedding models work (OpenAI, sentence-transformers, Cohere)</li>
+    <li>Vector databases and when to use each (pgvector, Pinecone, Chroma, Qdrant)</li>
+    <li>Similarity metrics and when each matters (cosine, dot product, L2)</li>
+    <li>Indexing trade-offs (HNSW, IVF, flat search)</li>
+    <li>Hybrid search — combining BM25 + vector for best results</li>
+    <li>Critical pitfalls before you build your first search pipeline</li>
+  </ul>
+</div>
+
+<!-- FLOW ROW -->
+<div class="flow-row">
+  <span class="flow-step">📄 Text</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">✂️ Chunk</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">🧠 <span class="highlight">Embed</span></span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">📇 Index</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">🔍 Query</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">📊 Rank</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">✅ Results</span>
+</div>
+
+<!-- SVG ARCHITECTURE DIAGRAM -->
+<div class="diagram-container">
+  <h3>End-to-End Embedding Search Architecture</h3>
+  <svg viewBox="0 0 880 320" style="width:100%;max-width:880px;display:block;margin:0 auto;" role="img" aria-label="Architecture diagram: Text input flows through embedding model to vector database for similarity search and ranked results">
+    <defs>
+      <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="boxGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#4ade80;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="boxGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="boxGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#f87171;stop-opacity:1" />
+      </linearGradient>
+      <filter id="shadow" x="-5%" y="-5%" width="115%" height="120%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity=".15"/>
+      </filter>
+      <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+      </marker>
+      <marker id="arrowAccent" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1" />
+      </marker>
+    </defs>
+
+    <!-- Background -->
+    <rect x="0" y="0" width="880" height="320" rx="10" fill="var(--card-bg, #fff)" opacity="0" />
+
+    <!-- Row 1: Documents -> Embedding Model -> Vector DB -->
+
+    <!-- Document box -->
+    <rect x="20" y="30" width="160" height="70" rx="8" fill="var(--card-bg, #1e293b)" stroke="var(--border, #334155)" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="100" y="58" text-anchor="middle" fill="var(--text, #e2e8f0)" font-size="13" font-weight="600">📄 Documents</text>
+    <text x="100" y="78" text-anchor="middle" fill="var(--text-secondary, #94a3b8)" font-size="10">"The cat sat on the mat..."</text>
+
+    <!-- Arrow 1 -->
+    <line x1="180" y1="65" x2="230" y2="65" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Chunk step -->
+    <rect x="230" y="30" width="140" height="70" rx="8" fill="var(--card-bg, #1e293b)" stroke="var(--border, #334155)" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="300" y="58" text-anchor="middle" fill="var(--text, #e2e8f0)" font-size="13" font-weight="600">✂️ Chunk</text>
+    <text x="300" y="78" text-anchor="middle" fill="var(--text-secondary, #94a3b8)" font-size="10">512-token sliding window</text>
+
+    <!-- Arrow 2 -->
+    <line x1="370" y1="65" x2="420" y2="65" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)" />
+
+    <!-- Embedding Model -->
+    <rect x="420" y="20" width="160" height="90" rx="8" fill="url(#boxGrad)" filter="url(#shadow)"/>
+    <text x="500" y="52" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">🧠 Embedding Model</text>
+    <text x="500" y="72" text-anchor="middle" fill="#e0e7ff" font-size="10">text-embedding-3-small</text>
+    <text x="500" y="90" text-anchor="middle" fill="#e0e7ff" font-size="10">→ [0.023, -0.145, ...]</text>
+
+    <!-- Arrow 3 -->
+    <line x1="580" y1="65" x2="630" y2="65" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Vector DB -->
+    <rect x="630" y="20" width="160" height="90" rx="8" fill="url(#boxGrad2)" filter="url(#shadow)"/>
+    <text x="710" y="52" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">📇 Vector DB</text>
+    <text x="710" y="72" text-anchor="middle" fill="#dcfce7" font-size="10">Pinecone / pgvector</text>
+    <text x="710" y="90" text-anchor="middle" fill="#dcfce7" font-size="10">HNSW index</text>
+
+    <!-- Row 2: Query flow -->
+    <text x="100" y="165" text-anchor="middle" fill="var(--text-secondary, #94a3b8)" font-size="11" font-weight="600">QUERY TIME</text>
+
+    <!-- Query box -->
+    <rect x="20" y="180" width="160" height="60" rx="8" fill="var(--card-bg, #1e293b)" stroke="var(--border, #334155)" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="100" y="208" text-anchor="middle" fill="var(--text, #e2e8f0)" font-size="13" font-weight="600">🔍 User Query</text>
+    <text x="100" y="226" text-anchor="middle" fill="var(--text-secondary, #94a3b8)" font-size="10">"vehicles that sit"</text>
+
+    <!-- Arrow Q1 -->
+    <line x1="180" y1="210" x2="270" y2="210" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowAccent)" />
+
+    <!-- Query embed -->
+    <rect x="270" y="180" width="140" height="60" rx="8" fill="url(#boxGrad)" filter="url(#shadow)"/>
+    <text x="340" y="208" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">Embed Query</text>
+    <text x="340" y="226" text-anchor="middle" fill="#e0e7ff" font-size="10">same model</text>
+
+    <!-- Arrow Q2 -->
+    <line x1="410" y1="210" x2="500" y2="210" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Similarity Search -->
+    <rect x="500" y="175" width="180" height="70" rx="8" fill="url(#boxGrad3)" filter="url(#shadow)"/>
+    <text x="590" y="202" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">Similarity Search</text>
+    <text x="590" y="222" text-anchor="middle" fill="#fef9c3" font-size="10">cosine / L2 / dot product</text>
+
+    <!-- Arrow Q3 -->
+    <line x1="680" y1="210" x2="740" y2="210" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Ranked Results -->
+    <rect x="740" y="175" width="120" height="70" rx="8" fill="url(#boxGrad4)" filter="url(#shadow)"/>
+    <text x="800" y="202" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">📊 Ranked</text>
+    <text x="800" y="222" text-anchor="middle" fill="#fee2e2" font-size="10">Results</text>
+
+    <!-- Dashed line: documents -> query embed showing shared model -->
+    <line x1="500" y1="110" x2="340" y2="180" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="5,4" opacity=".5" />
+    <text x="370" y="138" text-anchor="middle" fill="var(--accent, #818cf8)" font-size="9" opacity=".7">same model</text>
+
+    <!-- Legend -->
+    <rect x="20" y="265" width="8" height="8" rx="2" fill="url(#boxGrad)" />
+    <text x="33" y="273" fill="var(--text-secondary, #94a3b8)" font-size="9">Embedding</text>
+    <rect x="100" y="265" width="8" height="8" rx="2" fill="url(#boxGrad2)" />
+    <text x="113" y="273" fill="var(--text-secondary, #94a3b8)" font-size="9">Storage</text>
+    <rect x="180" y="265" width="8" height="8" rx="2" fill="url(#boxGrad3)" />
+    <text x="193" y="273" fill="var(--text-secondary, #94a3b8)" font-size="9">Search</text>
+    <rect x="260" y="265" width="8" height="8" rx="2" fill="url(#boxGrad4)" />
+    <text x="273" y="273" fill="var(--text-secondary, #94a3b8)" font-size="9">Results</text>
+  </svg>
+</div>
+
+<!-- 1. WHAT EMBEDDINGS ARE -->
+<h2 class="section-title">What Embeddings Are</h2>
+
+<p>Embeddings are <strong>dense vector representations</strong> of semantic meaning — an array of floating-point numbers that captures what a piece of text <em>means</em> rather than what words it contains.</p>
+
+<div class="highlight-box">
+  <h4>🔑 The Key Insight</h4>
+  <p>"The cat sat on the mat" and "A feline rested on the rug" produce vectors that are <strong>close together</strong> in semantic space, even though they share almost no keywords. A search for "feline" can match "cat" because of their vector proximity — not because of string matching.</p>
+</div>
+
+<p>An embedding model maps each input (word, sentence, paragraph, document) to a fixed-size vector — typically <strong>384 to 3072 dimensions</strong>. Each dimension encodes a learned semantic feature, and the vector's position in this high-dimensional space represents the text's meaning.</p>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-icon">🧬</div>
+    <h3>Dense Vectors</h3>
+    <p>Unlike sparse one-hot encodings (bag-of-words), embeddings are dense — every dimension carries information. A 1536-dim vector from <code>text-embedding-3-small</code> captures nuanced semantics in compact form.</p>
+  </div>
+  <div class="card">
+    <div class="card-icon">🌌</div>
+    <h3>Semantic Space</h3>
+    <p>Vectors live in a high-dimensional space where distance ≈ semantic difference. "King" − "Man" + "Woman" ≈ "Queen" — the classic analogy works because of vector arithmetic in embedding space.</p>
+  </div>
+  <div class="card">
+    <div class="card-icon">📏</div>
+    <h3>Dimensions</h3>
+    <p>More dimensions = more capacity to encode meaning, but also more storage and slower search. <code>text-embedding-3-small</code> (1536 dims) vs <code>text-embedding-3-large</code> (3072) — choose based on your precision needs vs cost/speed.</p>
+  </div>
+</div>
+
+<!-- 2. EMBEDDING MODELS & APIs -->
+<h2 class="section-title">Embedding Models &amp; APIs</h2>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-icon">🤖</div>
+    <h3>OpenAI text-embedding-3</h3>
+    <p><span class="tag">1536 dims (small)</span> <span class="tag">3072 dims (large)</span></p>
+    <p>API-based. Most widely used. <code>text-embedding-3-small</code> is the cost-performance sweet spot at ~$0.02/1M tokens. Supports dimensionality reduction via the <code>dimensions</code> parameter — truncate to 256 dims for cheaper storage without losing much quality.</p>
+    <p><span class="verdict good">✅ Best for: Production RAG, cost-sensitive apps</span></p>
+  </div>
+  <div class="card">
+    <div class="card-icon">📦</div>
+    <h3>Sentence-Transformers</h3>
+    <p><span class="tag">384 dims</span> <span class="tag">Local</span></p>
+    <p>Open-source, run locally. <code>all-MiniLM-L6-v2</code> is the go-to: 384 dimensions, fast inference on CPU, good-enough quality for many use cases. <code>all-mpnet-base-v2</code> is higher quality but slower. No API costs, no rate limits.</p>
+    <p><span class="verdict good">✅ Best for: Local dev, prototyping, privacy-sensitive data</span></p>
+  </div>
+  <div class="card">
+    <div class="card-icon">🔗</div>
+    <h3>Cohere Embed</h3>
+    <p><span class="tag">1024 dims</span> <span class="tag">Multilingual</span></p>
+    <p>API-based with strong multilingual support. <code>embed-english-v3.0</code> and <code>embed-multilingual-v3.0</code>. Distinctive feature: <strong>compression</strong> — returns both a full-precision vector and a smaller binary/short vector for cheaper retrieval.</p>
+    <p><span class="verdict good">✅ Best for: Multilingual apps, enterprise</span></p>
+  </div>
+</div>
+
+<details style="margin: 1rem 0;">
+  <summary style="cursor:pointer;font-weight:600;font-size:.92rem;color:var(--accent);">📋 Model comparison table</summary>
+  <table class="info-table">
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Dimensions</th>
+        <th>Cost</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>text-embedding-3-small</td><td>1,536</td><td>~$0.02/1M tokens</td><td>Production RAG, cost-sensitive</td></tr>
+      <tr><td>text-embedding-3-large</td><td>3,072</td><td>~$0.13/1M tokens</td><td>Highest accuracy benchmarks</td></tr>
+      <tr><td>all-MiniLM-L6-v2</td><td>384</td><td>Free (local)</td><td>Local dev, prototyping</td></tr>
+      <tr><td>all-mpnet-base-v2</td><td>768</td><td>Free (local)</td><td>Higher-quality local embeddings</td></tr>
+      <tr><td>Cohere embed-english-v3.0</td><td>1,024</td><td>~$0.10/1M tokens</td><td>Multilingual, enterprise</td></tr>
+    </tbody>
+  </table>
+</details>
+
+<!-- Code: embed.py -->
+<div class="terminal-block">
+  <div class="terminal-header">
+    <div class="dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <span class="filename">embed.py — Generate embeddings with OpenAI and sentence-transformers</span>
+  </div>
+  <div class="terminal-body">
+<pre><span class="token-keyword">import</span> os
+<span class="token-keyword">from</span> openai <span class="token-keyword">import</span> OpenAI
+
+<span class="token-comment"># === OpenAI embedding ===</span>
+client = OpenAI(api_key=os.getenv(<span class="token-string">"OPENAI_API_KEY"</span>))
+
+text = <span class="token-string">"The cat sat on the mat."</span>
+response = client.embeddings.create(
+    model=<span class="token-string">"text-embedding-3-small"</span>,
+    input=text,
+    dimensions=<span class="token-number">256</span>  <span class="token-comment"># optional truncation</span>
+)
+embedding = response.data[<span class="token-number">0</span>].embedding
+<span class="token-keyword">print</span>(<span class="token-string">f"Vector dims: {len(embedding)}"</span>)   <span class="token-comment"># 256</span>
+<span class="token-keyword">print</span>(embedding[:<span class="token-number">5</span>])                        <span class="token-comment"># [-0.023, 0.045, ...]</span>
+
+<span class="token-comment"># === Sentence-transformers (local) ===</span>
+<span class="token-keyword">from</span> sentence_transformers <span class="token-keyword">import</span> SentenceTransformer
+
+model = SentenceTransformer(<span class="token-string">"all-MiniLM-L6-v2"</span>)
+vec = model.encode(text)
+<span class="token-keyword">print</span>(<span class="token-string">f"Local vector: {len(vec)} dims"</span>)     <span class="token-comment"># 384</span></pre>
+  </div>
+</div>
+
+<!-- 3. VECTOR DATABASES -->
+<h2 class="section-title">Vector Databases</h2>
+
+<p>A vector database stores embeddings and supports fast similarity search by indexed nearest-neighbour algorithms. You don't need a dedicated vector DB — three of the four options here are extensions or libraries.</p>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-icon">🐘</div>
+    <h3>pgvector</h3>
+    <p><span class="tag">Postgres</span> <span class="tag">Open Source</span></p>
+    <p>PostgreSQL extension that adds vector data type and IVFFlat / HNSW indexes. Zero new infrastructure — your existing Postgres becomes a vector DB. Supports SQL queries that mix vector search with traditional WHERE filters.</p>
+    <p><span class="verdict good">✅ Best for: Teams already on Postgres, hybrid SQL + vector queries</span></p>
+  </div>
+  <div class="card">
+    <div class="card-icon">🌲</div>
+    <h3>Pinecone</h3>
+    <p><span class="tag">Managed</span> <span class="tag">Serverless</span></p>
+    <p>Fully-managed vector database. No infrastructure to manage. Automatic scaling, multi-tenancy, namespaces, metadata filtering. Uses HNSW by default. The easiest way to get started — but costs add up at scale.</p>
+    <p><span class="verdict good">✅ Best for: Fastest setup, production scale without ops</span></p>
+  </div>
+  <div class="card">
+    <div class="card-icon">💎</div>
+    <h3>Chroma</h3>
+    <p><span class="tag">Local</span> <span class="tag">Lightweight</span></p>
+    <p>Embedding database designed for AI apps. Runs in-process (Python) or as a server. Simple API, zero config, DuckDB-backed for persistence. Perfect for prototyping and small-to-medium datasets.</p>
+    <p><span class="verdict good">✅ Best for: Prototyping, local dev, small datasets</span></p>
+  </div>
+  <div class="card">
+    <div class="card-icon">⚡</div>
+    <h3>Qdrant</h3>
+    <p><span class="tag">Rust</span> <span class="tag">High Perf</span></p>
+    <p>Written in Rust — very fast. Supports filtering, payload storage, and multiple index types (HNSW, IVF). Can run as a binary, Docker container, or managed cloud. Good balance of performance and feature completeness.</p>
+    <p><span class="verdict good">✅ Best for: High-performance, filtering-heavy queries</span></p>
+  </div>
+</div>
+
+<!-- Code: index.py -->
+<div class="terminal-block">
+  <div class="terminal-header">
+    <div class="dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <span class="filename">index.py — Store embeddings in Chroma</span>
+  </div>
+  <div class="terminal-body">
+<pre><span class="token-keyword">import</span> chromadb
+<span class="token-keyword">from</span> sentence_transformers <span class="token-keyword">import</span> SentenceTransformer
+
+<span class="token-comment"># Init</span>
+embed_model = SentenceTransformer(<span class="token-string">"all-MiniLM-L6-v2"</span>)
+client = chromadb.Client()
+collection = client.create_collection(
+    name=<span class="token-string">"my_docs"</span>,
+    metadata={ <span class="token-string">"hnsw:space"</span>: <span class="token-string">"cosine"</span> }
+)
+
+<span class="token-comment"># Documents to index</span>
+docs = [
+    <span class="token-string">"The cat sat on the mat."</span>,
+    <span class="token-string">"Dogs love to play fetch in the park."</span>,
+    <span class="token-string">"A car drove down the highway at high speed."</span>,
+    <span class="token-string">"Quantum mechanics describes the behaviour of particles."</span>,
+]
+ids = [<span class="token-string">f"doc{i}"</span> <span class="token-keyword">for</span> i <span class="token-keyword">in</span> <span class="token-builtin">range</span>(len(docs))]
+
+<span class="token-comment"># Embed + store</span>
+embeddings = embed_model.encode(docs).tolist()
+collection.add(ids=ids, embeddings=embeddings, documents=docs)
+
+<span class="token-keyword">print</span>(<span class="token-string">f"Indexed {len(docs)} documents"</span>)</pre>
+  </div>
+</div>
+
+<!-- 4. SIMILARITY METRICS -->
+<h2 class="section-title">Similarity Metrics</h2>
+
+<p>Once you have vectors, you need a way to measure how close they are. Three main metrics, each with a different interpretation:</p>
+
+<div class="compare-grid">
+  <div class="compare-item">
+    <h4>Cosine Similarity</h4>
+    <div class="formula">cos(θ) = (A·B) / (||A|| × ||B||)</div>
+    <p>Measures the angle between vectors, ignoring magnitude. Range: [-1, 1]. Most common for text embeddings — you care about <em>direction</em> (meaning), not length (frequency).</p>
+    <p class="best-for">🏆 Use when: comparing semantic meaning, text embeddings</p>
+  </div>
+  <div class="compare-item">
+    <h4>Dot Product</h4>
+    <div class="formula">A·B = Σ Aᵢ × Bᵢ</div>
+    <p>Un-normalised similarity that includes magnitude. When all vectors are unit-normalised, dot product = cosine similarity. Faster to compute than cosine.</p>
+    <p class="best-for">🏆 Use when: vectors are normalised, speed matters in production</p>
+  </div>
+  <div class="compare-item">
+    <h4>Euclidean (L2) Distance</h4>
+    <div class="formula">d = √Σ(Aᵢ − Bᵢ)²</div>
+    <p>Geometric distance in vector space. Sensitive to magnitude — two similar ideas expressed at different lengths could appear far apart. Good for image embeddings or when magnitude matters.</p>
+    <p class="best-for">🏆 Use when: magnitude carries information (image embeddings, audio)</p>
+  </div>
+</div>
+
+<div class="callout">
+  <h4>⚡ Rule of Thumb</h4>
+  <p><strong>Text embeddings → use cosine similarity.</strong> It's the standard for semantic search. Most vector databases default to cosine and many normalise vectors internally, making dot product equivalent. L2 is useful when you're dealing with embeddings where magnitude carries signal (e.g., some multimodal models).</p>
+</div>
+
+<!-- 5. INDEX TYPES -->
+<h2 class="section-title">Indexing Algorithms: Speed vs. Accuracy</h2>
+
+<p>Brute-force search over every vector (flat search) is O(n). For millions of vectors, you need approximate nearest neighbour (ANN) indexes. Here are the trade-offs:</p>
+
+<div class="tradeoff-row">
+  <div class="tradeoff-cell">
+    <h4>🔍 Flat Search</h4>
+    <p class="speed slow">🐢 Slower</p>
+    <p class="desc">Brute-force — compares every vector. <strong>100% recall</strong>. Use for small datasets (&lt;10K vectors) or when perfect accuracy is non-negotiable.</p>
+  </div>
+  <div class="tradeoff-cell">
+    <h4>🧱 IVF (Inverted File Index)</h4>
+    <p class="speed medium">⚡ Moderate</p>
+    <p class="desc">Clusters vectors into groups (Voronoi cells). At query time, searches only the nearest cells. Parameter <code>nprobe</code> controls speed/accuracy trade-off. Good balance for up to ~1M vectors.</p>
+  </div>
+  <div class="tradeoff-cell">
+    <h4>🌐 HNSW (Hierarchical NSW)</h4>
+    <p class="speed fast">🚀 Fastest</p>
+    <p class="desc">Builds a multi-layer graph. At query time, navigates from coarse to fine layers. Best-in-class speed/accuracy for large datasets. Higher memory usage. <strong>Industry standard</strong> for production vector search.</p>
+  </div>
+</div>
+
+<div class="info-table">
+  <table style="width:100%">
+    <thead>
+      <tr><th>Index</th><th>Build Time</th><th>Query Speed</th><th>Memory</th><th>Recall</th><th>Best For</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Flat (brute force)</td><td>None</td><td>O(n)</td><td>Low</td><td>100%</td><td>Small datasets, validation</td></tr>
+      <tr><td>IVFFlat</td><td>Fast</td><td>Fast*</td><td>Low</td><td>~90-98%</td><td>Medium datasets, limited RAM</td></tr>
+      <tr><td>HNSW</td><td>Slow</td><td>Very fast</td><td>High</td><td>~99%+</td><td>Large datasets, production</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout warn">
+  <h4>⚠️ The Index Build Trap</h4>
+  <p><strong>HNSW takes time to build.</strong> The graph construction is O(n log n) and memory-intensive. For 1M 1536-dim vectors, building an HNSW index can take 10–30 minutes on a typical machine. Plan for this — don't expect instant indexing of large datasets. IVFFlat builds much faster but queries are slower at high recall.</p>
+</div>
+
+<!-- Code: search.py -->
+<div class="terminal-block">
+  <div class="terminal-header">
+    <div class="dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <span class="filename">search.py — Semantic search with Chroma</span>
+  </div>
+  <div class="terminal-body">
+<pre><span class="token-comment"># Continue from index.py — query the collection</span>
+query = <span class="token-string">"animals that sit on furniture"</span>
+query_vec = embed_model.encode(query).tolist()
+
+results = collection.query(
+    query_embeddings=[query_vec],
+    n_results=<span class="token-number">2</span>
+)
+
+<span class="token-keyword">for</span> i, doc <span class="token-keyword">in</span> <span class="token-builtin">enumerate</span>(results[<span class="token-string">"documents"</span>][<span class="token-number">0</span>]):
+    dist = results[<span class="token-string">"distances"</span>][<span class="token-number">0</span>][i]
+    <span class="token-keyword">print</span>(<span class="token-string">f"[{dist:.4f}] {doc}"</span>)
+
+<span class="token-comment"># Output:</span>
+<span class="token-comment"># [0.2345] The cat sat on the mat.</span>
+<span class="token-comment"># [0.5123] Dogs love to play fetch in the park.</span></pre>
+  </div>
+</div>
+
+<!-- 6. HYBRID SEARCH -->
+<h2 class="section-title">Hybrid Search: Keyword + Vector</h2>
+
+<div class="highlight-box">
+  <h4>🔑 The Core Insight</h4>
+  <p><strong>Vector search alone is not enough.</strong> For queries that contain a specific term (e.g., "Python 3.12 async error handling"), a keyword match on "Python" or "async" may be more relevant than semantic neighbours. Hybrid search combines BM25 (keyword) scores with vector similarity scores, then re-ranks.</p>
+</div>
+
+<p>Pure vector search handles semantic matching well but can miss exact-term precision. Pure keyword search (BM25, TF-IDF) is great for exact terms but misses synonyms and paraphrases. <strong>Hybrid search combines both</strong> — typically via reciprocal rank fusion (RRF) or weighted averaging.</p>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-icon">📖</div>
+    <h3>BM25 (Keyword)</h3>
+    <p>Term-based ranking. Great for exact matches, IDs, code snippets, proper nouns. Sparse — most dimensions are zero. Not affected by embedding quality or domain shift.</p>
+    <p class="verdict good">🏆 Excels at: Exact term matching, code search, acronyms</p>
+  </div>
+  <div class="card">
+    <div class="card-icon">🧠</div>
+    <h3>Vector (Semantic)</h3>
+    <p>Dense embedding search. Captures meaning, synonyms, paraphrases. Generalises beyond keyword overlap. Weak on exact terms, rare words, and domain-specific jargon not seen in training.</p>
+    <p class="verdict good">🏆 Excels at: Synonyms, paraphrases, conceptual similarity</p>
+  </div>
+  <div class="card">
+    <div class="card-icon">🔀</div>
+    <h3>Reciprocal Rank Fusion (RRF)</h3>
+    <p>Combines two ranked lists by computing <code>RRF(d) = 1/(k + r₁(d)) + 1/(k + r₂(d))</code> where r₁ and r₂ are ranks from each method. Simple, effective, no training needed. The <em>de facto</em> hybrid search method.</p>
+    <p class="verdict good">🏆 Excels at: Combining heterogenous rankers</p>
+  </div>
+</div>
+
+<!-- Code: hybrid.py -->
+<div class="terminal-block">
+  <div class="terminal-header">
+    <div class="dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+    <span class="filename">hybrid.py — Combine BM25 + vector search with RRF</span>
+  </div>
+  <div class="terminal-body">
+<pre><span class="token-keyword">import</span> math
+<span class="token-keyword">from</span> rank_bm25 <span class="token-keyword">import</span> BM25Okapi
+
+<span class="token-comment"># BM25 index (on tokenised documents)</span>
+tokenised = [doc.lower().split() <span class="token-keyword">for</span> doc <span class="token-keyword">in</span> docs]
+bm25 = BM25Okapi(tokenised)
+
+<span class="token-keyword">def</span> <span class="token-function">rrf_hybrid</span>(query, k=<span class="token-number">60</span>, top_n=<span class="token-number">5</span>):
+    <span class="token-comment"># 1. Get BM25 scores</span>
+    bm25_scores = bm25.get_scores(query.lower().split())
+    bm25_ranks = <span class="token-builtin">sorted</span>(
+        <span class="token-builtin">range</span>(len(bm25_scores)),
+        key=<span class="token-keyword">lambda</span> i: bm25_scores[i],
+        reverse=<span class="token-keyword">True</span>
+    )
+
+    <span class="token-comment"># 2. Get vector scores (cosine similarity)</span>
+    query_vec = embed_model.encode(query)
+    vec_scores = [
+        cosine_similarity(query_vec, doc_vec)
+        <span class="token-keyword">for</span> doc_vec <span class="token-keyword">in</span> doc_embeddings
+    ]
+    vec_ranks = <span class="token-builtin">sorted</span>(
+        <span class="token-builtin">range</span>(len(vec_scores)),
+        key=<span class="token-keyword">lambda</span> i: vec_scores[i],
+        reverse=<span class="token-keyword">True</span>
+    )
+
+    <span class="token-comment"># 3. Reciprocal Rank Fusion</span>
+    rrf_scores = {}
+    <span class="token-keyword">for</span> i <span class="token-keyword">in</span> <span class="token-builtin">range</span>(len(docs)):
+        r1 = bm25_ranks.index(i) + <span class="token-number">1</span>
+        r2 = vec_ranks.index(i) + <span class="token-number">1</span>
+        rrf_scores[i] = <span class="token-number">1</span>/(k+r1) + <span class="token-number">1</span>/(k+r2)
+
+    <span class="token-keyword">return</span> <span class="token-builtin">sorted</span>(
+        rrf_scores.items(),
+        key=<span class="token-keyword">lambda</span> x: x[<span class="token-number">1</span>],
+        reverse=<span class="token-keyword">True</span>
+    )[:top_n]
+
+<span class="token-comment"># Usage</span>
+query = <span class="token-string">"car on the road"</span>
+results = rrf_hybrid(query)
+<span class="token-keyword">for</span> idx, score <span class="token-keyword">in</span> results:
+    <span class="token-keyword">print</span>(<span class="token-string">f"[RRF {score:.4f}] {docs[idx]}"</span>)</pre>
+  </div>
+</div>
+
+<!-- 7. PITFALLS (BEFORE EXERCISES) -->
+<h2 class="section-title">⛔ Pitfalls — Read Before You Build</h2>
+
+<div class="pitfall">
+  <h4>🚫 Treating All Dimensions Equally</h4>
+  <p>Not all embedding dimensions carry the same signal. Some dimensions encode broad semantic axes (e.g., "positive vs negative sentiment"), others encode noise. Dimensionality reduction (via the <code>dimensions</code> parameter in OpenAI's API) or PCA can strip noise and speed up search. Experiment with 256 or 512 dims before defaulting to the full vector.</p>
+</div>
+
+<div class="pitfall">
+  <h4>🚫 Ignoring Index Build Time</h4>
+  <p>HNSW indexes take <strong>minutes, not seconds</strong> to build on large datasets. If you're prototyping iteratively, use flat search first (small data), then switch to HNSW when you're ready for production. Don't block your dev loop on index construction — and never surprise yourself with a 30-minute build time on deploy day.</p>
+</div>
+
+<div class="pitfall">
+  <h4>🚫 Assuming Vector Search Alone Is Enough</h4>
+  <p>Vector search is powerful, but it fails on exact-term queries, rare entities, domain-specific terminology not in the training data, and queries where keyword overlap is the strongest signal. Always benchmark hybrid search (BM25 + vector) against pure vector on your data. In most real-world applications, hybrid wins.</p>
+</div>
+
+<div class="pitfall">
+  <h4>🚫 Not Normalising Embeddings</h4>
+  <p>Different models produce vectors at different scales. If you use cosine similarity but don't normalise your vectors, the results are meaningless. Some vector DBs normalise internally (Chroma does for cosine); others (pgvector) don't. Always check your DB's default behaviour and normalise explicitly (<code>vec / ||vec||</code>) if needed.</p>
+</div>
+
+<div class="pitfall">
+  <h4>🚫 Forgetting Metadata Filtering</h4>
+  <p>In production, you almost never search the whole vector space — you search within a user's documents, a date range, or a content category. If your vector DB supports metadata filtering (Pinecone, Qdrant, pgvector), use it. Filtering before KNN search can 10× reduce query latency.</p>
+</div>
+
+<!-- 8. EXERCISES -->
+<h2 class="section-title">Exercises</h2>
+
+<div class="exercise">
+  <h3><span class="ex-num">Exercise 1</span> Index 100+ Documents</h3>
+  <div class="instructions">
+    <p>Create a Python script that:</p>
+    <ol>
+      <li>Generates or loads at least 100 synthetic documents (or use real text — project Gutenberg excerpts, your own notes, anything)</li>
+      <li>Chunks them if they're longer than 512 tokens</li>
+      <li>Embeds them using <code>text-embedding-3-small</code> (or <code>all-MiniLM-L6-v2</code> for local)</li>
+      <li>Stores them in Chroma (or sqlite-vec for a lightweight alternative)</li>
+      <li>Builds a BM25 index on the same documents</li>
+    </ol>
+  </div>
+  <div class="success-criteria">
+    <h4>✅ Success Criteria</h4>
+    <ul>
+      <li>100+ documents are indexed and queryable</li>
+      <li>Script runs without errors</li>
+      <li>You can inspect the collection and confirm the document count</li>
+    </ul>
+  </div>
+</div>
+
+<div class="exercise">
+  <h3><span class="ex-num">Exercise 2</span> Compare Vector vs. BM25 vs. Hybrid</h3>
+  <div class="instructions">
+    <p>Write an evaluation script that:</p>
+    <ol>
+      <li>Takes 5+ test queries (include some that are semantic — "funny animal stories" — and some that are keyword-specific — "quantum mechanics definition")</li>
+      <li>Runs each query against all three methods: BM25-only, vector-only, and hybrid (RRF)</li>
+      <li>Prints the top-3 results for each method side-by-side</li>
+      <li>Reports which method performed best for each query type</li>
+    </ol>
+  </div>
+  <div class="success-criteria">
+    <h4>✅ Success Criteria</h4>
+    <ul>
+      <li>Hybrid search outperforms pure vector on at least one ambiguous query</li>
+      <li>BM25 beats vector on at least one exact-term query</li>
+      <li>You can explain <em>why</em> each method won or lost on each query</li>
+    </ul>
+  </div>
+</div>
+
+<div class="exercise">
+  <h3><span class="ex-num">Exercise 3</span> Interactive Semantic Search CLI</h3>
+  <div class="instructions">
+    <p>Build a simple command-line interface that:</p>
+    <ol>
+      <li>Loads your indexed collection from Exercise 1</li>
+      <li>Accepts a query from stdin</li>
+      <li>Returns the top-5 results with similarity scores</li>
+      <li>Shows the source document text for each result</li>
+      <li>Lets the user toggle between vector-only, BM25-only, and hybrid mode</li>
+    </ol>
+  </div>
+  <div class="success-criteria">
+    <h4>✅ Success Criteria</h4>
+    <ul>
+      <li>Interactive loop works: type a query, get results, repeat</li>
+      <li>All three search modes are switchable at runtime</li>
+      <li>Results include relevance scores and document text</li>
+    </ul>
+  </div>
+</div>
+
+<!-- INTERACTIVE CHECKLIST -->
+<div class="checklist">
+  <h3>📋 Module 5 Progress</h3>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 / 9 concepts mastered</div>
+
+  <label id="ck1">
+    <input type="checkbox" data-key="m05_vector_concept" onchange="updateProgress()">
+    <span>Understand what embeddings are and why they matter</span>
+  </label>
+  <label id="ck2">
+    <input type="checkbox" data-key="m05_embed_models" onchange="updateProgress()">
+    <span>Know the differences between OpenAI, sentence-transformers, and Cohere</span>
+  </label>
+  <label id="ck3">
+    <input type="checkbox" data-key="m05_vector_dbs" onchange="updateProgress()">
+    <span>Compare pgvector, Pinecone, Chroma, and Qdrant</span>
+  </label>
+  <label id="ck4">
+    <input type="checkbox" data-key="m05_similarity" onchange="updateProgress()">
+    <span>Understand cosine similarity, dot product, and L2 distance trade-offs</span>
+  </label>
+  <label id="ck5">
+    <input type="checkbox" data-key="m05_indexing" onchange="updateProgress()">
+    <span>Explain HNSW vs IVF vs flat search trade-offs</span>
+  </label>
+  <label id="ck6">
+    <input type="checkbox" data-key="m05_hybrid" onchange="updateProgress()">
+    <span>Describe hybrid search (BM25 + vector + RRF)</span>
+  </label>
+  <label id="ck7">
+    <input type="checkbox" data-key="m05_pitfalls" onchange="updateProgress()">
+    <span>Read and understand the pitfalls section</span>
+  </label>
+  <label id="ck8">
+    <input type="checkbox" data-key="m05_ex1_index" onchange="updateProgress()">
+    <span>Exercise 1: Index 100+ documents</span>
+  </label>
+  <label id="ck9">
+    <input type="checkbox" data-key="m05_ex2_compare" onchange="updateProgress()">
+    <span>Exercise 2: Compare vector vs BM25 vs hybrid</span>
+  </label>
+  <label id="ck10">
+    <input type="checkbox" data-key="m05_ex3_cli" onchange="updateProgress()">
+    <span>Exercise 3: Interactive semantic search CLI</span>
+  </label>
+</div>
+
+<!-- SUMMARY -->
+<h2 class="section-title">What's Next</h2>
+
+<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);margin:1rem 0 2rem;">
+  <p style="margin-bottom:.5rem;">Module 5 is the foundation for <strong>Module 6 → RAG (Retrieval Augmented Generation)</strong>. Once you can reliably embed, index, and search documents, you add generation on top: retrieve relevant chunks → feed them into an LLM as context → generate grounded answers with citations.</p>
+  <p style="color:var(--text-secondary);font-size:.9rem;">Make sure you've completed all exercises before moving on. Vector search is the retrieval half of every RAG system — if the retrieval is broken, the generation will hallucinate.</p>
+  <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+    <span class="verdict good">Module 4 ✓ REST APIs + LLMs</span>
+    <span class="verdict" style="background:var(--accent);color:#fff;">Module 5 ◉ Embeddings</span>
+    <span class="verdict">Module 6 ○ RAG</span>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:2rem 0 0;color:var(--text-secondary);font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem;">
+  <p>AI Engineer — The 2026 Learning Path · Based on <a href="https://x.com/cyrilXBT/status/2073940565851361607" style="color:var(--accent);">@cyrilXBT's thread</a></p>
+  <p style="margin-top:.25rem;">Built with 🧠 by Sage · Module 5 of 9</p>
+</footer>
+
+</div>
+
+<script>
+// === THEME TOGGLE ===
+(function() {
+  const toggle = document.getElementById('themeToggle');
+  const stored = localStorage.getItem('theme');
+
+  function setTheme(mode) {
+    if (mode === 'dark') {
+      document.documentElement.classList.add('dark');
+      toggle.textContent = '☀️';
+    } else {
+      document.documentElement.classList.remove('dark');
+      toggle.textContent = '🌙';
+    }
+  }
+
+  if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+    setTheme('dark');
+  } else {
+    setTheme('light');
+  }
+
+  toggle.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    toggle.textContent = isDark ? '☀️' : '🌙';
+  });
+})();
+
+// === CHECKLIST PERSISTENCE ===
+function updateProgress() {
+  const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+  let done = 0;
+  checkboxes.forEach(cb => {
+    const key = cb.getAttribute('data-key');
+    const checked = cb.checked;
+    localStorage.setItem(key, checked ? 'true' : 'false');
+    const label = cb.closest('label');
+    if (label) {
+      label.querySelector('span').classList.toggle('checked', checked);
+    }
+    if (checked) done++;
+  });
+  const total = checkboxes.length;
+  document.getElementById('progressText').textContent = `${done} / ${total} concepts mastered`;
+  document.getElementById('progressFill').style.width = `${(done / total) * 100}%`;
+}
+
+(function loadChecklist() {
+  const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    const key = cb.getAttribute('data-key');
+    const saved = localStorage.getItem(key);
+    if (saved === 'true') {
+      cb.checked = true;
+      const label = cb.closest('label');
+      if (label) label.querySelector('span').classList.add('checked');
+    }
+  });
+  updateProgress();
+})();
+
+// === SYNTAX: extend token classes for simple code blocks ===
+// (Static highlighting is baked into the HTML; this is a no-op hook)
+</script>
+
+</body>
+</html>

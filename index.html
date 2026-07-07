@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineer — The 2026 Learning Path</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #4a4a6a;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --border: #e2e8f0;
+    --success: #22c55e;
+    --warn: #f59e0b;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  }
+  .dark {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #818cf8;
+    --accent-light: #1e1b4b;
+    --border: #334155;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; transition: background .3s, color .3s; }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Theme toggle */
+  .theme-toggle { position: fixed; top: 1rem; right: 1.5rem; z-index: 100; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: .5rem; cursor: pointer; color: var(--text); font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+
+  /* Hero */
+  .hero { text-align: center; padding: 3rem 0 2rem; }
+  .hero h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .75rem; }
+  .hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 640px; margin: 0 auto 1rem; }
+  .hero .quote { font-style: italic; color: var(--accent); font-size: 1.05rem; padding: 1rem; background: var(--accent-light); border-radius: var(--radius); margin-top: 1.5rem; border-left: 3px solid var(--accent); }
+
+  /* Overview cards */
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin: 2.5rem 0; }
+  .overview-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+  .overview-card .num { font-size: 2rem; font-weight: 700; color: var(--accent); }
+  .overview-card h3 { margin: .5rem 0 .25rem; font-size: 1.05rem; }
+  .overview-card p { color: var(--text-secondary); font-size: .9rem; }
+
+  /* Module list */
+  .section-title { font-size: 1.5rem; font-weight: 600; margin: 2.5rem 0 1rem; }
+  .module-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; }
+  .module-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; box-shadow: var(--shadow); display: flex; align-items: center; gap: 1rem; transition: transform .15s, box-shadow .15s; }
+  .module-item:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+  .module-item .badge { background: var(--accent); color: #fff; font-size: .75rem; font-weight: 600; padding: .2rem .6rem; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+  .module-item .badge.project { background: #22c55e; }
+  .module-item .info { flex: 1; }
+  .module-item .info strong { display: block; font-size: 1rem; }
+  .module-item .info span { font-size: .85rem; color: var(--text-secondary); }
+  .module-item a { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem; width: 100%; }
+  .module-item a::after { content: "→"; color: var(--accent); font-size: 1.2rem; flex-shrink: 0; }
+
+  /* Project cards */
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin: 1.5rem 0; }
+  .project-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+  .project-card h3 { margin-bottom: .5rem; font-size: 1.05rem; }
+  .project-card h3 .proj-num { color: var(--accent); }
+  .project-card p { color: var(--text-secondary); font-size: .9rem; margin-bottom: 1rem; }
+  .project-card .signal { font-size: .8rem; background: var(--accent-light); padding: .35rem .75rem; border-radius: 6px; color: var(--accent); font-weight: 500; display: inline-block; }
+
+  /* Timeline */
+  .timeline { margin: 1.5rem 0; }
+  .phase { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); }
+  .phase:nth-child(2) { border-left-color: var(--success); }
+  .phase:nth-child(3) { border-left-color: #f59e0b; }
+  .phase h3 { font-size: 1rem; margin-bottom: .35rem; }
+  .phase .days { color: var(--text-secondary); font-size: .85rem; margin-bottom: .5rem; }
+  .phase ul { padding-left: 1.25rem; color: var(--text-secondary); font-size: .9rem; }
+  .phase ul li { margin-bottom: .25rem; }
+
+  /* Checklist */
+  .checklist { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 1.5rem 0; }
+  .checklist h3 { margin-bottom: .75rem; }
+  .checklist label { display: flex; align-items: flex-start; gap: .75rem; padding: .4rem 0; cursor: pointer; font-size: .9rem; }
+  .checklist input[type="checkbox"] { margin-top: .25rem; accent-color: var(--accent); width: 16px; height: 16px; }
+  .checklist .checked { text-decoration: line-through; color: var(--text-secondary); opacity: .6; }
+
+  .btn { display: inline-block; background: var(--accent); color: #fff; padding: .75rem 1.75rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; transition: opacity .2s; }
+  .btn:hover { opacity: .85; }
+  .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+
+  footer { text-align: center; padding: 3rem 0 1.5rem; color: var(--text-secondary); font-size: .85rem; border-top: 1px solid var(--border); margin-top: 3rem; }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.75rem; }
+    .container { padding: 1rem; }
+    .module-item a { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>AI Engineer — 2026</h1>
+    <p class="subtitle">A skill-first, build-in-public learning path. No CS degree required — just proof through working systems.</p>
+    <div class="quote">"The CS degree is optional now. The skills are not. Go build the proof." — <strong>@cyrilXBT</strong></div>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="num">9</div>
+      <h3>Stack Layers</h3>
+      <p>Strict-order skills from Python fundamentals to AI dev tooling mastery.</p>
+    </div>
+    <div class="overview-card">
+      <div class="num">3</div>
+      <h3>Signature Projects</h3>
+      <p>RAG pipeline, tool-using agent, and a deployed full-stack AI product.</p>
+    </div>
+    <div class="overview-card">
+      <div class="num">90</div>
+      <h3>Day Plan</h3>
+      <p>Structured timeline from zero to hireable proof of capability.</p>
+    </div>
+  </div>
+
+  <!-- Learning Stack -->
+  <h2 class="section-title">📚 The Learning Stack</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">Follow in strict order. Each module builds on the one before it.</p>
+
+  <ol class="module-list">
+    <li class="module-item">
+      <a href="lessons/01-python.html">
+        <span class="badge">1</span>
+        <span class="info"><strong>Python Fundamentals</strong><span>Functions, classes, async — the lingua franca of AI</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/02-sql-data.html">
+        <span class="badge">2</span>
+        <span class="info"><strong>SQL &amp; Data Handling</strong><span>Queries, joins, ETL basics — every AI system touches data</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/03-git-cli-linux.html">
+        <span class="badge">3</span>
+        <span class="info"><strong>Git, CLI &amp; Linux</strong><span>Version control, terminal fluency, process management</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/04-rest-apis-llm.html">
+        <span class="badge">4</span>
+        <span class="info"><strong>REST APIs &amp; LLM Integration</strong><span>Calling models, rate limits, streaming, error handling</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/05-embeddings-vector.html">
+        <span class="badge">5</span>
+        <span class="info"><strong>Embeddings &amp; Vector Search</strong><span>Semantic search, pgvector, Pinecone, hybrid retrieval</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/06-rag.html">
+        <span class="badge">6</span>
+        <span class="info"><strong>RAG — Retrieval Augmented Generation</strong><span>Chunking, retrieval, grounding, hallucination prevention</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/07-agent-frameworks.html">
+        <span class="badge">7</span>
+        <span class="info"><strong>Agent Frameworks &amp; Tool Use</strong><span>Function calling, planning, error recovery, multi-step agents</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/08-deployment-mlops.html">
+        <span class="badge">8</span>
+        <span class="info"><strong>Deployment &amp; Basic MLOps</strong><span>Docker, cloud deploy, monitoring, eval</span></span>
+      </a>
+    </li>
+    <li class="module-item">
+      <a href="lessons/09-ai-dev-tools.html">
+        <span class="badge">9</span>
+        <span class="info"><strong>AI Dev Tools Mastery</strong><span>Claude Code, Cursor, Copilot — the tools *are* the job</span></span>
+      </a>
+    </li>
+  </ol>
+
+  <!-- Signature Projects -->
+  <h2 class="section-title">🛠️ Signature Projects</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">Build these in order. Each eliminates a "can they do this?" question from employers.</p>
+
+  <div class="project-grid">
+    <div class="project-card">
+      <h3><span class="proj-num">Project 1</span> — RAG Application</h3>
+      <p>Build a Q&A system on your own documents with chunking, embedding, retrieval, citations, and hallucination guardrails.</p>
+      <span class="signal">Proves: retrieval, grounding, data handling</span>
+      <div style="margin-top:.75rem"><a href="lessons/10-project-rag.html" class="btn-outline btn" style="font-size:.85rem;padding:.4rem 1rem">Module →</a></div>
+    </div>
+    <div class="project-card">
+      <h3><span class="proj-num">Project 2</span> — AI Agent</h3>
+      <p>Build an agent that plans, uses 3+ tools, handles errors gracefully, and explains its reasoning.</p>
+      <span class="signal">Proves: agentic planning, tool use, error recovery</span>
+      <div style="margin-top:.75rem"><a href="lessons/11-project-agent.html" class="btn-outline btn" style="font-size:.85rem;padding:.4rem 1rem">Module →</a></div>
+    </div>
+    <div class="project-card">
+      <h3><span class="proj-num">Project 3</span> — Deployed Full-Stack AI Product</h3>
+      <p>Combine RAG + agent into one product with a frontend, public URL, monitoring, and real traffic handling.</p>
+      <span class="signal">Proves: shipping, production mindset, full-stack thinking</span>
+      <div style="margin-top:.75rem"><a href="lessons/12-project-fullstack.html" class="btn-outline btn" style="font-size:.85rem;padding:.4rem 1rem">Module →</a></div>
+    </div>
+  </div>
+
+  <!-- 90-Day Plan -->
+  <h2 class="section-title">📅 90-Day Plan</h2>
+
+  <div class="timeline">
+    <div class="phase">
+      <h3>Phase 1: Foundations</h3>
+      <div class="days">Days 1–30</div>
+      <ul>
+        <li>Python fundamentals (functions, classes, async)</li>
+        <li>SQL &amp; data handling fluency</li>
+        <li>Git, CLI, Linux basics — daily comfort</li>
+        <li>First LLM API calls (OpenAI / Anthropic)</li>
+        <li>Start building in public — your first thread about what you're learning</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <h3>Phase 2: Build the Proof</h3>
+      <div class="days">Days 31–60</div>
+      <ul>
+        <li>Embeddings &amp; vector search — implement semantic search</li>
+        <li>Build Project 1: RAG application on your own data</li>
+        <li>Agent frameworks &amp; tool use — function calling, planning</li>
+        <li>Build Project 2: AI Agent with 3+ tools</li>
+        <li>Write threads explaining your architecture decisions</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <h3>Phase 3: Ship &amp; Scale</h3>
+      <div class="days">Days 61–90</div>
+      <ul>
+        <li>Deployment &amp; MLOps — Docker, cloud deploy, monitoring</li>
+        <li>Build Project 3: deployed full-stack AI product</li>
+        <li>Contribute to open source (small fixes, docs, or a new project)</li>
+        <li>Cold outreach with proof — lead with a working demo</li>
+        <li>Post consistently, specialize in RAG, agents, or AI product engineering</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Ultimate Checklist -->
+  <div class="checklist">
+    <h3>✅ Ultimate Checklist</h3>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:.75rem;">Track your progress through the entire curriculum.</p>
+    <div id="checklist-root"></div>
+  </div>
+
+  <div style="text-align:center;margin:2rem 0">
+    <a href="STACK.md" class="btn btn-outline" style="margin-right:.5rem">📄 Stack Details</a>
+    <a href="PROJECTS.md" class="btn btn-outline" style="margin-right:.5rem">📄 Project Details</a>
+    <a href="PLAN.md" class="btn btn-outline">📄 Full Plan</a>
+  </div>
+
+  <footer>
+    <p>Based on <a href="https://x.com/cyrilXBT/status/2073940565851361607" target="_blank">@cyrilXBT's thread</a>. Built with the /teach methodology.</p>
+    <p style="margin-top:.25rem">Curriculum Builder — fork, adapt, build your proof.</p>
+  </footer>
+</div>
+
+<script>
+  // Theme
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') document.body.classList.add('dark');
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  // Checklist
+  const items = [
+    "Python: functions, classes, async",
+    "SQL: queries, joins, data handling",
+    "Git, CLI & Linux fluency",
+    "REST APIs & LLM integration",
+    "Embeddings & vector search",
+    "RAG pipeline end-to-end",
+    "Agent framework with 3+ tools",
+    "Deployment & basic MLOps",
+    "AI dev tools mastery",
+    "Project 1: RAG application",
+    "Project 2: AI agent",
+    "Project 3: Deployed full-stack AI product",
+  ];
+  const root = document.getElementById('checklist-root');
+  items.forEach((text, i) => {
+    const id = 'c' + i;
+    const checked = localStorage.getItem(id) === 'true';
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" id="${id}" ${checked ? 'checked' : ''} onchange="localStorage.setItem('${id}', this.checked); this.nextSibling.classList.toggle('checked')"><span class="${checked ? 'checked' : ''}">${text}</span>`;
+    root.appendChild(label);
+  });
+</script>
+</body>
+</html>

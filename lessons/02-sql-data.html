@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 2 — SQL & Data Handling</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --fg: #1a1a1e;
+    --card: #ffffff;
+    --border: #e0e0e0;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --success: #16a34a;
+    --success-bg: #dcfce7;
+    --warn: #d97706;
+    --warn-bg: #fef3c7;
+    --code-bg: #f1f5f9;
+    --code-fg: #1e293b;
+    --muted: #6b7280;
+    --heading: #0f172a;
+    --terminal-bg: #1e293b;
+    --terminal-fg: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --radius: 10px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --fg: #e2e8f0;
+    --card: #1e293b;
+    --border: #334155;
+    --accent: #818cf8;
+    --accent-light: #1e1b4b;
+    --success: #4ade80;
+    --success-bg: #166534;
+    --warn: #fbbf24;
+    --warn-bg: #78350f;
+    --code-bg: #0f172a;
+    --code-fg: #e2e8f0;
+    --muted: #94a3b8;
+    --heading: #f1f5f9;
+    --terminal-bg: #020617;
+    --terminal-fg: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    padding: 0;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--fg);
+    box-shadow: var(--shadow); z-index: 100;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+
+  h1 { font-size: 32px; color: var(--heading); margin-bottom: 8px; line-height: 1.3; }
+  .subtitle { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
+  h2 {
+    font-size: 22px; color: var(--heading); margin: 48px 0 16px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--border);
+  }
+  h3 { font-size: 17px; color: var(--heading); margin: 24px 0 12px; }
+  p { margin-bottom: 16px; }
+
+  /* Architecture Box */
+  .architecture-box {
+    background: var(--accent-light); border: 1px solid var(--accent); border-radius: 12px;
+    padding: 24px; margin: 24px 0;
+  }
+  .architecture-box h3 { margin-top: 0; color: var(--accent); }
+
+  /* Pitfall box */
+  .pitfall-box {
+    background: var(--warn-bg); border-left: 4px solid var(--warn); border-radius: 0 8px 8px 0;
+    padding: 16px 20px; margin: 16px 0;
+  }
+  .pitfall-box strong { color: var(--warn); }
+
+  /* Step Cards */
+  .step-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow);
+  }
+  .step-number {
+    display: inline-block; background: var(--accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    text-align: center; line-height: 28px; font-size: 14px; font-weight: 700;
+    margin-right: 10px;
+  }
+
+  /* Terminal Window */
+  .terminal-window {
+    background: var(--terminal-bg); color: var(--terminal-fg); border-radius: 8px;
+    margin: 16px 0; overflow: hidden; font-family: var(--mono); font-size: 14px;
+  }
+  .terminal-header {
+    background: rgba(255,255,255,0.05); padding: 8px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px; color: var(--muted);
+  }
+  .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .terminal-dot.red { background: #ef4444; }
+  .terminal-dot.yellow { background: #eab308; }
+  .terminal-dot.green { background: #22c55e; }
+  .terminal-content { padding: 16px; white-space: pre-wrap; overflow-x: auto; }
+  .terminal-content .comment { color: #94a3b8; font-style: italic; }
+  .terminal-content .highlight { color: #818cf8; }
+  .terminal-content .ok { color: #4ade80; }
+  .terminal-content .warn-text { color: #fbbf24; }
+  .terminal-content .key { color: #f472b6; }
+  .terminal-content .string { color: #34d399; }
+
+  /* SVG Diagram Area */
+  .svg-container {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin: 24px 0; overflow-x: auto;
+  }
+  .svg-container svg { display: block; margin: 0 auto; max-width: 100%; }
+
+  /* Card Grid */
+  .card-grid {
+    display: grid; gap: 16px; margin: 20px 0;
+  }
+  .card-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .topic-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow);
+  }
+  .topic-card h4 { color: var(--accent); margin-bottom: 8px; font-size: 15px; }
+  .topic-card p { color: var(--muted); font-size: 14px; margin-bottom: 0; }
+  .topic-card .code-label {
+    display: inline-block; background: var(--accent-light); color: var(--accent);
+    padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 12px;
+    margin-top: 8px;
+  }
+
+  /* Flow Row */
+  .flow-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin: 16px 0; padding: 14px 16px; background: var(--code-bg); border-radius: 8px;
+    font-family: var(--mono); font-size: 13px; justify-content: center;
+  }
+  .flow-step {
+    background: var(--accent); color: #fff; padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; white-space: nowrap; font-weight: 600;
+  }
+  .flow-arrow { color: var(--muted); font-size: 20px; }
+
+  /* Code Block */
+  .code-block {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+    margin: 16px 0; overflow: hidden;
+  }
+  .code-header {
+    background: var(--card); padding: 6px 14px; border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .code-header .lang-icon { color: var(--accent); font-weight: 600; }
+  .code-body {
+    padding: 14px 16px; overflow-x: auto; font-family: var(--mono);
+    font-size: 13px; line-height: 1.6; color: var(--code-fg); white-space: pre;
+  }
+  .code-body .sql-kw { color: #6366f1; font-weight: 600; }
+  .code-body .sql-fn { color: #0891b2; }
+  .code-body .sql-str { color: #16a34a; }
+  .code-body .sql-cmt { color: #94a3b8; font-style: italic; }
+  .code-body .py-kw { color: #e11d48; font-weight: 600; }
+  .code-body .py-fn { color: #0891b2; }
+  .code-body .py-str { color: #16a34a; }
+  .code-body .py-cmt { color: #94a3b8; font-style: italic; }
+  .code-body .py-blt { color: #7c3aed; }
+
+  /* Tables in content */
+  .content-table {
+    width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;
+  }
+  .content-table th {
+    background: var(--accent-light); color: var(--accent); font-weight: 600;
+    text-align: left; padding: 10px 12px; border: 1px solid var(--border);
+  }
+  .content-table td {
+    padding: 10px 12px; border: 1px solid var(--border);
+  }
+  .content-table tr:nth-child(even) { background: var(--code-bg); }
+
+  /* Lists */
+  ul, ol { margin: 12px 0 16px 24px; }
+  li { margin-bottom: 8px; }
+
+  /* Checklist */
+  .checklist { margin: 24px 0; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 8px; cursor: pointer; transition: background 0.15s;
+  }
+  .checklist-item:hover { background: var(--card); }
+  .checklist-item.done {
+    background: var(--success-bg); border-color: var(--success);
+    text-decoration: line-through; opacity: 0.7;
+  }
+  .checklist-item input { margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
+
+  /* Exercise Box */
+  .exercise-box {
+    background: var(--card); border: 2px solid var(--accent); border-radius: 12px;
+    padding: 24px; margin: 24px 0; box-shadow: var(--shadow);
+  }
+  .exercise-box h3 { margin-top: 0; color: var(--accent); }
+  .exercise-box .hint {
+    background: var(--code-bg); border-radius: 6px; padding: 12px 16px; margin: 12px 0;
+    font-size: 14px;
+  }
+  .success-criteria {
+    border: 1px solid var(--success); border-radius: 8px;
+    padding: 12px 16px; margin: 12px 0; background: var(--success-bg);
+  }
+  .success-criteria strong { color: var(--success); }
+
+  /* Pro Tip */
+  .pro-tip {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; margin: 16px 0; box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent);
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  @media (max-width: 600px) {
+    .container { padding: 24px 16px 60px; }
+    h1 { font-size: 26px; }
+    .flow-row { font-size: 11px; }
+    .card-grid.cols-2, .card-grid.cols-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle">🌓 Theme</button>
+<div class="container">
+
+  <!-- ==================== HERO ==================== -->
+  <h1>🗃️ Module 2: SQL & Data Handling</h1>
+  <p class="subtitle">Every AI system feeds on data — before, during, and after every LLM call.</p>
+
+  <!-- ==================== INTRODUCTION ==================== -->
+  <h2>Why This Matters</h2>
+  <p>Here's a truth most LLM tutorials don't tell you: <strong>the model is the easy part.</strong> The hard work — and the real value — is in the data pipeline around it.</p>
+  <p>Every AI system follows the same pattern:</p>
+  <ul>
+    <li><strong>Before</strong> an LLM call: fetch, clean, filter, and structure your data</li>
+    <li><strong>During</strong> an LLM call: format it into context that fits the model's window</li>
+    <li><strong>After</strong> an LLM call: parse, validate, format, and store the response</li>
+  </ul>
+  <p>SQL is how you ask questions of structured data. Pandas is how you clean and transform it. Together, they cover 80% of what an AI engineer does with data day-to-day.</p>
+
+  <div class="architecture-box">
+    <h3>🎯 Reality Check</h3>
+    <p><strong>Most AI projects fail because of bad data, not bad models.</strong> Spend time here. If you can't query, clean, and structure data fluently, you can't build anything reliable on top. This module gives you the data skills every AI engineer needs — SQL for structured queries, pandas for messy real-world data, and ETL patterns for RAG pipelines.</p>
+  </div>
+
+  <!-- ==================== SVG ARCHITECTURE ==================== -->
+  <h2>📊 The Data Pipeline Architecture</h2>
+  <p>Here's the full data flow for any AI system. Every box is something you'll build in this module.</p>
+
+  <div class="svg-container">
+    <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+      <defs>
+        <linearGradient id="g-sql" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="g-pd" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#e11d48;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#fb7185;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="g-fv" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="g-llm" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#0891b2;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="g-raw" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#78716c;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#a8a29e;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="g-etl" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#4ade80;stop-opacity:1"/>
+        </linearGradient>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+        </filter>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+        </marker>
+      </defs>
+
+      <!-- Background -->
+      <rect x="0" y="0" width="800" height="280" rx="8" fill="transparent"/>
+
+      <!-- Row 1: Raw Data Sources -->
+      <rect x="30" y="20" width="130" height="50" rx="8" fill="url(#g-raw)" filter="url(#shadow)"/>
+      <text x="95" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Raw Data</text>
+
+      <rect x="200" y="20" width="130" height="50" rx="8" fill="url(#g-sql)" filter="url(#shadow)"/>
+      <text x="265" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">SQL Queries</text>
+
+      <rect x="370" y="20" width="130" height="50" rx="8" fill="url(#g-pd)" filter="url(#shadow)"/>
+      <text x="435" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Pandas Clean</text>
+
+      <rect x="540" y="20" width="130" height="50" rx="8" fill="url(#g-fv)" filter="url(#shadow)"/>
+      <text x="605" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Feature Vecs</text>
+
+      <rect x="710" y="20" width="60" height="50" rx="8" fill="url(#g-llm)" filter="url(#shadow)"/>
+      <text x="740" y="50" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">LLM</text>
+
+      <!-- Row 1 arrows -->
+      <line x1="160" y1="45" x2="195" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="330" y1="45" x2="365" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="500" y1="45" x2="535" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="670" y1="45" x2="705" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Labels row 1 -->
+      <text x="95" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">CSV, JSON, Parquet, DB</text>
+      <text x="265" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">SELECT, JOIN, GROUP BY</text>
+      <text x="435" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">nulls, dedup, types</text>
+      <text x="605" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">embeddings, encodings</text>
+
+      <!-- Bridge label -->
+      <rect x="180" y="105" width="440" height="28" rx="14" fill="var(--code-bg, #f1f5f9)" stroke="var(--border, #e0e0e0)" stroke-width="1"/>
+      <text x="400" y="124" text-anchor="middle" fill="var(--fg, #1a1a1e)" font-size="12">⛓️ This module: raw data → SQL → clean → transform → export</text>
+
+      <!-- Row 2: ETL for RAG -->
+      <rect x="30" y="155" width="130" height="50" rx="8" fill="url(#g-raw)" filter="url(#shadow)"/>
+      <text x="95" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Source Data</text>
+
+      <rect x="200" y="155" width="130" height="50" rx="8" fill="url(#g-etl)" filter="url(#shadow)"/>
+      <text x="265" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Extract</text>
+
+      <rect x="370" y="155" width="130" height="50" rx="8" fill="url(#g-etl)" filter="url(#shadow)"/>
+      <text x="435" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Transform</text>
+
+      <rect x="540" y="155" width="130" height="50" rx="8" fill="url(#g-etl)" filter="url(#shadow)"/>
+      <text x="605" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Load (DB)</text>
+
+      <rect x="710" y="155" width="60" height="50" rx="8" fill="url(#g-llm)" filter="url(#shadow)"/>
+      <text x="740" y="185" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">RAG</text>
+
+      <!-- Row 2 arrows -->
+      <line x1="160" y1="180" x2="195" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="330" y1="180" x2="365" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="500" y1="180" x2="535" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="670" y1="180" x2="705" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Row 2 labels -->
+      <text x="95" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">DB, API, files</text>
+      <text x="265" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">read, fetch, stream</text>
+      <text x="435" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">clean, chunk, embed</text>
+      <text x="605" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">SQLite, pgvector</text>
+
+      <!-- Bottom annotation -->
+      <text x="400" y="255" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="11" font-style="italic">Top: generic pipeline  ·  Bottom: ETL for RAG (the pattern you'll use most)</text>
+    </svg>
+  </div>
+
+  <!-- ==================== FLOW ROW ==================== -->
+  <h2>🔁 The Module Flow</h2>
+  <p>This module follows one chain. Every section connects to the next.</p>
+
+  <div class="flow-row">
+    <span class="flow-step">Raw Data</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">SQL</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">Clean</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">Transform</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">Export</span>
+  </div>
+
+  <!-- ==================== SECTION 1: SQL ==================== -->
+  <h2>1️⃣ SQL: Your Data Query Language</h2>
+  <p>SQL is <em>the</em> language for talking to structured data. No matter what DB you use — SQLite, PostgreSQL, DuckDB, BigQuery — the syntax is the same at the core.</p>
+  <p>You don't need to be a DBA. You <em>do</em> need to be fluent in SELECT, WHERE, JOIN, GROUP BY, and window functions. These five patterns cover 95% of what you'll do as an AI engineer.</p>
+
+  <h3>The Five Essential SQL Patterns</h3>
+
+  <div class="card-grid cols-2">
+    <div class="topic-card">
+      <h4>SELECT & WHERE</h4>
+      <p>Filter and project the columns and rows you need. The foundation of every query.</p>
+      <span class="code-label">SELECT col FROM tbl WHERE condition</span>
+    </div>
+    <div class="topic-card">
+      <h4>JOIN (INNER & LEFT)</h4>
+      <p>Combine related tables. INNER = only matching rows. LEFT = keep all from left table.</p>
+      <span class="code-label">FROM a JOIN b ON a.id = b.a_id</span>
+    </div>
+    <div class="topic-card">
+      <h4>GROUP BY & HAVING</h4>
+      <p>Aggregate rows into groups. HAVING filters groups (WHERE filters rows before grouping).</p>
+      <span class="code-label">GROUP BY col HAVING COUNT(*) > 5</span>
+    </div>
+    <div class="topic-card">
+      <h4>Window Functions</h4>
+      <p>Rank, number, and aggregate across window frames without collapsing rows. Essential for AI data prep.</p>
+      <span class="code-label">ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)</span>
+    </div>
+    <div class="topic-card" style="grid-column: 1 / -1;">
+      <h4>Subqueries & CTEs</h4>
+      <p>Query within a query. CTEs (WITH clause) make complex queries readable. Used constantly in AI pipelines.</p>
+      <span class="code-label">WITH ranked AS (SELECT ...) SELECT * FROM ranked WHERE rn = 1</span>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang-icon">▸</span> query.sql — All five patterns in action
+    </div>
+    <div class="code-body"><span class="sql-cmt">-- Pattern 1: SELECT & WHERE — find recent high-value users</span>
+<span class="sql-kw">SELECT</span> id, name, email, total_spent, last_active
+<span class="sql-kw">FROM</span> users
+<span class="sql-kw">WHERE</span> total_spent > 100
+  <span class="sql-kw">AND</span> last_active >= <span class="sql-str">'2026-01-01'</span>
+<span class="sql-kw">ORDER BY</span> total_spent <span class="sql-kw">DESC</span>
+<span class="sql-kw">LIMIT</span> 100;
+
+<span class="sql-cmt">-- Pattern 2: JOIN — enrich user data with order history</span>
+<span class="sql-kw">SELECT</span> u.name, o.id <span class="sql-kw">AS</span> order_id, o.total, o.created_at
+<span class="sql-kw">FROM</span> users u
+<span class="sql-kw">INNER JOIN</span> orders o <span class="sql-kw">ON</span> u.id = o.user_id
+<span class="sql-kw">WHERE</span> o.created_at >= <span class="sql-str">'2026-06-01'</span>;
+
+<span class="sql-cmt">-- Pattern 3: GROUP BY + HAVING — categories with lots of orders</span>
+<span class="sql-kw">SELECT</span> category, <span class="sql-fn">COUNT</span>(*) <span class="sql-kw">AS</span> order_count, <span class="sql-fn">SUM</span>(total) <span class="sql-kw">AS</span> revenue
+<span class="sql-kw">FROM</span> orders o
+<span class="sql-kw">JOIN</span> products p <span class="sql-kw">ON</span> o.product_id = p.id
+<span class="sql-kw">GROUP BY</span> category
+<span class="sql-kw">HAVING</span> <span class="sql-fn">COUNT</span>(*) > 10;
+
+<span class="sql-cmt">-- Pattern 4: Window — rank products within each category</span>
+<span class="sql-kw">SELECT</span>
+  name, category, price,
+  <span class="sql-fn">ROW_NUMBER</span>() <span class="sql-kw">OVER</span> (
+    <span class="sql-kw">PARTITION BY</span> category <span class="sql-kw">ORDER BY</span> price <span class="sql-kw">DESC</span>
+  ) <span class="sql-kw">AS</span> price_rank,
+  <span class="sql-fn">RANK</span>() <span class="sql-kw">OVER</span> (
+    <span class="sql-kw">PARTITION BY</span> category <span class="sql-kw">ORDER BY</span> sales <span class="sql-kw">DESC</span>
+  ) <span class="sql-kw">AS</span> sales_rank
+<span class="sql-kw">FROM</span> products;
+
+<span class="sql-cmt">-- Pattern 5: CTE — find top 3 products per category</span>
+<span class="sql-kw">WITH</span> ranked_products <span class="sql-kw">AS</span> (
+  <span class="sql-kw">SELECT</span>
+    name, category, price,
+    <span class="sql-fn">ROW_NUMBER</span>() <span class="sql-kw">OVER</span> (
+      <span class="sql-kw">PARTITION BY</span> category <span class="sql-kw">ORDER BY</span> price <span class="sql-kw">DESC</span>
+    ) <span class="sql-kw">AS</span> rn
+  <span class="sql-kw">FROM</span> products
+)
+<span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> ranked_products <span class="sql-kw">WHERE</span> rn <= 3;</div>
+  </div>
+
+  <div class="pro-tip">
+    💡 <strong>AI engineer's note:</strong> The CTE + window function combo (Pattern 5) is <em>the</em> most useful pattern for AI pipelines. "Give me the top N items per category" — that's your RAG context building right there. Master this.
+  </div>
+
+  <!-- ==================== SECTION 2: DATA CLEANING ==================== -->
+  <h2>2️⃣ Data Cleaning with Pandas</h2>
+  <p>Real-world data is <em>always</em> messy. Nulls, duplicates, wrong types, inconsistent formatting. Pandas is the standard tool for cleaning it up.</p>
+
+  <div class="card-grid cols-2">
+    <div class="topic-card">
+      <h4>Handle Nulls</h4>
+      <p><code>df.isnull()</code>, <code>df.dropna()</code>, <code>df.fillna()</code>. Know when to drop vs. fill. Never ignore them.</p>
+    </div>
+    <div class="topic-card">
+      <h4>Deduplication</h4>
+      <p><code>df.duplicated()</code>, <code>df.drop_duplicates()</code>. Always check before loading into a DB.</p>
+    </div>
+    <div class="topic-card">
+      <h4>Type Conversion</h4>
+      <p><code>df.astype()</code>, <code>pd.to_datetime()</code>, <code>pd.to_numeric()</code>. Dates and numbers stored as strings will break your queries.</p>
+    </div>
+    <div class="topic-card">
+      <h4>Merge DataFrames</h4>
+      <p><code>pd.merge(df1, df2, on='key', how='inner')</code>. The pandas equivalent of SQL JOIN.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang-icon">▸</span> transform.py — Cleaning pipeline for AI
+    </div>
+    <div class="code-body"><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
+
+<span class="py-cmt"># 1. Load raw data</span>
+df = pd.read_csv(<span class="py-str">"raw_orders.csv"</span>)
+<span class="py-blt">print</span>(df.info())     <span class="py-cmt"># See types, null counts</span>
+<span class="py-blt">print</span>(df.head())     <span class="py-cmt"># Peek at values</span>
+
+<span class="py-cmt"># 2. Handle nulls</span>
+df = df.dropna(subset=[<span class="py-str">"order_id"</span>, <span class="py-str">"user_id"</span>])  <span class="py-cmt"># Can't recover these</span>
+df[<span class="py-str">"amount"</span>] = df[<span class="py-str">"amount"</span>].fillna(<span class="py-blt">float</span>(<span class="py-str">"nan"</span>)).astype(<span class="py-str">"float64"</span>)
+df[<span class="py-str">"category"</span>] = df[<span class="py-str">"category"</span>].fillna(<span class="py-str">"unknown"</span>)
+
+<span class="py-cmt"># 3. Type conversion</span>
+df[<span class="py-str">"created_at"</span>] = pd.to_datetime(df[<span class="py-str">"created_at"</span>], errors=<span class="py-str">"coerce"</span>)
+df[<span class="py-str">"amount"</span>] = pd.to_numeric(df[<span class="py-str">"amount"</span>], errors=<span class="py-str">"coerce"</span>)
+
+<span class="py-cmt"># 4. Dedup</span>
+df = df.drop_duplicates(subset=[<span class="py-str">"order_id"</span>])
+
+<span class="py-cmt"># 5. Feature engineering for AI</span>
+df[<span class="py-str">"order_month"</span>] = df[<span class="py-str">"created_at"</span>].dt.month
+df[<span class="py-str">"is_weekend"</span>] = df[<span class="py-str">"created_at"</span>].dt.dayofweek >= 5
+
+<span class="py-cmt"># 6. Export clean data</span>
+df.to_csv(<span class="py-str">"clean_orders.csv"</span>, index=<span class="py-blt">False</span>)
+df.to_parquet(<span class="py-str">"clean_orders.parquet"</span>, index=<span class="py-blt">False</span>)  <span class="py-cmt"># Smaller, faster</span></div>
+  </div>
+
+  <!-- ==================== SECTION 3: FILE FORMATS ==================== -->
+  <h2>3️⃣ File Formats: CSV vs. JSON vs. Parquet</h2>
+  <p>You'll encounter three main formats. Each has a job.</p>
+
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>Format</th>
+        <th>Best For</th>
+        <th>Pros</th>
+        <th>Cons</th>
+        <th>AI Pipeline Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>CSV</strong></td>
+        <td>Human-readable tabular data, small-medium datasets</td>
+        <td>Universal, opens in Excel, easy to inspect</td>
+        <td>No schema, big files are slow, no nested data</td>
+        <td>Quick exports, debugging, sharing with non-engineers</td>
+      </tr>
+      <tr>
+        <td><strong>JSON</strong></td>
+        <td>Nested/hierarchical data, API responses</td>
+        <td>Flexible, self-describing, LLMs understand it natively</td>
+        <td>Verbose, slower to parse, no columnar compression</td>
+        <td>LLM I/O format, web API data, config files</td>
+      </tr>
+      <tr>
+        <td><strong>Parquet</strong></td>
+        <td>Large datasets, columnar workloads, ML/analytics</td>
+        <td>Fast, compressed, schema'd, columnar pruning</td>
+        <td>Binary, not human-readable, requires tooling</td>
+        <td>Production AI/ML pipelines, large-scale feature stores</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang-icon">▸</span> io_patterns.py — Reading & writing all three
+    </div>
+    <div class="code-body"><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
+
+<span class="py-cmt"># CSV — universal, human-readable</span>
+df = pd.read_csv(<span class="py-str">"data.csv"</span>)
+df.to_csv(<span class="py-str">"output.csv"</span>, index=<span class="py-blt">False</span>)
+
+<span class="py-cmt"># JSON — flexible, LLM-friendly</span>
+df = pd.read_json(<span class="py-str">"data.json"</span>)
+df.to_json(<span class="py-str">"output.json"</span>, orient=<span class="py-str">"records"</span>)
+
+<span class="py-cmt"># Parquet — fast, compressed, production-ready</span>
+df = pd.read_parquet(<span class="py-str">"data.parquet"</span>)
+df.to_parquet(<span class="py-str">"output.parquet"</span>, compression=<span class="py-str">"snappy"</span>)
+
+<span class="py-cmt"># Rule of thumb:</span>
+<span class="py-cmt"># - During development: CSV (inspect easily)</span>
+<span class="py-cmt"># - LLM context building: JSON (models parse it well)</span>
+<span class="py-cmt"># - Production pipelines: Parquet (speed &amp; compression)</span></div>
+  </div>
+
+  <!-- ==================== SECTION 4: ETL PATTERNS ==================== -->
+  <h2>4️⃣ ETL Patterns for AI & RAG</h2>
+  <p>ETL (Extract, Transform, Load) is the backbone of every data pipeline. For AI engineers, it's how you build the data layer that feeds your models.</p>
+
+  <div class="step-card">
+    <span class="step-number">E</span>
+    <strong>Extract</strong> — Get data from source: CSV files, JSON APIs, SQL databases, web scraping. Often pull incrementally (only new/changed records).
+  </div>
+  <div class="step-card">
+    <span class="step-number">T</span>
+    <strong>Transform</strong> — Clean, normalize, chunk, embed. This is where pandas shines. For RAG: split documents into chunks, generate embeddings, store metadata.
+  </div>
+  <div class="step-card">
+    <span class="step-number">L</span>
+    <strong>Load</strong> — Write to target: SQLite for dev, PostgreSQL for prod, vector DB for embeddings. The format must match what your application expects.
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="lang-icon">▸</span> etl_pipeline.py — Minimal RAG ETL
+    </div>
+    <div class="code-body"><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
+<span class="py-kw">import</span> sqlite3
+
+<span class="py-cmt"># ── EXTRACT ──</span>
+raw = pd.read_json(<span class="py-str">"documents.json"</span>)  <span class="py-cmt"># documents with 'id', 'title', 'body', 'source'</span>
+
+<span class="py-cmt"># ── TRANSFORM ──</span>
+<span class="py-cmt"># Clean</span>
+clean = raw.dropna(subset=[<span class="py-str">"id"</span>, <span class="py-str">"body"</span>])
+clean = clean.drop_duplicates(subset=[<span class="py-str">"id"</span>])
+clean[<span class="py-str">"body"</span>] = clean[<span class="py-str">"body"</span>].str.strip()
+
+<span class="py-cmt"># Chunk for RAG (simple character split)</span>
+chunks = []
+<span class="py-kw">for</span> _, row <span class="py-kw">in</span> clean.iterrows():
+    body = row[<span class="py-str">"body"</span>]
+    <span class="py-kw">for</span> i <span class="py-kw">in</span> <span class="py-blt">range</span>(<span class="py-blt">0</span>, <span class="py-blt">len</span>(body), <span class="py-blt">500</span>):
+        chunks.append({
+            <span class="py-str">"doc_id"</span>: row[<span class="py-str">"id"</span>],
+            <span class="py-str">"title"</span>: row[<span class="py-str">"title"</span>],
+            <span class="py-str">"chunk_index"</span>: i // <span class="py-blt">500</span>,
+            <span class="py-str">"chunk_text"</span>: body[i:i+<span class="py-blt">500</span>],
+            <span class="py-str">"source"</span>: row[<span class="py-str">"source"</span>],
+        })
+
+chunk_df = pd.DataFrame(chunks)
+
+<span class="py-cmt"># ── LOAD ──</span>
+conn = sqlite3.connect(<span class="py-str">"rag_store.db"</span>)
+chunk_df.to_sql(<span class="py-str">"chunks"</span>, conn, if_exists=<span class="py-str">"replace"</span>, index=<span class="py-blt">False</span>)
+conn.close()
+<span class="py-blt">print</span>(<span class="py-str">f"Loaded {len(chunk_df)} chunks into rag_store.db"</span>)</div>
+  </div>
+
+  <!-- ==================== PITFALLS ==================== -->
+  <h2>⚠️ Pitfalls — Read These Before the Exercises</h2>
+
+  <div class="pitfall-box">
+    <strong>Pitfall 1: Thinking ORMs replace SQL</strong><br>
+    ORMs (like SQLAlchemy, Django ORM) are great for CRUD apps. They're <em>awful</em> for analytical queries. JOINs with aggregations and window functions written in an ORM produce unreadable, slow SQL. <strong>Fix:</strong> Write raw SQL for anything beyond simple CRUD. Your ORM is for writes. SQL is for questions.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Pitfall 2: Ignoring NULL handling</strong><br>
+    NULL + anything = NULL. Most bugs in SQL queries come from forgetting that NULLs propagate. <code>WHERE col != 'x'</code> won't return rows where col IS NULL. <strong>Fix:</strong> Always check your WHERE clauses for NULL exclusion. Use <code>COALESCE()</code> or <code>IS NULL</code> explicitly.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Pitfall 3: Wrong JOIN type</strong><br>
+    Using INNER JOIN when you need LEFT JOIN means silently dropping rows. Using LEFT JOIN when you need INNER JOIN means getting unexpected NULLs. <strong>Fix:</strong> Ask yourself: "Do I want ALL rows from the left table, even if they don't match in the right one?" If yes → LEFT JOIN. If only matches → INNER JOIN.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Pitfall 4: Loading everything into memory</strong><br>
+    Pandas loads data into RAM. If your CSV is 20GB and you have 16GB of RAM, you crash. <strong>Fix:</strong> Use <code>pd.read_csv(..., chunksize=10000)</code>, or switch to polars/pyarrow/dask for larger-than-memory data. For production, Parquet + column pruning is your friend.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Pitfall 5: Not checking for duplicates</strong><br>
+    Your AI application asks "how many orders?" and gets an inflated number because the raw CSV had duplicate rows. Every analytical query is wrong by the same factor. <strong>Fix:</strong> Always <code>df.duplicated().sum()</code> before loading into any database or generating any aggregate statistic.
+  </div>
+
+  <!-- ==================== EXERCISES ==================== -->
+  <h2>✍️ Exercises</h2>
+  <p>Complete these <strong>in order</strong>. Everything you need is in one Python script. Write the script, run it, verify the output.</p>
+
+  <!-- Exercise 1 -->
+  <div class="exercise-box" id="ex1">
+    <h3>Exercise 1: The Messy CSV — Clean It</h3>
+    <p><strong>Goal:</strong> Take a realistic messy CSV, clean it with pandas, and prove it's clean.</p>
+    <p>Here's your data — it's an orders file with intentional problems (nulls, duplicates, wrong types, inconsistent formatting). Write a Python script that:</p>
+    <ol>
+      <li>Reads this CSV inline (define it as a string in your script)</li>
+      <li>Reports the shape, column types, null counts, and duplicate count</li>
+      <li>Drops rows where <code>order_id</code> or <code>user_id</code> is null</li>
+      <li>Converts <code>amount</code> to float, <code>created_at</code> to datetime</li>
+      <li>Removes duplicate rows (by <code>order_id</code>)</li>
+      <li>Fills any remaining null <code>category</code> with "unknown"</li>
+      <li>Prints a clean summary: "Clean data: X rows, Y columns, 0 nulls, 0 duplicates"</li>
+    </ol>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang-icon">▸</span> messy_orders.csv — Copy this into your script
+      </div>
+      <div class="code-body">order_id,user_id,amount,created_at,category
+1001,201,49.99,2026-01-15,electronics
+1002,202,,2026-01-16,books
+1001,201,49.99,2026-01-15,electronics
+1004,203,129.99,not-a-date,clothing
+1005,,75.00,2026-01-18,
+1006,204,hello,2026-01-19,books
+1007,205,24.99,2026-01-20,electronics
+1008,206,,,sports
+1009,207,199.99,2026-01-22,electronics
+1010,208,15.00,2026-01-23,books
+1001,201,49.99,2026-01-15,electronics</div>
+    </div>
+
+    <div class="success-criteria">
+      <strong>✓ Success criteria:</strong> Your output should show 8 clean rows (after dropping 3 bad rows: missing user_id, bad amount, missing dates), 5 columns, 0 nulls, 0 duplicates. Print the cleaned DataFrame head.
+    </div>
+    <div class="hint">
+      💡 <strong>Hint:</strong> Use <code>df = pd.read_csv(pd.StringIO(data))</code> to read from a string. Use <code>pd.to_numeric(..., errors='coerce')</code> for amount. The bad amount "hello" will become NaN, then you drop that row.
+    </div>
+    <p><strong>Save your script to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex01-clean-orders.py</code></p>
+  </div>
+
+  <!-- Exercise 2 -->
+  <div class="exercise-box" id="ex2">
+    <h3>Exercise 2: Load Clean Data into SQLite</h3>
+    <p><strong>Goal:</strong> Take the clean DataFrame from Exercise 1, load it into SQLite, and run verification queries.</p>
+    <p>Extend your script (or write a new one) to:</p>
+    <ol>
+      <li>Use SQLite (built into Python, no install needed)</li>
+      <li>Create a table <code>orders_clean</code> and insert the clean data</li>
+      <li>Run and print the results of these queries:
+        <ul>
+          <li><code>SELECT COUNT(*) FROM orders_clean</code> — should be 8</li>
+          <li><code>SELECT category, COUNT(*), SUM(amount) FROM orders_clean GROUP BY category</code></li>
+          <li><code>SELECT * FROM orders_clean WHERE amount > 50 ORDER BY amount DESC</code></li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="success-criteria">
+      <strong>✓ Success criteria:</strong> All three queries run without errors and return sensible results. The GROUP BY shows at least 3 categories. The WHERE amount > 50 returns at least 2 rows.
+    </div>
+    <div class="hint">
+      💡 <strong>Hint:</strong> <code>conn = sqlite3.connect(":memory:")</code> for an in-memory database — no cleanup needed. Use <code>df.to_sql("orders_clean", conn, if_exists="replace", index=False)</code>.
+    </div>
+    <p><strong>Save to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex02-load-sqlite.py</code></p>
+  </div>
+
+  <!-- Exercise 3 -->
+  <div class="exercise-box" id="ex3">
+    <h3>Exercise 3: Analytical Queries for an AI Application</h3>
+    <p><strong>Goal:</strong> Write 3 analytical queries on your SQLite DB that would be useful for an AI application — the "top N per category" pattern.</p>
+    <p>Assume this data feeds a recommendation system. Write and run:</p>
+    <ol>
+      <li><strong>Query 1:</strong> Rank all orders by amount descending, returning a rank column</li>
+      <li><strong>Query 2:</strong> Find the top 2 orders (by amount) within <strong>each category</strong> — this is the "top N per group" pattern for RAG context building</li>
+      <li><strong>Query 3:</strong> For each category, show: total revenue, average order amount, and the date of the most recent order</li>
+    </ol>
+
+    <div class="success-criteria">
+      <strong>✓ Success criteria:</strong> All 3 queries run. Query 2 returns exactly 2 rows per category (or fewer if a category has < 2 orders). Query 3 shows meaningful aggregates per category. Print each query's SQL and its results.
+    </div>
+    <div class="hint">
+      💡 <strong>Hint:</strong> Window functions are key for Query 2. Use <code>ROW_NUMBER() OVER (PARTITION BY category ORDER BY amount DESC) AS rn</code>. Wrap it in a subquery or CTE and filter <code>WHERE rn <= 2</code>.
+    </div>
+    <p><strong>Save to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex03-analytical-queries.py</code></p>
+  </div>
+
+  <!-- BONUS -->
+  <div class="exercise-box" id="ex4" style="border-color: var(--warn);">
+    <h3>⭐ Bonus: The Full ETL Pipeline</h3>
+    <p><strong>Goal:</strong> Combine everything into a single Python script that runs end-to-end.</p>
+    <p>Write ONE script that:</p>
+    <ol>
+      <li>Defines the messy CSV as a string</li>
+      <li>Cleans it with pandas (Exercise 1)</li>
+      <li>Loads the clean data into SQLite (Exercise 2)</li>
+      <li>Runs the 3 analytical queries (Exercise 3)</li>
+      <li>Exports the clean data to both CSV and Parquet</li>
+      <li>Prints a one-line summary at the end: <code>"✅ ETL complete: {n} rows → SQLite → CSV + Parquet"</code></li>
+    </ol>
+    <div class="success-criteria">
+      <strong>✓ Success criteria:</strong> Running <code>python etl_complete.py</code> produces clean output, creates <code>clean_orders.csv</code> and <code>clean_orders.parquet</code>, and prints all query results + the final summary line.
+    </div>
+    <p><strong>Save to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex04-etl-complete.py</code></p>
+  </div>
+
+  <!-- ==================== CHECKLIST ==================== -->
+  <h2>✅ Module Checklist</h2>
+  <p>Track your progress. Check off each item as you complete it.</p>
+
+  <div class="checklist" id="checklist">
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Understand the 5 essential SQL patterns (SELECT, JOIN, GROUP BY, window functions, CTEs)</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Know when to use each file format: CSV, JSON, Parquet</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Can clean a DataFrame: handle nulls, dedup, type conversion, merge</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Understand ETL pipeline structure (Extract → Transform → Load)</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exercise 1 completed: cleaned the messy CSV with pandas</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exercise 2 completed: loaded clean data into SQLite and ran verification queries</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exercise 3 completed: wrote 3 analytical queries including "top N per category" with window functions</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Bonus: Complete end-to-end ETL pipeline (clean → SQLite → queries → CSV + Parquet export)</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Can explain why NULL handling matters in SQL queries</span>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ==================== SUMMARY ==================== -->
+  <h2>🧠 Key Takeaways</h2>
+  <div class="pro-tip">
+    <strong>Your new default mental model:</strong><br>
+    Every AI system is a data pipeline with an LLM in the middle. The quality of your input data determines the quality of your output. SQL asks the questions. Pandas cleans the mess. ETL connects the dots.
+  </div>
+  <ul>
+    <li><strong>SQL</strong> is your data query language — SELECT, JOIN, GROUP BY, window functions, CTEs</li>
+    <li><strong>Pandas</strong> is your data cleaning workbench — handle nulls, dedup, type conversion, merge</li>
+    <li><strong>File formats</strong> — CSV for dev, JSON for LLMs, Parquet for production</li>
+    <li><strong>ETL</strong> (Extract → Transform → Load) is the pattern that powers every RAG pipeline</li>
+    <li>The <strong>top N per category</strong> pattern (CTE + ROW_NUMBER + WHERE rn <= N) is your most reusable query</li>
+    <li>Pitfalls to <em>never</em> forget: NULL propagation, wrong JOIN type, ORM-for-SQL substitution, in-memory limits, unchecked duplicates</li>
+  </ul>
+
+  <p style="color: var(--muted); font-size: 14px; margin-top: 40px;">
+    <em>Next up: Module 3 — Git, CLI & Linux. Version control, terminal fluency, and process management for AI engineering workflows.</em>
+  </p>
+
+</div>
+
+<script>
+  // ── Theme Toggle ──
+  const toggle = document.getElementById('themeToggle');
+  toggle.addEventListener('click', () => {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
+  });
+  const saved = localStorage.getItem('theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+
+  // ── Checklist Persistence ──
+  const items = document.querySelectorAll('.checklist-item');
+  items.forEach((item, i) => {
+    const cb = item.querySelector('input');
+    const key = 'module02-check-' + i;
+    const stored = localStorage.getItem(key);
+    if (stored === 'true') {
+      cb.checked = true;
+      item.classList.add('done');
+    }
+    cb.addEventListener('change', () => {
+      const checked = cb.checked;
+      item.classList.toggle('done', checked);
+      localStorage.setItem(key, checked);
+    });
+  });
+</script>
+</body>
+</html>

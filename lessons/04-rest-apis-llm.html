@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 4 — REST APIs &amp; LLM Integration</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #4a4a6a;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --accent-glow: rgba(99,102,241,.12);
+    --border: #e2e8f0;
+    --success: #22c55e;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,.1);
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --code-header: #0f172a;
+  }
+  .dark {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #818cf8;
+    --accent-light: #1e1b4b;
+    --accent-glow: rgba(129,140,248,.15);
+    --border: #334155;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,.5);
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+    --code-header: #080e1a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    transition: background .3s, color .3s;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 1rem; right: 1.5rem; z-index: 100;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: .5rem; cursor: pointer;
+    color: var(--text); font-size: 1.2rem;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow);
+    transition: background .2s, transform .15s;
+  }
+  .theme-toggle:hover { transform: scale(1.05); }
+
+  /* Back link */
+  .back-link {
+    display: inline-flex; align-items: center; gap: .4rem;
+    color: var(--text-secondary); text-decoration: none;
+    font-size: .9rem; margin-bottom: 1.5rem;
+    transition: color .2s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  /* Hero */
+  .hero { margin-bottom: 2.5rem; }
+  .hero .module-badge {
+    display: inline-block;
+    background: var(--accent); color: #fff;
+    font-size: .75rem; font-weight: 600;
+    padding: .25rem .75rem; border-radius: 6px;
+    margin-bottom: .75rem; letter-spacing: .02em;
+  }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .5rem; }
+  .hero .subtitle {
+    font-size: 1.05rem; color: var(--text-secondary);
+    max-width: 680px; margin-bottom: .75rem;
+  }
+  .hero .phase-ref {
+    font-size: .85rem; color: var(--text-secondary);
+    background: var(--accent-light);
+    padding: .4rem 1rem; border-radius: var(--radius-sm);
+    display: inline-block; border: 1px solid var(--border);
+  }
+
+  /* Section styles */
+  .section-title {
+    font-size: 1.5rem; font-weight: 600;
+    margin: 3rem 0 1rem; padding-bottom: .5rem;
+    border-bottom: 2px solid var(--accent);
+    display: inline-block;
+  }
+  .section-desc {
+    color: var(--text-secondary);
+    font-size: .95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* SVG Architecture Diagram */
+  .arch-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+  .arch-container svg { max-width: 100%; height: auto; }
+
+  /* Flow row */
+  .flow-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin: 1.5rem 0;
+  }
+  .flow-step {
+    background: var(--accent-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: .5rem 1rem;
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .flow-step .emoji { margin-right: .3rem; }
+  .flow-arrow {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .teach-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: transform .15s, box-shadow .2s;
+  }
+  .teach-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  .teach-card .card-icon { font-size: 1.8rem; margin-bottom: .5rem; }
+  .teach-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
+  .teach-card p, .teach-card li {
+    font-size: .88rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .teach-card ul { padding-left: 1.2rem; margin-top: .4rem; }
+  .teach-card ul li { margin-bottom: .3rem; }
+  .teach-card code {
+    background: var(--accent-light);
+    padding: .1rem .35rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: .82rem;
+    color: var(--accent);
+  }
+
+  /* Status code tags */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: .5rem;
+    margin: .75rem 0;
+  }
+  .status-tag {
+    display: flex; align-items: center; gap: .4rem;
+    padding: .35rem .6rem;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: .8rem;
+    font-weight: 500;
+  }
+  .status-tag .code { font-weight: 700; }
+  .status-2xx { background: #dcfce7; color: #166534; }
+  .dark .status-2xx { background: #022c22; color: #4ade80; }
+  .status-4xx { background: #fef3c7; color: #92400e; }
+  .dark .status-4xx { background: #2d1900; color: #fbbf24; }
+  .status-5xx { background: #fee2e2; color: #991b1b; }
+  .dark .status-5xx { background: #2d0000; color: #f87171; }
+
+  /* Terminal code blocks */
+  .terminal-block {
+    background: var(--code-bg);
+    border-radius: var(--radius-sm);
+    margin: 1.25rem 0;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .terminal-header {
+    background: var(--code-header);
+    padding: .6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .terminal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .terminal-dot.red { background: #ef4444; }
+  .terminal-dot.yellow { background: #f59e0b; }
+  .terminal-dot.green { background: #22c55e; }
+  .terminal-filename {
+    color: #94a3b8;
+    font-family: var(--mono);
+    font-size: .82rem;
+    margin-left: .5rem;
+  }
+  .terminal-body {
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+  }
+  .terminal-body pre {
+    font-family: var(--mono);
+    font-size: .85rem;
+    line-height: 1.6;
+    color: var(--code-text);
+    white-space: pre;
+    tab-size: 2;
+  }
+  .terminal-body .kw { color: #818cf8; }
+  .terminal-body .fn { color: #67e8f9; }
+  .terminal-body .str { color: #4ade80; }
+  .terminal-body .cm { color: #64748b; font-style: italic; }
+  .terminal-body .num { color: #fbbf24; }
+  .terminal-body .op { color: #f472b6; }
+
+  /* Content blocks */
+  .content-block {
+    margin: 1.5rem 0;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .content-block p { margin-bottom: .75rem; }
+  .content-block ul, .content-block ol {
+    padding-left: 1.5rem;
+    margin-bottom: .75rem;
+  }
+  .content-block li { margin-bottom: .35rem; }
+  .content-block code {
+    background: var(--accent-light);
+    padding: .1rem .35rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: .88rem;
+    color: var(--accent);
+  }
+  .content-block strong { font-weight: 600; }
+
+  /* Pitfalls */
+  .pitfalls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .pitfall-card {
+    background: var(--card-bg);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--danger);
+  }
+  .pitfall-card .pitfall-icon { font-size: 1.2rem; margin-bottom: .35rem; }
+  .pitfall-card h4 { font-size: .95rem; font-weight: 600; margin-bottom: .35rem; color: var(--danger); }
+  .pitfall-card p {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Exercises section */
+  .exercise-card {
+    background: var(--card-bg);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent);
+  }
+  .exercise-card .ex-num {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .2rem .6rem;
+    border-radius: 4px;
+    margin-bottom: .5rem;
+  }
+  .exercise-card h3 { font-size: 1.1rem; margin-bottom: .5rem; }
+  .exercise-card p { color: var(--text-secondary); font-size: .9rem; margin-bottom: .75rem; line-height: 1.6; }
+  .exercise-card .ex-step {
+    background: var(--accent-light);
+    border-radius: var(--radius-sm);
+    padding: .75rem 1rem;
+    margin-bottom: .5rem;
+    font-size: .9rem;
+  }
+  .exercise-card .ex-step strong { color: var(--accent); }
+  .exercise-card .success-criteria {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius-sm);
+    padding: .75rem 1rem;
+    margin-top: .75rem;
+  }
+  .dark .exercise-card .success-criteria {
+    background: #052e16;
+    border-color: #166534;
+  }
+  .exercise-card .success-criteria h4 {
+    font-size: .85rem;
+    color: var(--success);
+    margin-bottom: .35rem;
+  }
+  .exercise-card .success-criteria ul {
+    padding-left: 1.2rem;
+    font-size: .85rem;
+    color: var(--text-secondary);
+  }
+  .exercise-card .success-criteria li { margin-bottom: .2rem; }
+
+  /* Checklist */
+  .checklist-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1.5rem 0;
+  }
+  .checklist-block h3 { font-size: 1.1rem; margin-bottom: .25rem; }
+  .checklist-block .check-sub { color: var(--text-secondary); font-size: .85rem; margin-bottom: 1rem; }
+  .checklist-block .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    padding: .45rem 0;
+    cursor: pointer;
+    font-size: .9rem;
+  }
+  .checklist-block input[type="checkbox"] {
+    margin-top: .3rem;
+    accent-color: var(--accent);
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+  }
+  .checklist-block .checked { text-decoration: line-through; color: var(--text-secondary); opacity: .6; }
+  .checklist-progress {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1rem;
+  }
+  .checklist-progress .bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .checklist-progress .bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width .3s ease;
+  }
+  .checklist-progress .pct {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    min-width: 3ch;
+  }
+
+  /* Table */
+  .teach-table-wrap {
+    overflow-x: auto;
+    margin: 1.25rem 0;
+  }
+  .teach-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+  }
+  .teach-table th {
+    background: var(--accent-light);
+    color: var(--text);
+    font-weight: 600;
+    text-align: left;
+    padding: .65rem .85rem;
+    border-bottom: 2px solid var(--accent);
+  }
+  .teach-table td {
+    padding: .55rem .85rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .teach-table tr:last-child td { border-bottom: none; }
+  .teach-table code {
+    background: var(--accent-light);
+    padding: .1rem .3rem;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: .82rem;
+  }
+
+  /* Info callout */
+  .callout {
+    background: var(--accent-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    border-left: 3px solid var(--accent);
+  }
+  .callout p { font-size: .9rem; color: var(--text-secondary); }
+  .callout strong { color: var(--text); }
+
+  /* Inline demo badges */
+  .method-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .75rem;
+    font-weight: 700;
+    padding: .15rem .45rem;
+    border-radius: 4px;
+    margin-right: .2rem;
+  }
+  .method-get { background: #dbeafe; color: #1e40af; }
+  .dark .method-get { background: #1e3a5f; color: #93c5fd; }
+  .method-post { background: #dcfce7; color: #166534; }
+  .dark .method-post { background: #022c22; color: #4ade80; }
+
+  /* Separator */
+  .sep {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 2.5rem 0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 0 1.5rem;
+    color: var(--text-secondary);
+    font-size: .85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 640px) {
+    .container { padding: 1rem; }
+    .hero h1 { font-size: 1.6rem; }
+    .flow-row { gap: .35rem; }
+    .flow-step { font-size: .78rem; padding: .35rem .7rem; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+
+<div class="container">
+
+  <!-- Back link -->
+  <a href="../index.html" class="back-link">← Back to curriculum</a>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="module-badge">Module 4</div>
+    <h1>REST APIs &amp; LLM Integration</h1>
+    <p class="subtitle">
+      The central skill of the AI engineer: wiring models into your applications.
+      Master HTTP, API authentication, streaming, error handling, and the
+      OpenAI &amp; Anthropic APIs — the two providers you'll use most.
+    </p>
+    <div class="phase-ref">📅 Phase 1 · Week 4 · ~5–7 days</div>
+  </div>
+
+  <!-- Architecture SVG -->
+  <div class="arch-container">
+    <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Inter', -apple-system, sans-serif;">
+      <defs>
+        <linearGradient id="boxGrad1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#6366f1"/>
+          <stop offset="100%" stop-color="#4f46e5"/>
+        </linearGradient>
+        <linearGradient id="boxGrad2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#10b981"/>
+          <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+        <linearGradient id="boxGrad3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#d97706"/>
+        </linearGradient>
+        <linearGradient id="boxGrad4" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8b5cf6"/>
+          <stop offset="100%" stop-color="#7c3aed"/>
+        </linearGradient>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+        </marker>
+        <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#4ade80"/>
+        </marker>
+      </defs>
+
+      <!-- Background -->
+      <rect width="800" height="200" rx="12" fill="transparent"/>
+
+      <!-- Client App -->
+      <rect x="40" y="65" width="140" height="70" rx="10" fill="url(#boxGrad1)" opacity=".9"/>
+      <text x="110" y="102" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">Client App</text>
+      <text x="110" y="118" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">Your Python script</text>
+
+      <!-- Arrow: Client → API Call -->
+      <line x1="180" y1="100" x2="240" y2="100" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <text x="210" y="90" text-anchor="middle" fill="#94a3b8" font-size="10">HTTP POST</text>
+
+      <!-- API Call Box -->
+      <rect x="245" y="55" width="130" height="90" rx="10" fill="url(#boxGrad2)" opacity=".9"/>
+      <text x="310" y="92" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">API Call</text>
+      <text x="310" y="108" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">Headers · Auth</text>
+      <text x="310" y="122" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">Rate Limit</text>
+
+      <!-- Arrow: API Call → LLM API -->
+      <line x1="375" y1="100" x2="435" y2="100" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <text x="405" y="90" text-anchor="middle" fill="#94a3b8" font-size="10">Router</text>
+
+      <!-- LLM API Boxes (stacked) -->
+      <rect x="440" y="35" width="140" height="60" rx="10" fill="url(#boxGrad3)" opacity=".9"/>
+      <text x="510" y="62" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">OpenAI API</text>
+      <text x="510" y="78" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10">chat/completions</text>
+
+      <rect x="440" y="105" width="140" height="60" rx="10" fill="url(#boxGrad4)" opacity=".9"/>
+      <text x="510" y="132" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Anthropic API</text>
+      <text x="510" y="148" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10">messages</text>
+
+      <!-- Arrow: LLM API → Streaming Response -->
+      <line x1="580" y1="100" x2="640" y2="100" stroke="#4ade80" stroke-width="2" marker-end="url(#arrowhead-green)"/>
+      <text x="610" y="90" text-anchor="middle" fill="#4ade80" font-size="10">SSE Stream</text>
+
+      <!-- Streaming Response -->
+      <rect x="645" y="55" width="130" height="90" rx="10" fill="url(#boxGrad2)" opacity=".9"/>
+      <text x="710" y="92" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Response</text>
+      <text x="710" y="108" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">Stream parse</text>
+      <text x="710" y="122" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="11">Error handle</text>
+
+      <!-- Dashed arrow back to client -->
+      <path d="M 710 145 L 710 180 L 110 180 L 110 135" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead)"/>
+      <text x="450" y="192" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">Response flows back to client app</text>
+    </svg>
+    <p style="font-size:.82rem;color:var(--text-secondary);margin-top:.5rem;">Client → API Call → LLM Provider → Streaming Response → Client</p>
+  </div>
+
+  <!-- Flow Row -->
+  <div class="flow-row">
+    <span class="flow-step"><span class="emoji">📤</span> Request</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step"><span class="emoji">🔑</span> Auth</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step"><span class="emoji">⏱️</span> Rate Limit</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step"><span class="emoji">📡</span> Stream</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step"><span class="emoji">🔍</span> Parse</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step"><span class="emoji">🛡️</span> Error Handle</span>
+  </div>
+
+  <!-- HTTP Basics Section -->
+  <h2 class="section-title">1. HTTP Basics for API Integration</h2>
+  <p class="section-desc">
+    Every LLM API call is an HTTP request. If you understand GET vs POST,
+    status codes, and authentication, you already understand most of what
+    the SDKs are doing under the hood.
+  </p>
+
+  <div class="content-block">
+    <p>
+      <strong>GET vs POST</strong> — LLM APIs use <strong>POST</strong> because you're sending a
+      large payload (your messages/prompt) and the request is not idempotent.
+      GET requests send data in the URL query string (limited length); POST
+      sends a JSON body that can hold megabytes of conversation history.
+    </p>
+    <p>
+      <strong>Headers</strong> — Every API call needs:
+    </p>
+    <ul>
+      <li><code>Authorization: Bearer sk-...</code> — your API key</li>
+      <li><code>Content-Type: application/json</code> — the body format</li>
+      <li><code>Accept: text/event-stream</code> — for streaming responses</li>
+    </ul>
+
+    <p><strong>Status codes you'll see constantly:</strong></p>
+  </div>
+
+  <div class="status-grid">
+    <div class="status-tag status-2xx"><span class="code">200</span> OK — success</div>
+    <div class="status-tag status-4xx"><span class="code">400</span> Bad request</div>
+    <div class="status-tag status-4xx"><span class="code">401</span> Unauthorized</div>
+    <div class="status-tag status-4xx"><span class="code">429</span> Rate limited</div>
+    <div class="status-tag status-5xx"><span class="code">500</span> Server error</div>
+  </div>
+
+  <!-- Card Grid -->
+  <div class="card-grid">
+
+    <!-- HTTP Methods & Status Codes -->
+    <div class="teach-card">
+      <div class="card-icon">🌐</div>
+      <h3>HTTP Methods &amp; Status Codes</h3>
+      <ul>
+        <li><span class="method-badge method-get">GET</span> Read data (not for LLMs)</li>
+        <li><span class="method-badge method-post">POST</span> Send prompt, get completion</li>
+        <li><code>200</code> — success, body contains response</li>
+        <li><code>400</code> — invalid request (bad messages format)</li>
+        <li><code>401</code> — bad or missing API key</li>
+        <li><code>429</code> — rate limit exceeded (you'll see this a lot)</li>
+        <li><code>500</code> — provider-side error (retryable)</li>
+      </ul>
+    </div>
+
+    <!-- OpenAI API -->
+    <div class="teach-card">
+      <div class="card-icon">🤖</div>
+      <h3>OpenAI API</h3>
+      <ul>
+        <li><strong>Endpoint:</strong> <code>POST /v1/chat/completions</code></li>
+        <li><strong>Messages format:</strong> <code>{role, content}</code> — system, user, assistant</li>
+        <li><strong>Key params:</strong> <code>temperature</code>, <code>max_tokens</code>, <code>top_p</code></li>
+        <li><strong>Streaming:</strong> SSE via <code>stream: true</code></li>
+        <li><strong>Function calling:</strong> <code>tools</code> parameter</li>
+        <li><strong>SDK:</strong> <code>openai</code> (official Python package)</li>
+      </ul>
+    </div>
+
+    <!-- Anthropic API -->
+    <div class="teach-card">
+      <div class="card-icon">🧠</div>
+      <h3>Anthropic API</h3>
+      <ul>
+        <li><strong>Endpoint:</strong> <code>POST /v1/messages</code></li>
+        <li><strong>System prompt:</strong> separate <code>system</code> parameter</li>
+        <li><strong>Messages format:</strong> user + assistant alternating</li>
+        <li><strong>Streaming:</strong> SSE with <code>stream: true</code></li>
+        <li><strong>Tool use:</strong> <code>tools</code> parameter</li>
+        <li><strong>Thinking mode:</strong> <code>thinking: {type: "enabled"}</code></li>
+        <li><strong>SDK:</strong> <code>anthropic</code> (official Python package)</li>
+      </ul>
+    </div>
+
+    <!-- Error Handling -->
+    <div class="teach-card">
+      <div class="card-icon">🛡️</div>
+      <h3>Error Handling</h3>
+      <ul>
+        <li><strong>Rate limits (429):</strong> exponential backoff + jitter</li>
+        <li><strong>Token limit errors:</strong> truncate messages, reduce <code>max_tokens</code></li>
+        <li><strong>Timeouts:</strong> set reasonable <code>timeout</code> on requests</li>
+        <li><strong>Server errors (500):</strong> retry with backoff (max 3 attempts)</li>
+        <li><strong>Auth errors (401):</strong> don't retry — check your key</li>
+      </ul>
+    </div>
+
+    <!-- API Design -->
+    <div class="teach-card">
+      <div class="card-icon">🏗️</div>
+      <h3>API Design Patterns</h3>
+      <ul>
+        <li><strong>Endpoints:</strong> single base URL per provider</li>
+        <li><strong>Auth:</strong> Bearer token in Authorization header</li>
+        <li><strong>Versioning:</strong> <code>/v1/</code> prefix on all endpoints</li>
+        <li><strong>Env vars:</strong> <code>OPENAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code></li>
+        <li><strong>.env files:</strong> never hardcode keys in source</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <hr class="sep">
+
+  <!-- Section: OpenAI API Deep Dive -->
+  <h2 class="section-title">2. OpenAI API — Chat Completions</h2>
+  <p class="section-desc">
+    The most-called API in AI engineering. One endpoint, one message format,
+    infinite possibilities. Let's break it down.
+  </p>
+
+  <div class="content-block">
+    <p>
+      The <code>chat/completions</code> endpoint accepts a list of messages
+      (each with <code>role</code> and <code>content</code>), model name,
+      and parameters. It returns a completion. Here's the minimal call:
+    </p>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">llm_client.py</span>
+    </div>
+    <div class="terminal-body">
+<pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">import</span> os
+
+client = OpenAI(api_key=os.getenv(<span class="str">"OPENAI_API_KEY"</span>))
+
+response = client.chat.completions.create(
+    model=<span class="str">"gpt-4o-mini"</span>,
+    messages=[
+        {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: <span class="str">"You are a helpful assistant."</span>},
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Explain REST APIs like I'm 12."</span>},
+    ],
+    temperature=<span class="num">0.7</span>,
+    max_tokens=<span class="num">500</span>,
+)
+
+<span class="kw">print</span>(response.choices[<span class="num">0</span>].message.content)
+</pre>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>Key insight:</strong> The <code>temperature</code> parameter controls randomness (0 = deterministic, 1 = creative). <code>max_tokens</code> limits the response length. Both are critical for production — set them explicitly every time.</p>
+  </div>
+
+  <!-- Streaming -->
+  <h3 style="font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem;">📡 Streaming with SSE</h3>
+
+  <div class="content-block">
+    <p>
+      Streaming (Server-Sent Events) sends tokens one-by-one as the model
+      generates them. Without streaming, you wait for the full response.
+      With streaming, you show tokens as they arrive — critical for UX.
+    </p>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">streaming.py</span>
+    </div>
+    <div class="terminal-body">
+<pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = OpenAI()
+
+stream = client.chat.completions.create(
+    model=<span class="str">"gpt-4o-mini"</span>,
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Count from 1 to 5."</span>}],
+    stream=<span class="num">True</span>,        <span class="cm"># ← enables streaming</span>
+)
+
+full_response = <span class="str">""</span>
+<span class="kw">for</span> chunk <span class="kw">in</span> stream:
+    delta = chunk.choices[<span class="num">0</span>].delta
+    <span class="kw">if</span> delta.content:
+        full_response += delta.content
+        <span class="kw">print</span>(delta.content, end=<span class="str">""</span>, flush=<span class="num">True</span>)
+
+<span class="kw">print</span>(<span class="str">f"\n\nFull response ({len(full_response)} chars)"</span>)
+</pre>
+    </div>
+  </div>
+
+  <!-- Function/Tool Calling -->
+  <h3 style="font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem;">🔧 Function &amp; Tool Calling</h3>
+
+  <div class="content-block">
+    <p>
+      OpenAI's function calling lets the model decide to call a function
+      you define. It doesn't <em>execute</em> the function — it returns
+      a structured JSON argument. You execute it. This is the foundation
+      of agents.
+    </p>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">function_calling.py</span>
+    </div>
+    <div class="terminal-body">
+<pre>response = client.chat.completions.create(
+    model=<span class="str">"gpt-4o-mini"</span>,
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"What's the weather in Lagos?"</span>}],
+    tools=[{
+        <span class="str">"type"</span>: <span class="str">"function"</span>,
+        <span class="str">"function"</span>: {
+            <span class="str">"name"</span>: <span class="str">"get_weather"</span>,
+            <span class="str">"description"</span>: <span class="str">"Get weather for a city"</span>,
+            <span class="str">"parameters"</span>: {
+                <span class="str">"type"</span>: <span class="str">"object"</span>,
+                <span class="str">"properties"</span>: {
+                    <span class="str">"location"</span>: {<span class="str">"type"</span>: <span class="str">"string"</span>}
+                },
+                <span class="str">"required"</span>: [<span class="str">"location"</span>]
+            }
+        }
+    }],
+    tool_choice=<span class="str">"auto"</span>
+)
+
+msg = response.choices[<span class="num">0</span>].message
+<span class="kw">if</span> msg.tool_calls:
+    <span class="kw">print</span>(<span class="str">f"Model wants to call: {msg.tool_calls[0].function.name}"</span>)
+    <span class="kw">print</span>(<span class="str">f"Arguments: {msg.tool_calls[0].function.arguments}"</span>)
+</pre>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Section: Anthropic API Deep Dive -->
+  <h2 class="section-title">3. Anthropic API — Messages</h2>
+  <p class="section-desc">
+    Anthropic's API has a different philosophy — a separate system prompt,
+    alternating user/assistant messages, and a rich tool-use system.
+  </p>
+
+  <div class="content-block">
+    <p>
+      Unlike OpenAI, the system prompt is a <strong>top-level parameter</strong>,
+      not a message role. Messages alternate: user → assistant → user → assistant.
+    </p>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">anthropic_client.py</span>
+    </div>
+    <div class="terminal-body">
+<pre><span class="kw">from</span> anthropic <span class="kw">import</span> Anthropic
+<span class="kw">import</span> os
+
+client = Anthropic(api_key=os.getenv(<span class="str">"ANTHROPIC_API_KEY"</span>))
+
+response = client.messages.create(
+    model=<span class="str">"claude-sonnet-4-20250514"</span>,
+    system=<span class="str">"You are a concise, helpful assistant."</span>,  <span class="cm"># ← top-level</span>
+    messages=[
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"What's the difference between REST and GraphQL?"</span>}
+    ],
+    max_tokens=<span class="num">500</span>,
+    temperature=<span class="num">0.7</span>,
+)
+
+<span class="kw">print</span>(response.content[<span class="num">0</span>].text)
+</pre>
+    </div>
+  </div>
+
+  <!-- Anthropic tool use -->
+  <h3 style="font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem;">🔧 Tool Use (Anthropic's Function Calling)</h3>
+
+  <div class="content-block">
+    <p>
+      Anthropic calls it "tool use." Same concept as OpenAI's function calling:
+      define tools with JSON Schema, the model returns a call, you execute it.
+    </p>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">anthropic_tools.py</span>
+    </div>
+    <div class="terminal-body">
+<pre>response = client.messages.create(
+    model=<span class="str">"claude-sonnet-4-20250514"</span>,
+    system=<span class="str">"You can use the available tools to answer questions."</span>,
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Search for AI Engineer jobs in Lagos"</span>}],
+    tools=[{
+        <span class="str">"name"</span>: <span class="str">"search_jobs"</span>,
+        <span class="str">"description"</span>: <span class="str">"Search job listings"</span>,
+        <span class="str">"input_schema"</span>: {       <span class="cm"># ← note: input_schema, not parameters</span>
+            <span class="str">"type"</span>: <span class="str">"object"</span>,
+            <span class="str">"properties"</span>: {
+                <span class="str">"query"</span>: {<span class="str">"type"</span>: <span class="str">"string"</span>},
+                <span class="str">"location"</span>: {<span class="str">"type"</span>: <span class="str">"string"</span>}
+            },
+            <span class="str">"required"</span>: [<span class="str">"query"</span>]
+        }
+    }],
+    max_tokens=<span class="num">1000</span>
+)
+
+<span class="kw">for</span> block <span class="kw">in</span> response.content:
+    <span class="kw">if</span> block.type == <span class="str">"tool_use"</span>:
+        <span class="kw">print</span>(<span class="str">f"Tool: {block.name}, Args: {block.input}"</span>)
+</pre>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Section: Error Handling -->
+  <h2 class="section-title">4. Error Handling — Retry, Backoff &amp; Rate Limits</h2>
+  <p class="section-desc">
+    LLM APIs fail. Your code must assume failure and handle it gracefully.
+    This is what separates production code from a demo.
+  </p>
+
+  <div class="content-block">
+    <p>
+      The most common errors and how to handle them:
+    </p>
+    <ul>
+      <li><strong>429 Rate Limit</strong> — You hit the provider's rate limit. Back off, wait, retry.</li>
+      <li><strong>401 Unauthorized</strong> — Your API key is wrong or missing. Don't retry — fix the key.</li>
+      <li><strong>400 Bad Request</strong> — Your messages format is wrong. Don't retry — fix the message.</li>
+      <li><strong>500 Server Error</strong> — The provider had a hiccup. Retry with backoff (2-3 attempts).</li>
+      <li><strong>Timeout</strong> — The request took too long. Set a reasonable timeout and retry.</li>
+      <li><strong>Token limit</strong> — Your request exceeded context window. Truncate or summarize messages.</li>
+    </ul>
+  </div>
+
+  <h3 style="font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem;">⏳ Exponential Backoff with Retry</h3>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">retry_demo.py</span>
+    </div>
+    <div class="terminal-body">
+<pre><span class="kw">import</span> time
+<span class="kw">import</span> random
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI, RateLimitError, APITimeoutError, APIStatusError
+
+client = OpenAI()
+
+<span class="kw">def</span> <span class="fn">call_with_retry</span>(messages, max_retries=<span class="num">3</span>, base_delay=<span class="num">1</span>):
+    <span class="kw">for</span> attempt <span class="kw">in</span> <span class="fn">range</span>(max_retries):
+        <span class="kw">try</span>:
+            response = client.chat.completions.create(
+                model=<span class="str">"gpt-4o-mini"</span>,
+                messages=messages,
+                timeout=<span class="num">30</span>,         <span class="cm"># ← set a timeout!</span>
+            )
+            <span class="kw">return</span> response
+
+        <span class="kw">except</span> RateLimitError:
+            delay = base_delay * (<span class="num">2</span> ** attempt) + random.uniform(<span class="num">0</span>, <span class="num">0.5</span>)
+            <span class="kw">print</span>(<span class="str">f"Rate limited. Retrying in {delay:.1f}s (attempt {attempt+1})"</span>)
+            time.sleep(delay)
+
+        <span class="kw">except</span> (APITimeoutError, APIStatusError) <span class="kw">as</span> e:
+            <span class="kw">if</span> e.status_code == <span class="num">500</span>:
+                delay = base_delay * (<span class="num">2</span> ** attempt)
+                <span class="kw">print</span>(<span class="str">f"Server error. Retrying in {delay:.1f}s (attempt {attempt+1})"</span>)
+                time.sleep(delay)
+            <span class="kw">else</span>:
+                <span class="kw">raise</span>  <span class="cm"># Don't retry 400s or 401s</span>
+
+    <span class="kw">raise</span> <span class="fn">Exception</span>(<span class="str">"Max retries exceeded"</span>)
+</pre>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>Rule of thumb:</strong> Retry 429s and 5xx errors. <strong>Never retry 400s or 401s</strong> — they won't work on retry and you'll burn through your rate limit for nothing. Always include jitter (random delay) to avoid the "thundering herd" problem.</p>
+  </div>
+
+  <!-- Token cost tracking -->
+  <h3 style="font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem;">💰 Tracking Token Costs</h3>
+
+  <div class="content-block">
+    <p>
+      Every API response includes usage info — <code>prompt_tokens</code>,
+      <code>completion_tokens</code>, <code>total_tokens</code>. Track these!
+      Your AI engineer salary depends on not burning through budgets.
+    </p>
+  </div>
+
+  <div class="teach-table-wrap">
+    <table class="teach-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Input (per 1M tokens)</th>
+          <th>Output (per 1M tokens)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>GPT-4o-mini</td><td>$0.15</td><td>$0.60</td></tr>
+        <tr><td>GPT-4o</td><td>$2.50</td><td>$10.00</td></tr>
+        <tr><td>Claude Sonnet 4</td><td>$3.00</td><td>$15.00</td></tr>
+        <tr><td>Claude Haiku 3.5</td><td>$0.80</td><td>$4.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">cost_tracker.py</span>
+    </div>
+    <div class="terminal-body">
+<pre>response = client.chat.completions.create(
+    model=<span class="str">"gpt-4o-mini"</span>,
+    messages=messages,
+)
+
+usage = response.usage
+<span class="kw">print</span>(<span class="str">f"Prompt tokens: {usage.prompt_tokens}"</span>)
+<span class="kw">print</span>(<span class="str">f"Completion tokens: {usage.completion_tokens}"</span>)
+<span class="kw">print</span>(<span class="str">f"Total tokens: {usage.total_tokens}"</span>)
+
+<span class="cm"># Cost calculation (GPT-4o-mini)</span>
+cost = (usage.prompt_tokens / <span class="num">1_000_000</span>) * <span class="num">0.15</span> \
+     + (usage.completion_tokens / <span class="num">1_000_000</span>) * <span class="num">0.60</span>
+<span class="kw">print</span>(<span class="str">f"Cost: ${cost:.6f}"</span>)
+</pre>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Section: API Design & Authentication -->
+  <h2 class="section-title">5. API Design &amp; Authentication Patterns</h2>
+  <p class="section-desc">
+    The pattern is the same for every provider. Learn it once, apply everywhere.
+    The specifics change (endpoint URL, key name, message format) but the
+    architecture is identical.
+  </p>
+
+  <div class="content-block">
+    <p><strong>The universal pattern for calling any LLM API:</strong></p>
+    <ol>
+      <li>Load API key from environment variable (never hardcode!)</li>
+      <li>Create a client with the key</li>
+      <li>Build your messages payload</li>
+      <li>Send the request with timeout and retry logic</li>
+      <li>Parse the response (or stream it)</li>
+      <li>Track token usage and errors</li>
+    </ol>
+  </div>
+
+  <div class="terminal-block">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-filename">.env</span>
+    </div>
+    <div class="terminal-body">
+<pre><span class="cm"># Never commit this file! Add .env to .gitignore</span>
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxx
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxx
+</pre>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>🚨 Critical:</strong> Never hardcode API keys in your source code. Use environment variables (<code>os.getenv("OPENAI_API_KEY")</code>) or a <code>.env</code> file loaded with <code>python-dotenv</code>. Add <code>.env</code> to <code>.gitignore</code>. If you commit a key, rotate it immediately.</p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Pitfalls Section (BEFORE exercises) -->
+  <h2 class="section-title">⚠️ Pitfalls — Avoid These</h2>
+  <p class="section-desc">
+    These mistakes cost beginners time, money, and API access. Read them
+    before you touch the exercise.
+  </p>
+
+  <div class="pitfalls-grid">
+    <div class="pitfall-card">
+      <div class="pitfall-icon">🔑</div>
+      <h4>Hardcoding API Keys</h4>
+      <p>Committing a key to GitHub means rotating it within minutes — or someone uses your $200 credit on crypto spam. Always use <code>.env</code> + <code>.gitignore</code>.</p>
+    </div>
+    <div class="pitfall-card">
+      <div class="pitfall-icon">⏱️</div>
+      <h4>Not Handling Rate Limits</h4>
+      <p>A 429 error without retry logic means your app fails silently for users. Always implement exponential backoff with jitter.</p>
+    </div>
+    <div class="pitfall-card">
+      <div class="pitfall-icon">🔄</div>
+      <h4>No Retry Logic</h4>
+      <p>LLM APIs have transient failures (5xx, timeouts). Without retries, you lose completions that would have worked 2 seconds later.</p>
+    </div>
+    <div class="pitfall-card">
+      <div class="pitfall-icon">📡</div>
+      <h4>Assuming Streaming Is Optional</h4>
+      <p>Users expect instant feedback. Without streaming, your app feels broken — they stare at a spinner for 10 seconds wondering if it crashed.</p>
+    </div>
+    <div class="pitfall-card">
+      <div class="pitfall-icon">💰</div>
+      <h4>Ignoring Token Costs</h4>
+      <p>One runaway loop in production can cost hundreds of dollars. Always log token usage and set spending limits from day one.</p>
+    </div>
+    <div class="pitfall-card">
+      <div class="pitfall-icon">📏</div>
+      <h4>Wrong Message Format</h4>
+      <p>OpenAI and Anthropic have different message structures. Sending OpenAI's format to Anthropic (or vice versa) will always fail with a 400.</p>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Exercises -->
+  <h2 class="section-title">🏋️ Exercise</h2>
+  <p class="section-desc">
+    Build something real. Everything you've learned — streaming, retry,
+    multi-provider, cost tracking — goes into one deliverable.
+  </p>
+
+  <div class="exercise-card">
+    <span class="ex-num">Exercise 4.1</span>
+    <h3>Multi-LLM Client with Streaming &amp; Error Handling</h3>
+    <p>
+      Build a Python script that calls <strong>both</strong> the OpenAI and Anthropic APIs
+      with the same prompt, streams both responses, handles rate limits with
+      exponential backoff, and writes the results to a JSONL file with
+      token counts and latency.
+    </p>
+
+    <div class="ex-step">
+      <strong>1.</strong> Create a script <code>multi_llm_client.py</code> that loads API keys from environment variables
+    </div>
+    <div class="ex-step">
+      <strong>2.</strong> Implement a <code>call_openai()</code> function with streaming, retry (3 attempts), and token tracking
+    </div>
+    <div class="ex-step">
+      <strong>3.</strong> Implement a <code>call_anthropic()</code> function with streaming, retry (3 attempts), and token tracking
+    </div>
+    <div class="ex-step">
+      <strong>4.</strong> Call <strong>both</strong> with the same prompt (e.g., "Explain what an AI engineer does in 3 paragraphs")
+    </div>
+    <div class="ex-step">
+      <strong>5.</strong> Write results to <code>llm_results.jsonl</code> — one JSON object per provider with: <code>provider</code>, <code>model</code>, <code>prompt_tokens</code>, <code>completion_tokens</code>, <code>total_tokens</code>, <code>latency_ms</code>, <code>content</code>, <code>status</code>
+    </div>
+    <div class="ex-step">
+      <strong>6.</strong> If one provider fails (e.g., you hit a rate limit), the other should still complete — graceful degradation
+    </div>
+
+    <div class="success-criteria">
+      <h4>✅ Success Criteria</h4>
+      <ul>
+        <li>Script runs end-to-end without errors</li>
+        <li>Both OpenAI and Anthropic responses are streamed to the console in real-time</li>
+        <li>If one API fails, the script continues and records the failure — the other API still returns a result</li>
+        <li><code>llm_results.jsonl</code> contains valid JSON with token counts and latency for each attempt</li>
+        <li>Token costs are logged to console for each call</li>
+        <li>No hardcoded API keys — everything comes from environment variables or <code>.env</code></li>
+        <li>The script is committed to your GitHub repo (with <code>.env</code> in <code>.gitignore</code>)</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Interactive Checklist -->
+  <h2 class="section-title">✅ Module Checklist</h2>
+  <p class="section-desc">Track your progress through this module.</p>
+
+  <div class="checklist-block">
+    <h3>Module 4: REST APIs &amp; LLM Integration</h3>
+    <p class="check-sub">Check off each item as you complete it.</p>
+    <div class="checklist-progress">
+      <div class="bar"><div class="bar-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="pct" id="progressPct">0%</span>
+    </div>
+    <div id="checklist-root"></div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Summary -->
+  <h2 class="section-title">📋 What You've Learned</h2>
+  <div class="content-block">
+    <p>
+      After this module, you can:
+    </p>
+    <ul>
+      <li>Understand the HTTP request lifecycle — headers, methods, status codes</li>
+      <li>Call OpenAI's chat completions endpoint with messages, params, and streaming</li>
+      <li>Call Anthropic's messages endpoint with system prompts and tool use</li>
+      <li>Implement exponential backoff with jitter for rate limits and transient failures</li>
+      <li>Track token usage and calculate costs</li>
+      <li>Write a multi-provider client that gracefully degrades when one API fails</li>
+      <li>Never hardcode an API key again</li>
+    </ul>
+    <p style="margin-top:1rem;">
+      <strong>Next up:</strong> <a href="05-embeddings-vector.html" style="color:var(--accent)">Module 5 — Embeddings &amp; Vector Search</a>
+    </p>
+  </div>
+
+  <footer>
+    <p>Module 4 — <a href="https://x.com/cyrilXBT/status/2073940565851361607" target="_blank">@cyrilXBT's AI Engineer Path</a></p>
+    <p style="margin-top:.25rem">Built with the /teach methodology</p>
+  </footer>
+
+</div>
+
+<script>
+  // Theme toggle
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') document.body.classList.add('dark');
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  // Checklist with localStorage persistence
+  const items = [
+    "Read and understand HTTP basics (GET vs POST, status codes)",
+    "Understand API authentication (Bearer tokens, env vars)",
+    "Call OpenAI API: non-streaming chat completion",
+    "Call OpenAI API: streaming with SSE",
+    "Understand OpenAI function/tool calling",
+    "Call Anthropic API: messages endpoint with system prompt",
+    "Understand Anthropic tool use",
+    "Implement exponential backoff with retry logic",
+    "Track token usage and calculate costs",
+    "Complete Exercise 4.1: Multi-LLM client",
+    "Push exercise to GitHub (with .env in .gitignore)",
+    "Share what you built on X"
+  ];
+
+  const root = document.getElementById('checklist-root');
+  const progressFill = document.getElementById('progressFill');
+  const progressPct = document.getElementById('progressPct');
+
+  function updateProgress() {
+    let done = 0;
+    items.forEach((_, i) => {
+      if (localStorage.getItem('m4-' + i) === 'true') done++;
+    });
+    const pct = Math.round((done / items.length) * 100);
+    progressFill.style.width = pct + '%';
+    progressPct.textContent = pct + '%';
+  }
+
+  items.forEach((text, i) => {
+    const id = 'm4-' + i;
+    const checked = localStorage.getItem(id) === 'true';
+    const label = document.createElement('label');
+    label.className = 'check-item';
+    label.innerHTML = '<input type="checkbox" id="' + id + '" ' + (checked ? 'checked' : '') + '><span class="' + (checked ? 'checked' : '') + '">' + text + '</span>';
+    label.querySelector('input').addEventListener('change', function() {
+      localStorage.setItem(this.id, this.checked);
+      this.nextSibling.classList.toggle('checked');
+      updateProgress();
+    });
+    root.appendChild(label);
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>

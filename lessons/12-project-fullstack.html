@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project 3: Deployed Full-Stack AI Product — AI Engineer 2026</title>
+<style>
+  :root{--bg:#f8f9fa;--card-bg:#fff;--text:#1a1a2e;--text-secondary:#4a4a6a;--accent:#ef4444;--accent-light:#fef2f2;--border:#e2e8f0;--code-bg:#1e293b;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);}
+  .dark{--bg:#0f172a;--card-bg:#1e293b;--text:#e2e8f0;--text-secondary:#94a3b8;--accent:#f87171;--accent-light:#2d0f0f;--border:#334155;--code-bg:#0f172a;--shadow:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.4);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s;}
+  .container{max-width:920px;margin:0 auto;padding:2rem 1.5rem;}
+  .theme-toggle{position:fixed;top:1rem;right:1.5rem;z-index:100;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:.5rem;cursor:pointer;color:var(--text);font-size:1.2rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.25rem;}
+  .badge{display:inline-block;background:var(--accent);color:#fff;padding:.2rem .75rem;border-radius:6px;font-size:.8rem;font-weight:600;margin-bottom:1rem;}
+  .subtitle{color:var(--text-secondary);margin-bottom:2rem;}
+  h2{font-size:1.3rem;font-weight:600;margin:2rem 0 1rem;}
+  .diagram-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.5rem 0;box-shadow:var(--shadow);}
+  .diagram-box svg{width:100%;height:auto;}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);}
+  .card h3{font-size:1rem;margin-bottom:.4rem;}
+  .card p{color:var(--text-secondary);font-size:.88rem;}
+  .code-block{background:var(--code-bg);color:#e2e8f0;border-radius:var(--radius);margin:1rem 0;overflow:hidden;box-shadow:var(--shadow);}
+  .code-block .header{background:#334155;padding:.5rem 1rem;font-size:.8rem;color:#94a3b8;}
+  .code-block pre{padding:1rem;overflow-x:auto;font-size:.82rem;line-height:1.5;}
+  .spec{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin:1rem 0;box-shadow:var(--shadow);}
+  .spec ol{padding-left:1.25rem;color:var(--text-secondary);font-size:.9rem;}
+  .exercise-box{background:var(--card-bg);border:2px solid var(--accent);border-radius:var(--radius);padding:1.5rem;margin:2rem 0;box-shadow:var(--shadow);}
+  .exercise-box h3{color:var(--accent);margin-bottom:.75rem;}
+  .exercise-box ol{padding-left:1.25rem;color:var(--text-secondary);font-size:.9rem;}
+  .exercise-box .criteria{background:var(--accent-light);padding:.75rem 1rem;border-radius:8px;margin-top:1rem;}
+  .back-link{color:var(--accent);text-decoration:none;font-size:.9rem;display:inline-block;margin-bottom:1rem;}
+  @media(max-width:640px){h1{font-size:1.5rem;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+<div class="container">
+  <a href="../index.html" class="back-link">← Back to curriculum</a>
+  <span class="badge">Signature Project 3</span>
+  <h1>Deployed Full-Stack AI Product</h1>
+  <p class="subtitle">What it proves: You can ship something real that works for other people — not just your laptop. This is the strongest hiring signal you can build.</p>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ap3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#ef4444"/></marker></defs>
+      <rect x="10" y="80" width="90" height="50" rx="8" fill="#6366f1" opacity=".12" stroke="#6366f1" stroke-width="2"/>
+      <text x="55" y="110" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">Frontend</text>
+      <text x="55" y="125" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Next.js/Streamlit</text>
+      <line x1="100" y1="105" x2="150" y2="105" stroke="#6366f1" stroke-width="2" marker-end="url(#ap3)"/>
+      <rect x="155" y="45" width="100" height="120" rx="8" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="205" y="72" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600">FastAPI</text>
+      <text x="205" y="90" text-anchor="middle" fill="var(--text-secondary)" font-size="9">RAG Pipeline</text>
+      <text x="205" y="106" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Agent Loop</text>
+      <text x="205" y="122" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Auth + Rate Limit</text>
+      <text x="205" y="142" text-anchor="middle" fill="var(--accent)" font-size="9">/health /ask</text>
+      <line x1="255" y1="100" x2="305" y2="100" stroke="#ef4444" stroke-width="2" marker-end="url(#ap3)"/>
+      <rect x="310" y="30" width="100" height="50" rx="6" fill="#22c55e" opacity=".12" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="360" y="55" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="500">Postgres</text>
+      <text x="360" y="70" text-anchor="middle" fill="var(--text-secondary)" font-size="9">+ pgvector</text>
+      <rect x="310" y="85" width="100" height="50" rx="6" fill="#f59e0b" opacity=".12" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="360" y="110" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="500">Redis / Queue</text>
+      <rect x="310" y="140" width="100" height="50" rx="6" fill="#6366f1" opacity=".12" stroke="#6366f1" stroke-width="1.5"/>
+      <text x="360" y="165" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="500">LLM API</text>
+      <line x1="410" y1="55" x2="460" y2="55" stroke="#22c55e" stroke-width="2" marker-end="url(#ap3)"/>
+      <line x1="410" y1="110" x2="460" y2="110" stroke="#f59e0b" stroke-width="2" marker-end="url(#ap3)"/>
+      <line x1="410" y1="165" x2="460" y2="165" stroke="#6366f1" stroke-width="2" marker-end="url(#ap3)"/>
+      <rect x="465" y="30" width="110" height="160" rx="8" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="520" y="60" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600">Docker</text>
+      <text x="520" y="80" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Railway / Render</text>
+      <text x="520" y="100" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Public URL</text>
+      <text x="520" y="125" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">Monitoring</text>
+      <text x="520" y="145" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Logs → Metrics</text>
+      <text x="520" y="165" text-anchor="middle" fill="var(--text-secondary)" font-size="9">Evals → Alerts</text>
+    </svg>
+  </div>
+
+  <h2>Project Spec</h2>
+  <div class="spec">
+    <h3>Minimum Viable Scope</h3>
+    <ol>
+      <li>Combine your RAG pipeline (Project 1) + agent capabilities (Project 2) into one product</li>
+      <li>Build a frontend — even minimal (Streamlit, Next.js, or plain HTML/CSS/JS served by FastAPI)</li>
+      <li>Deploy to a public URL (Railway / Render / Fly.io / Vercel)</li>
+      <li>Handle real traffic: errors, rate limits, concurrent users</li>
+      <li>Add basic monitoring and logging</li>
+      <li>Write an eval suite</li>
+    </ol>
+  </div>
+
+  <h2>Combined API</h2>
+  <div class="code-block"><div class="header"><span>main.py</span></div><pre>from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import time, os, logging
+
+logging.basicConfig(
+  level=logging.INFO,
+  format='{"time":"%(asctime)s","level":"%(levelname)s","req_id":"%(req_id)s","message":"%(message)s"}'
+)
+
+app = FastAPI(title="AI Product")
+app.add_middleware(CORSMiddleware, allow_origins=["*"])
+
+class AskRequest(BaseModel):
+  question: str
+  use_agent: bool = False
+
+class AskResponse(BaseModel):
+  answer: str
+  sources: list[str]
+  latency_ms: float
+  tokens_used: int
+
+@app.get("/health")
+async def health():
+  return {
+    "status": "ok",
+    "db": "connected",
+    "api_key": os.environ.get("OPENAI_API_KEY") is not None,
+    "uptime": time.time() - start_time
+  }
+
+@app.post("/ask", response_model=AskResponse)
+async def ask(req: AskRequest):
+  start = time.time()
+  try:
+    if req.use_agent:
+      result = run_agent(req.question)
+    else:
+      result = answer_with_rag(req.question)
+
+    return AskResponse(
+      answer=result["text"],
+      sources=result.get("sources", []),
+      latency_ms=round((time.time() - start) * 1000, 1),
+      tokens_used=result.get("tokens", 0)
+    )
+  except Exception as e:
+    logging.error(f"Request failed: {e}")
+    raise HTTPException(status_code=500, detail=str(e))</pre></div>
+
+  <h2>Minimal Frontend</h2>
+  <div class="code-block"><div class="header"><span>static/index.html</span></div><pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;AI Q&amp;A&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="app"&gt;
+    &lt;h1&gt;Ask my documents&lt;/h1&gt;
+    &lt;textarea id="q" rows="3" cols="50"&gt;&lt;/textarea&gt;&lt;br&gt;
+    &lt;button onclick="ask()"&gt;Ask&lt;/button&gt;
+    &lt;div id="result"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    async function ask() {
+      const q = document.getElementById('q').value;
+      const r = await fetch('/ask', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({question: q})
+      });
+      const data = await r.json();
+      document.getElementById('result').innerHTML =
+        `&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt; ${data.answer}&lt;/p&gt;
+         &lt;p&gt;&lt;small&gt;${data.latency_ms}ms | ${data.tokens_used} tokens&lt;/small&gt;&lt;/p&gt;`;
+    }
+  &lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</pre></div>
+
+  <div class="card-grid">
+    <div class="card"><h3>Stretch: User Auth</h3><p>Add basic auth so users have their own sessions, rate limits, and query history.</p></div>
+    <div class="card"><h3>Stretch: Cost Monitoring</h3><p>Track token usage per user/query and set budget limits. Alert when costs spike.</p></div>
+    <div class="card"><h3>Stretch: Feedback Loop</h3><p>Let users thumbs-up/down answers. Store results for fine-tuning or prompt improvement.</p></div>
+  </div>
+
+  <h2>Monitoring Stack (Docker Compose)</h2>
+  <div class="code-block"><div class="header"><span>docker-compose.yml</span></div><pre>services:
+  app:       # your FastAPI app
+  db:        # PostgreSQL + pgvector
+  prometheus:# metrics collection
+  grafana:   # dashboards
+  # Or use Railway's built-in metrics + Sentry for error tracking</pre></div>
+
+  <div class="exercise-box">
+    <h3>🧪 Deliverable</h3>
+    <ol>
+      <li>Combine RAG + agent into a single FastAPI app with both /ask endpoints (rag + agent mode)</li>
+      <li>Build a minimal frontend (Streamlit or plain HTML) that calls /ask</li>
+      <li>Add structured JSON logging with request IDs, latency, and token counts</li>
+      <li>Write an eval script that hits your production /ask endpoint with 10 test queries and produces a JSON report</li>
+      <li>Dockerise everything and deploy to Railway or Render</li>
+      <li>Add a /health endpoint and set up uptime monitoring (or at least a cron job that pings it)</li>
+      <li>Write a long-form breakdown on X/LinkedIn: architecture, trade-offs, deployment lessons</li>
+    </ol>
+    <div class="criteria"><strong>Success criteria:</strong> Public URL resolves. /health returns 200 with DB and API key status. Eval suite runs and hallucination rate ≤ 5%. Latency ≤ 5s for RAG mode. At least one monitoring dashboard or alert set up. Repo is public with full README.</div>
+  </div>
+</div>
+<script>
+  function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');}
+  if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');
+</script>
+</body>
+</html>

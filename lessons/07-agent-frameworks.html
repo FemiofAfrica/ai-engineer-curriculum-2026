@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7: Agent Frameworks &amp; Tool Use — AI Engineer 2026</title>
+<style>
+  :root {
+    --bg: #f8f9fa; --card-bg: #ffffff; --text: #1a1a2e; --text-secondary: #4a4a6a;
+    --accent: #6366f1; --accent-light: #eef2ff; --border: #e2e8f0; --success: #22c55e;
+    --warn: #f59e0b; --danger: #ef4444; --code-bg: #1e293b;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  }
+  .dark {
+    --bg: #0f172a; --card-bg: #1e293b; --text: #e2e8f0; --text-secondary: #94a3b8;
+    --accent: #818cf8; --accent-light: #1e1b4b; --border: #334155; --code-bg: #0f172a;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s;}
+  .container{max-width:920px;margin:0 auto;padding:2rem 1.5rem;}
+  .theme-toggle{position:fixed;top:1rem;right:1.5rem;z-index:100;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:.5rem;cursor:pointer;color:var(--text);font-size:1.2rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.25rem;}
+  .subtitle{color:var(--text-secondary);margin-bottom:2rem;}
+  h2{font-size:1.3rem;font-weight:600;margin:2rem 0 1rem;}
+  .diagram-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.5rem 0;box-shadow:var(--shadow);}
+  .diagram-box svg{width:100%;height:auto;}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow);}
+  .card h3{font-size:1rem;margin-bottom:.5rem;}
+  .card p{color:var(--text-secondary);font-size:.88rem;}
+  .flow-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1.5rem 0;padding:1rem;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);}
+  .flow-row .step{background:var(--accent-light);color:var(--accent);padding:.35rem .85rem;border-radius:6px;font-size:.85rem;font-weight:500;}
+  .flow-row .arrow{color:var(--text-secondary);font-size:1.2rem;}
+  .code-block{background:var(--code-bg);color:#e2e8f0;border-radius:var(--radius);margin:1rem 0;overflow:hidden;box-shadow:var(--shadow);}
+  .code-block .header{background:#334155;padding:.5rem 1rem;font-size:.8rem;color:#94a3b8;border-bottom:1px solid #475569;display:flex;justify-content:space-between;}
+  .code-block pre{padding:1rem;overflow-x:auto;font-size:.82rem;line-height:1.5;}
+  .pitfall{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);padding:1rem;margin:1rem 0;}
+  .pitfall strong{color:var(--danger);}
+  .dark .pitfall{background:#2d1a1a;border-color:#5c2e2e;}
+  .exercise-box{background:var(--card-bg);border:2px solid var(--accent);border-radius:var(--radius);padding:1.5rem;margin:2rem 0;box-shadow:var(--shadow);}
+  .exercise-box h3{color:var(--accent);margin-bottom:.75rem;}
+  .exercise-box ul,.exercise-box ol{padding-left:1.25rem;color:var(--text-secondary);font-size:.9rem;}
+  .exercise-box .criteria{background:var(--accent-light);padding:.75rem 1rem;border-radius:8px;margin-top:1rem;font-size:.88rem;}
+  .checklist{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin:1.5rem 0;}
+  .checklist h3{margin-bottom:.75rem;}
+  .checklist label{display:flex;align-items:flex-start;gap:.75rem;padding:.35rem 0;cursor:pointer;font-size:.9rem;}
+  .checklist input[type="checkbox"]{margin-top:.25rem;accent-color:var(--accent);}
+  .checklist .checked{text-decoration:line-through;opacity:.6;}
+  .back-link{display:inline-block;margin-bottom:1rem;color:var(--accent);text-decoration:none;font-size:.9rem;}
+  .back-link:hover{text-decoration:underline;}
+  @media(max-width:640px){h1{font-size:1.5rem;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+<div class="container">
+  <a href="../index.html" class="back-link">← Back to curriculum</a>
+  <h1>Module 7: Agent Frameworks &amp; Tool Use</h1>
+  <p class="subtitle">Build agents that plan, reason, call tools, and recover from failures — autonomously.</p>
+
+  <!-- Architecture Diagram -->
+  <div class="diagram-box">
+    <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6366f1"/></marker></defs>
+      <rect x="10" y="80" width="110" height="60" rx="8" fill="#6366f1" opacity=".15" stroke="#6366f1" stroke-width="2"/>
+      <text x="65" y="115" text-anchor="middle" fill="var(--accent)" font-size="13" font-weight="600">User Goal</text>
+      <line x1="120" y1="110" x2="180" y2="110" stroke="#6366f1" stroke-width="2" marker-end="url(#a7)"/>
+
+      <rect x="185" y="70" width="130" height="80" rx="8" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="250" y="98" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">Agent (LLM + Loop)</text>
+      <text x="250" y="118" text-anchor="middle" fill="var(--text-secondary)" font-size="10">Plan → Act → Observe</text>
+      <text x="250" y="135" text-anchor="middle" fill="var(--text-secondary)" font-size="10">Re-prompt on failure</text>
+
+      <line x1="315" y1="90" x2="375" y2="70" stroke="#22c55e" stroke-width="2" marker-end="url(#a7)"/>
+      <line x1="315" y1="110" x2="375" y2="110" stroke="#f59e0b" stroke-width="2" marker-end="url(#a7)"/>
+      <line x1="315" y1="130" x2="375" y2="150" stroke="#ef4444" stroke-width="2" marker-end="url(#a7)"/>
+
+      <rect x="380" y="40" width="90" height="50" rx="6" fill="#22c55e" opacity=".12" stroke="#22c55e" stroke-width="1.5"/>
+      <text x="425" y="68" text-anchor="middle" fill="#22c55e" font-size="11" font-weight="500">Web Search</text>
+      <rect x="380" y="80" width="90" height="50" rx="6" fill="#f59e0b" opacity=".12" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="425" y="108" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="500">API / Database</text>
+      <rect x="380" y="125" width="90" height="50" rx="6" fill="#ef4444" opacity=".12" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="425" y="153" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="500">File System</text>
+
+      <line x1="470" y1="65" x2="530" y2="65" stroke="#22c55e" stroke-width="2" marker-end="url(#a7)"/>
+      <line x1="470" y1="105" x2="530" y2="105" stroke="#f59e0b" stroke-width="2" marker-end="url(#a7)"/>
+      <line x1="470" y1="150" x2="530" y2="150" stroke="#ef4444" stroke-width="2" marker-end="url(#a7)"/>
+
+      <rect x="535" y="45" width="120" height="120" rx="8" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="595" y="85" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">Tool Results</text>
+      <text x="595" y="105" text-anchor="middle" fill="var(--text-secondary)" font-size="10">+ Error / Retry</text>
+      <text x="595" y="125" text-anchor="middle" fill="var(--text-secondary)" font-size="10">+ State / Memory</text>
+      <text x="595" y="145" text-anchor="middle" fill="var(--accent)" font-size="10" font-weight="600">Loop back to Agent</text>
+    </svg>
+  </div>
+
+  <!-- Flow Row -->
+  <div class="flow-row">
+    <span class="step">Goal</span><span class="arrow">→</span>
+    <span class="step">Plan</span><span class="arrow">→</span>
+    <span class="step">Tool Call</span><span class="arrow">→</span>
+    <span class="step">Observe</span><span class="arrow">→</span>
+    <span class="step">Decide</span><span class="arrow">→</span>
+    <span class="step">Next Action</span><span class="arrow">→</span>
+    <span class="step">Complete</span>
+  </div>
+
+  <!-- Card Grid -->
+  <h2>Core Concepts</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>Function / Tool Calling</h3>
+      <p>LLM declares a structured tool call; you execute it and return the result. The model decides when and which tool to invoke.</p>
+    </div>
+    <div class="card">
+      <h3>Planning &amp; Decomposition</h3>
+      <p>Break a complex goal into steps. The agent reasons about what to do first, what depends on what, and how to sequence actions.</p>
+    </div>
+    <div class="card">
+      <h3>Error Recovery</h3>
+      <p>Tools fail — API timeouts, invalid inputs, partial results. The agent must detect, retry, or adapt rather than collapse.</p>
+    </div>
+    <div class="card">
+      <h3>Memory &amp; State</h3>
+      <p>Multi-turn agents need conversation history and persistent state between steps — short-term (session) and long-term (vector store).</p>
+    </div>
+    <div class="card">
+      <h3>Guardrails &amp; Safety</h3>
+      <p>Limit tool scopes, set max steps, add human-in-the-loop for destructive actions, validate outputs before execution.</p>
+    </div>
+    <div class="card">
+      <h3>Multi-Agent Patterns</h3>
+      <p>One orchestrator delegates to worker agents. Or specialised agents (researcher, writer, reviewer) collaborate on a single goal.</p>
+    </div>
+  </div>
+
+  <!-- Code Blocks -->
+  <h2>Minimal Tool-Calling Agent</h2>
+  <div class="code-block">
+    <div class="header"><span>agent.py</span></div>
+    <pre>import json, httpx
+from openai import OpenAI
+
+client = OpenAI()
+
+TOOLS = [
+  {
+    "type": "function",
+    "function": {
+      "name": "search_web",
+      "description": "Search the web for current info",
+      "parameters": {"type":"object","properties":{
+        "query":{"type":"string","description":"search query"}
+      },"required":["query"]}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "calculate",
+      "description": "Perform a calculation",
+      "parameters": {"type":"object","properties":{
+        "expr":{"type":"string","description":"math expression"}
+      },"required":["expr"]}
+    }
+  }
+]
+
+def call_tool(name, args):
+  if name == "calculate":
+    return {"result": eval(args["expr"])}
+  if name == "search_web":
+    resp = httpx.get(f"https://api.duckduckgo.com/?q={args['query']}&format=json")
+    return {"result": resp.json()["AbstractText"]}
+  return {"error": "unknown tool"}
+
+def run_agent(goal, max_steps=5):
+  messages = [{"role":"user","content":goal}]
+  for step in range(max_steps):
+    resp = client.chat.completions.create(
+      model="gpt-4o",
+      messages=messages,
+      tools=TOOLS
+    )
+    msg = resp.choices[0].message
+    messages.append(msg)
+
+    if not msg.tool_calls:
+      return msg.content  # done
+
+    for tc in msg.tool_calls:
+      result = call_tool(
+        tc.function.name,
+        json.loads(tc.function.arguments)
+      )
+      messages.append({
+        "role":"tool",
+        "tool_call_id":tc.id,
+        "content":json.dumps(result)
+      })
+  return "Max steps reached"
+
+print(run_agent("What's 15% of 320? Then search the web for 'AI agents 2026'"))</pre>
+  </div>
+
+  <h2>Error Recovery Pattern</h2>
+  <div class="code-block">
+    <div class="header"><span>retry_agent.py</span></div>
+    <pre>import time, random
+
+def safe_call_tool(name, args, retries=3):
+  for attempt in range(retries):
+    try:
+      if random.random() < 0.4:  # simulate failures
+        raise ConnectionError("API timeout")
+      return call_tool(name, args)
+    except Exception as e:
+      if attempt == retries - 1:
+        return {"error": str(e), "status": "permanent_failure"}
+      wait = 2 ** attempt  # exponential backoff
+      time.sleep(wait)
+  return {"error": "unreachable"}
+
+# In agent loop:
+# result = safe_call_tool(tc.function.name, args)
+# If result has "permanent_failure", tell LLM and let it adapt.</pre>
+  </div>
+
+  <!-- Pitfalls -->
+  <h2>⚠️ Pitfalls</h2>
+  <div class="pitfall"><strong>Infinite loops.</strong> Always set max_steps and a timeout. Agents can and will call tools forever if you don't gate them.</div>
+  <div class="pitfall"><strong>No error recovery.</strong> Tools fail. If your agent crashes on the first API timeout, it's not production-ready. Always wrap tool calls in retry+adapt logic.</div>
+  <div class="pitfall"><strong>Uncontrolled tool permissions.</strong> Don't give an agent write access to your filesystem or database without human approval. Sanitise tool inputs.</div>
+  <div class="pitfall"><strong>No state management.</strong> Agents need memory between turns. If you don't store conversation history, they'll repeat themselves or lose context.</div>
+  <div class="pitfall"><strong>Over-reliance on frameworks.</strong> LangGraph/CrewAI are great, but understand raw tool calling first. Frameworks abstract away the mechanics you need to debug.</div>
+
+  <!-- Checklists -->
+  <div class="checklist">
+    <h3>✅ Module Checklist</h3>
+    <div id="cl7"></div>
+  </div>
+
+  <!-- Exercise -->
+  <div class="exercise-box">
+    <h3>🧪 Exercise: Build a Research Agent</h3>
+    <p style="margin-bottom:.75rem;color:var(--text-secondary);font-size:.9rem;">Build an agent that can research a topic and produce a structured report.</p>
+    <ol>
+      <li>Define 3 tools: <code>search_web</code>, <code>fetch_page</code> (gets text content from a URL), and <code>summarise</code> (calls an LLM to summarise text).</li>
+      <li>Implement the agent loop with max_steps=8 and exponential backoff retry on tool calls.</li>
+      <li>Add a guard: if the agent tries to call the same tool with the same arguments twice, stop and return what you have.</li>
+      <li>Run it on the topic: "Latest developments in RAG techniques (2026)".</li>
+      <li>Output: a structured markdown report with sections — Overview, Key Papers/Articles, Open Challenges.</li>
+    </ol>
+    <div class="criteria">
+      <strong>Success criteria:</strong> Agent completes in ≤8 steps, report is >=500 words, all tools are used at least once, the guardrail catches at least one duplicate call, and the final output is valid Markdown.
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleTheme(){
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark')?'dark':'light');
+  }
+  if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
+
+  ['Understand function/tool calling', 'Implement planning & decomposition', 'Build error recovery (retry + adapt)', 'Add memory & state between turns', 'Implement guardrails & max steps', 'Build multi-agent coordination (optional)'].forEach((t,i)=>{
+    const d=document.getElementById('cl7');
+    const id='m7c'+i;
+    const c=localStorage.getItem(id)==='true';
+    const l=document.createElement('label');
+    l.innerHTML=`<input type="checkbox" id="${id}" ${c?'checked':''} onchange="localStorage.setItem('${id}',this.checked);this.nextSibling.classList.toggle('checked')"><span class="${c?'checked':''}">${t}</span>`;
+    d.appendChild(l);
+  });
+</script>
+</body>
+</html>
