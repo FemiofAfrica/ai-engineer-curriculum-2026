@@ -1,6 +1,7 @@
 # 90-Day Plan
 
 > A phased schedule from zero to hireable proof of capability. Follow the phases in order; each phase assumes completion of the previous one.
+> **Never written a line of code?** Modules 1–3 (Days 1–12) assume zero prior experience. Start there.
 
 ---
 

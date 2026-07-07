@@ -1,6 +1,7 @@
 # Learning Stack
 
 > Follow this order strictly. Each layer is prerequisite to the next.
+> Modules 1–3 are written for **absolute beginners** — no prior coding experience needed.
 
 | # | Skill | Why It Matters | Suggested Depth |
 |---|-------|----------------|-----------------|

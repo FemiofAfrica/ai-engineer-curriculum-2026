@@ -61,6 +61,18 @@
   .module-item .info span { font-size: .85rem; color: var(--text-secondary); }
   .module-item a { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem; width: 100%; }
   .module-item a::after { content: "→"; color: var(--accent); font-size: 1.2rem; flex-shrink: 0; }
+  .module-item .level { font-size: .7rem; font-weight: 600; padding: .15rem .45rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+  .module-item .level.beginner { background: #dcfce7; color: #166534; }
+  .dark .module-item .level.beginner { background: #052e16; color: #4ade80; }
+  .module-item .level.intermediate { background: #fef3c7; color: #92400e; }
+  .dark .module-item .level.intermediate { background: #451a03; color: #fbbf24; }
+  .module-item .level.advanced { background: #fee2e2; color: #991b1b; }
+  .dark .module-item .level.advanced { background: #450a0a; color: #fca5a5; }
+  /* Beginner alert */
+  .beginner-note { background: var(--accent-light); border: 1px solid var(--accent); border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1.5rem 0; display: flex; align-items: flex-start; gap: .75rem; }
+  .beginner-note .icon { font-size: 1.5rem; flex-shrink: 0; }
+  .beginner-note p { font-size: .9rem; color: var(--text-secondary); line-height: 1.6; }
+  .beginner-note p strong { color: var(--text); }
 
   /* Project cards */
   .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin: 1.5rem 0; }
@@ -113,6 +125,12 @@
     <div class="quote">"The CS degree is optional now. The skills are not. Go build the proof." — <strong>@cyrilXBT</strong></div>
   </div>
 
+  <!-- Beginner note -->
+  <div class="beginner-note">
+    <div class="icon">🎯</div>
+    <p><strong>Zero experience? Start here.</strong> Modules 1–3 are written for absolute beginners — you don't need to know Python, databases, or the terminal. Step-by-step instructions, plain-English explanations, and exercises you can actually finish. Modules 4+ assume you've completed 1–3, so follow the stack in order.</p>
+  </div>
+
   <!-- Overview -->
   <div class="overview-grid">
     <div class="overview-card">
@@ -140,55 +158,64 @@
     <li class="module-item">
       <a href="lessons/01-python.html">
         <span class="badge">1</span>
-        <span class="info"><strong>Python Fundamentals</strong><span>Functions, classes, async — the lingua franca of AI</span></span>
+        <span class="info"><strong>Python Fundamentals</strong><span>Variables, functions, loops, files — start from scratch</span></span>
+        <span class="level beginner">🌱 Beginner</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/02-sql-data.html">
         <span class="badge">2</span>
-        <span class="info"><strong>SQL &amp; Data Handling</strong><span>Queries, joins, ETL basics — every AI system touches data</span></span>
+        <span class="info"><strong>SQL &amp; Data Handling</strong><span>Databases, queries, tables — no DB experience needed</span></span>
+        <span class="level beginner">🌱 Beginner</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/03-git-cli-linux.html">
         <span class="badge">3</span>
-        <span class="info"><strong>Git, CLI &amp; Linux</strong><span>Version control, terminal fluency, process management</span></span>
+        <span class="info"><strong>Git, CLI &amp; Linux</strong><span>Terminal, version control, GitHub — start from the very first command</span></span>
+        <span class="level beginner">🌱 Beginner</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/04-rest-apis-llm.html">
         <span class="badge">4</span>
         <span class="info"><strong>REST APIs &amp; LLM Integration</strong><span>Calling models, rate limits, streaming, error handling</span></span>
+        <span class="level intermediate">📘 Intermediate</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/05-embeddings-vector.html">
         <span class="badge">5</span>
         <span class="info"><strong>Embeddings &amp; Vector Search</strong><span>Semantic search, pgvector, Pinecone, hybrid retrieval</span></span>
+        <span class="level advanced">🚀 Advanced</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/06-rag.html">
         <span class="badge">6</span>
         <span class="info"><strong>RAG — Retrieval Augmented Generation</strong><span>Chunking, retrieval, grounding, hallucination prevention</span></span>
+        <span class="level advanced">🚀 Advanced</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/07-agent-frameworks.html">
         <span class="badge">7</span>
         <span class="info"><strong>Agent Frameworks &amp; Tool Use</strong><span>Function calling, planning, error recovery, multi-step agents</span></span>
+        <span class="level advanced">🚀 Advanced</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/08-deployment-mlops.html">
         <span class="badge">8</span>
         <span class="info"><strong>Deployment &amp; Basic MLOps</strong><span>Docker, cloud deploy, monitoring, eval</span></span>
+        <span class="level advanced">🚀 Advanced</span>
       </a>
     </li>
     <li class="module-item">
       <a href="lessons/09-ai-dev-tools.html">
         <span class="badge">9</span>
         <span class="info"><strong>AI Dev Tools Mastery</strong><span>Claude Code, Cursor, Copilot — the tools *are* the job</span></span>
+        <span class="level advanced">🚀 Advanced</span>
       </a>
     </li>
   </ol>

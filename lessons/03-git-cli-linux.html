@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Module 3 — Git, CLI &amp; Linux | AI Engineer 2026</title>
+<title>Module 3: Git, CLI &amp; Linux — AI Engineer 2026</title>
 <style>
   :root {
     --bg: #f8f9fa;
@@ -13,12 +13,16 @@
     --accent: #6366f1;
     --accent-hover: #4f46e5;
     --accent-light: #eef2ff;
+    --accent-glow: rgba(99,102,241,0.15);
     --border: #e2e8f0;
     --success: #22c55e;
+    --success-light: #dcfce7;
     --warn: #f59e0b;
-    --error: #ef4444;
+    --warn-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
     --radius: 12px;
     --radius-sm: 8px;
     --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
@@ -28,7 +32,6 @@
     --term-header: #0f172a;
     --flow-bg: #eef2ff;
     --flow-text: #4f46e5;
-    --card-hover: #f1f5f9;
   }
   .dark {
     --bg: #0f172a;
@@ -39,121 +42,243 @@
     --accent-hover: #6366f1;
     --accent-light: #1e1b4b;
     --border: #334155;
-    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
-    --shadow-lg: 0 4px 16px rgba(0,0,0,.5);
+    --success: #4ade80;
+    --success-light: #14532d;
+    --warn: #fbbf24;
+    --warn-light: #713f12;
+    --danger: #f87171;
+    --danger-light: #7f1d1d;
     --term-bg: #0f172a;
-    --term-text: #94a3b8;
+    --term-text: #e2e8f0;
     --term-header: #020617;
     --flow-bg: #1e1b4b;
     --flow-text: #818cf8;
-    --card-hover: #1e293b;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,.5);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; transition: background .3s, color .3s; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; transition: background .2s, color .2s; }
   .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
 
   /* Theme toggle */
-  .theme-toggle { position: fixed; top: 1rem; right: 1.5rem; z-index: 100; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .5rem; cursor: pointer; color: var(--text); font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); transition: all .2s; }
-  .theme-toggle:hover { box-shadow: var(--shadow-lg); }
+  .theme-toggle {
+    position: fixed; top: 1rem; right: 1.5rem; z-index: 100;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); cursor: pointer; color: var(--text);
+    font-size: 1.2rem; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow); transition: background .2s;
+  }
+  .theme-toggle:hover { background: var(--accent-light); }
 
   /* Back link */
-  .back-link { display: inline-flex; align-items: center; gap: .4rem; color: var(--accent); text-decoration: none; font-size: .9rem; font-weight: 500; margin-bottom: 2rem; transition: opacity .2s; }
-  .back-link:hover { opacity: .8; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: .4rem;
+    color: var(--text-secondary); text-decoration: none;
+    font-size: .9rem; margin-bottom: 1.5rem;
+    transition: color .2s;
+  }
+  .back-link:hover { color: var(--accent); }
 
   /* Hero */
-  .hero { margin-bottom: 2.5rem; }
-  .hero .module-badge { display: inline-block; background: var(--accent); color: #fff; font-size: .75rem; font-weight: 600; padding: .25rem .75rem; border-radius: 6px; letter-spacing: .02em; margin-bottom: .75rem; }
-  .hero h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .5rem; }
-  .hero .subtitle { font-size: 1.05rem; color: var(--text-secondary); max-width: 700px; }
-  .hero .quote { font-style: italic; color: var(--accent); font-size: 1rem; padding: 1rem 1.25rem; background: var(--accent-light); border-radius: var(--radius); margin-top: 1.25rem; border-left: 3px solid var(--accent); }
+  .hero {
+    text-align: center; padding: 2rem 0 2.5rem;
+    border-bottom: 1px solid var(--border); margin-bottom: 2.5rem;
+  }
+  .hero .module-badge {
+    display: inline-block;
+    background: var(--accent); color: #fff;
+    font-size: .75rem; font-weight: 700; letter-spacing: .05em;
+    text-transform: uppercase; padding: .3rem .75rem;
+    border-radius: 6px; margin-bottom: .75rem;
+  }
+  .hero h1 { font-size: 2.25rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .75rem; }
+  .hero .subtitle { font-size: 1.05rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto 1rem; }
+  .hero .quote {
+    font-style: italic; color: var(--accent); font-size: .95rem;
+    padding: 1rem 1.25rem; background: var(--accent-light);
+    border-radius: var(--radius); margin-top: 1.5rem;
+    border-left: 3px solid var(--accent); text-align: left;
+  }
 
-  /* Section */
-  .section-title { font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem; display: flex; align-items: center; gap: .5rem; }
-  .section-title .count { background: var(--accent-light); color: var(--accent); font-size: .8rem; padding: .15rem .5rem; border-radius: 4px; font-weight: 600; }
-  .section-sub { color: var(--text-secondary); font-size: .95rem; margin: -.5rem 0 1.25rem; }
+  /* Section titles */
+  .section-title {
+    font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 .75rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .section-title .count {
+    background: var(--accent-light); color: var(--accent);
+    font-size: .75rem; padding: .15rem .55rem;
+    border-radius: 4px; font-weight: 600;
+  }
+  .section-sub {
+    color: var(--text-secondary); font-size: .95rem;
+    margin: -.25rem 0 1.25rem;
+  }
 
   /* Architecture diagram */
-  .arch-diagram { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 1.5rem 0; overflow-x: auto; }
+  .arch-diagram {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    box-shadow: var(--shadow); margin: 1.5rem 0; overflow-x: auto;
+  }
   .arch-diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
   /* Flow row */
-  .flow-row { display: flex; align-items: center; justify-content: center; gap: .25rem; flex-wrap: wrap; margin: 1.5rem 0; }
-  .flow-step { display: flex; align-items: center; gap: .5rem; background: var(--flow-bg); color: var(--flow-text); font-size: .8rem; font-weight: 600; padding: .45rem .8rem; border-radius: 6px; white-space: nowrap; }
+  .flow-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: .25rem; flex-wrap: wrap; margin: 1.5rem 0;
+  }
+  .flow-step {
+    display: flex; align-items: center; gap: .4rem;
+    background: var(--flow-bg); color: var(--flow-text);
+    font-size: .8rem; font-weight: 600; padding: .45rem .8rem;
+    border-radius: 6px; white-space: nowrap;
+  }
   .flow-arrow { color: var(--text-secondary); font-size: 1.1rem; font-weight: 300; }
 
   /* Card grid */
-  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem; margin: 1.5rem 0;
+  }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem;
+    box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s;
+  }
   .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
   .card .card-icon { font-size: 1.5rem; margin-bottom: .5rem; }
   .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: .35rem; }
   .card p { font-size: .85rem; color: var(--text-secondary); line-height: 1.5; }
-  .card ul { list-style: none; margin-top: .5rem; }
-  .card ul li { font-size: .82rem; color: var(--text-secondary); padding: .15rem 0; }
-  .card ul li::before { content: "▸ "; color: var(--accent); }
 
   /* Terminal window */
-  .terminal-window { background: var(--term-bg); border-radius: var(--radius-sm); margin: 1rem 0; box-shadow: var(--shadow-lg); overflow: hidden; }
-  .terminal-header { display: flex; align-items: center; gap: .5rem; padding: .5rem .75rem; background: var(--term-header); border-bottom: 1px solid rgba(255,255,255,.08); }
+  .terminal-window {
+    background: var(--term-bg); border-radius: var(--radius-sm);
+    margin: 1rem 0; box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .terminal-header {
+    display: flex; align-items: center; gap: .5rem;
+    padding: .5rem .75rem; background: var(--term-header);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
   .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
   .terminal-dot.red { background: #ef4444; }
   .terminal-dot.yellow { background: #eab308; }
   .terminal-dot.green { background: #22c55e; }
-  .terminal-label { color: #64748b; font-size: .75rem; font-family: var(--mono); margin-left: .5rem; }
-  .terminal-body { padding: .75rem 1rem; font-family: var(--mono); font-size: .82rem; line-height: 1.6; color: var(--term-text); overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+  .terminal-label {
+    color: #64748b; font-size: .75rem; font-family: var(--mono); margin-left: .5rem;
+  }
+  .terminal-body {
+    padding: .75rem 1rem; font-family: var(--mono); font-size: .82rem;
+    line-height: 1.6; color: var(--term-text);
+    overflow-x: auto; white-space: pre-wrap; word-break: break-all;
+  }
   .terminal-body .comment { color: #64748b; font-style: italic; }
   .terminal-body .prompt { color: #22c55e; }
   .terminal-body .cmd { color: #e2e8f0; }
   .terminal-body .output { color: #94a3b8; }
-  .terminal-body .highlight { color: #f59e0b; }
 
-  /* Code inline */
-  code { font-family: var(--mono); font-size: .85em; background: var(--accent-light); color: var(--accent); padding: .15em .4em; border-radius: 4px; }
+  /* Inline code */
+  code {
+    font-family: var(--mono); font-size: .85em;
+    background: var(--accent-light); color: var(--accent);
+    padding: .15em .4em; border-radius: 4px;
+  }
 
-  /* Info callout */
-  .callout { padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin: 1rem 0; border-left: 3px solid; font-size: .9rem; line-height: 1.6; }
+  /* Callouts */
+  .callout {
+    padding: 1rem 1.25rem; border-radius: var(--radius-sm);
+    margin: 1rem 0; border-left: 4px solid;
+    font-size: .9rem; line-height: 1.6;
+  }
   .callout.info { background: var(--accent-light); border-color: var(--accent); color: var(--text); }
-  .callout.warn { background: #fef3c7; border-color: var(--warn); color: #92400e; }
-  .callout.pitfall { background: #fef2f2; border-color: var(--error); color: #991b1b; }
-  .dark .callout.warn { background: #451a03; color: #fbbf24; }
-  .dark .callout.pitfall { background: #450a0a; color: #fca5a5; }
+  .callout.warn { background: var(--warn-light); border-color: var(--warn); color: var(--text); }
+  .callout.pitfall {
+    background: var(--danger-light); border-color: var(--danger); color: var(--text);
+  }
+
+  /* Pitfalls grid */
+  .pitfalls-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem; margin: 1rem 0;
+  }
 
   /* Exercise section */
-  .exercise { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; box-shadow: var(--shadow); }
-  .exercise .ex-num { background: var(--accent); color: #fff; font-size: .75rem; font-weight: 600; padding: .2rem .6rem; border-radius: 4px; display: inline-block; margin-bottom: .5rem; }
+  .exercise {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    margin: 1.5rem 0; box-shadow: var(--shadow);
+  }
+  .exercise .ex-num {
+    background: var(--accent); color: #fff; font-size: .75rem;
+    font-weight: 600; padding: .2rem .6rem; border-radius: 4px;
+    display: inline-block; margin-bottom: .5rem;
+  }
   .exercise h3 { font-size: 1.05rem; margin-bottom: .5rem; }
   .exercise p { font-size: .9rem; color: var(--text-secondary); margin-bottom: .75rem; }
   .exercise .steps { padding-left: 1.25rem; margin: .75rem 0; }
   .exercise .steps li { font-size: .88rem; margin-bottom: .35rem; line-height: 1.5; }
-  .exercise .success-criteria { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: .75rem 1rem; margin-top: .75rem; }
-  .exercise .success-criteria strong { color: #166534; }
+  .exercise .success-criteria {
+    background: var(--success-light); border: 1px solid var(--success);
+    border-radius: var(--radius-sm); padding: .75rem 1rem;
+    margin-top: .75rem;
+  }
+  .exercise .success-criteria strong { color: var(--success); }
   .exercise .success-criteria ul { padding-left: 1.25rem; margin-top: .35rem; }
-  .exercise .success-criteria li { font-size: .85rem; color: #166534; }
-  .dark .exercise .success-criteria { background: #052e16; border-color: #166534; }
-  .dark .exercise .success-criteria strong { color: #4ade80; }
-  .dark .exercise .success-criteria li { color: #4ade80; }
+  .exercise .success-criteria li { color: var(--success); font-size: .85rem; }
 
   /* Checklist */
-  .checklist-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin: 1.5rem 0; }
+  .checklist-section {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    box-shadow: var(--shadow); margin: 1.5rem 0;
+  }
   .checklist-section h3 { margin-bottom: .75rem; font-size: 1.05rem; }
-  .checklist-section label { display: flex; align-items: flex-start; gap: .75rem; padding: .4rem 0; cursor: pointer; font-size: .9rem; }
-  .checklist-section input[type="checkbox"] { margin-top: .25rem; accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
-  .checklist-section .checked { text-decoration: line-through; color: var(--text-secondary); opacity: .6; }
+  .checklist-section label {
+    display: flex; align-items: flex-start; gap: .75rem;
+    padding: .4rem 0; cursor: pointer; font-size: .9rem;
+  }
+  .checklist-section input[type="checkbox"] {
+    margin-top: .25rem; accent-color: var(--accent);
+    width: 16px; height: 16px; flex-shrink: 0;
+  }
+  .checklist-section .checked {
+    text-decoration: line-through; color: var(--text-secondary); opacity: .6;
+  }
 
   /* Progress bar */
-  .progress-bar { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin: .75rem 0; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .4s ease; }
+  .progress-bar {
+    width: 100%; height: 6px; background: var(--border);
+    border-radius: 3px; margin: .75rem 0; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    border-radius: 3px; transition: width .4s ease;
+  }
   .progress-text { font-size: .8rem; color: var(--text-secondary); text-align: right; }
 
-  /* Table */
+  /* Command table */
   .cmd-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .88rem; }
-  .cmd-table th { background: var(--accent-light); color: var(--text); font-weight: 600; padding: .5rem .75rem; text-align: left; font-size: .82rem; border-bottom: 2px solid var(--border); }
+  .cmd-table th {
+    background: var(--accent-light); color: var(--text);
+    font-weight: 600; padding: .5rem .75rem; text-align: left;
+    font-size: .82rem; border-bottom: 2px solid var(--border);
+  }
   .cmd-table td { padding: .5rem .75rem; border-bottom: 1px solid var(--border); }
   .cmd-table tr:last-child td { border-bottom: none; }
   .cmd-table code { font-size: .82em; }
 
-  /* Pitfalls grid */
-  .pitfalls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  /* Success banner */
+  #successBanner {
+    display: none;
+    background: var(--success-light); border: 2px solid var(--success);
+    border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0;
+    text-align: center;
+  }
+  #successBanner.visible { display: block; }
+  #successBanner h3 { color: var(--success); font-size: 1.2rem; margin-bottom: .5rem; }
+  #successBanner p { color: var(--text-secondary); font-size: .9rem; }
 
   @media (max-width: 640px) {
     .container { padding: 1rem; }
@@ -177,554 +302,684 @@
   <div class="hero">
     <span class="module-badge">Module 3</span>
     <h1>Git, CLI &amp; Linux</h1>
-    <p class="subtitle">You'll live in the terminal. Every AI project is git-tracked. Deployment happens on Linux. Master these three and you'll move faster than 90% of builders.</p>
-    <div class="quote">"Version control isn't optional — it's the difference between professional work and experiments that get lost. And if you can't navigate a terminal, you can't deploy an AI system."</div>
+    <p class="subtitle">The terminal is your cockpit as an AI engineer. This module teaches you from zero — no experience needed.</p>
+    <div class="quote">"The terminal looks intimidating at first, but it's actually simpler than a GUI. Every command does one thing, and you combine them like building blocks."</div>
   </div>
 
   <!-- Architecture Diagram -->
-  <h2 class="section-title">🏗️ Developer Workflow</h2>
-  <p class="section-sub">How a change travels from your keyboard to production.</p>
+  <h2 class="section-title">🏗️ How It All Connects</h2>
+  <p class="section-sub">Your code travels from your computer to the cloud through the terminal and git.</p>
   <div class="arch-diagram">
-    <svg viewBox="0 0 840 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Developer workflow: local dev to git to GitHub to CI to deploy">
-      <defs>
-        <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#6366f1"/>
-          <stop offset="100%" stop-color="#22c55e"/>
-        </linearGradient>
-      </defs>
+    <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Workflow: Terminal commands lead to output. Then code goes through git add, git commit, git push to GitHub.">
+      <!-- Layer 1: Terminal basics -->
+      <text x="380" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text, #1a1a2e)">Layer 1: Terminal</text>
 
-      <!-- Box: Local Dev -->
-      <rect x="10" y="55" width="130" height="70" rx="10" fill="var(--card-bg, #fff)" stroke="var(--accent, #6366f1)" stroke-width="2.5"/>
-      <text x="75" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text, #1a1a2e)">💻 Local Dev</text>
-      <text x="75" y="97" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">VS Code / vim</text>
-      <text x="75" y="110" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">code, tests</text>
+      <rect x="40" y="35" width="160" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--accent, #6366f1)" stroke-width="2.5"/>
+      <text x="120" y="57" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text, #1a1a2e)">⌨️ Terminal</text>
+      <text x="120" y="73" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">You type commands here</text>
 
-      <!-- Arrow 1 -->
-      <line x1="140" y1="90" x2="190" y2="90" stroke="var(--accent, #6366f1)" stroke-width="2" marker-end="url(#arrow)"/>
-      <text x="165" y="80" text-anchor="middle" font-size="9" fill="var(--accent, #6366f1)">git add</text>
-      <text x="165" y="110" text-anchor="middle" font-size="9" fill="var(--accent, #6366f1)">git commit</text>
+      <text x="220" y="62" text-anchor="middle" font-size="14" fill="var(--accent, #6366f1)">→</text>
 
-      <!-- Box: Git Repo -->
-      <rect x="190" y="55" width="130" height="70" rx="10" fill="var(--card-bg, #fff)" stroke="#eab308" stroke-width="2.5"/>
-      <text x="255" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text, #1a1a2e)">📦 Git Repo</text>
-      <text x="255" y="97" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">local .git</text>
-      <text x="255" y="110" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">branches, history</text>
+      <rect x="240" y="35" width="160" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--accent, #6366f1)" stroke-width="2.5"/>
+      <text x="320" y="57" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text, #1a1a2e)">⚡ Commands</text>
+      <text x="320" y="73" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">ls, cd, mkdir, touch...</text>
 
-      <!-- Arrow 2 -->
-      <line x1="320" y1="90" x2="370" y2="90" stroke="#eab308" stroke-width="2"/>
-      <text x="345" y="80" text-anchor="middle" font-size="9" fill="#eab308">git push</text>
+      <text x="420" y="62" text-anchor="middle" font-size="14" fill="var(--accent, #6366f1)">→</text>
 
-      <!-- Box: GitHub -->
-      <rect x="370" y="55" width="140" height="70" rx="10" fill="var(--card-bg, #fff)" stroke="#6366f1" stroke-width="2.5"/>
-      <text x="440" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text, #1a1a2e)">🐙 GitHub</text>
-      <text x="440" y="97" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">remote, PRs</text>
-      <text x="440" y="110" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">collaboration</text>
+      <rect x="440" y="35" width="160" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--success, #22c55e)" stroke-width="2.5"/>
+      <text x="520" y="57" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text, #1a1a2e)">📄 Output</text>
+      <text x="520" y="73" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">Results appear here</text>
 
-      <!-- Arrow 3 -->
-      <line x1="510" y1="90" x2="560" y2="90" stroke="#6366f1" stroke-width="2"/>
-      <text x="535" y="80" text-anchor="middle" font-size="9" fill="#6366f1">CI trigger</text>
+      <!-- Arrow down -->
+      <line x1="380" y1="90" x2="380" y2="110" stroke="var(--text-secondary, #4a4a6a)" stroke-width="1.5" stroke-dasharray="4,3"/>
 
-      <!-- Box: CI -->
-      <rect x="560" y="55" width="120" height="70" rx="10" fill="var(--card-bg, #fff)" stroke="#22c55e" stroke-width="2.5"/>
-      <text x="620" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text, #1a1a2e)">🔄 CI</text>
-      <text x="620" y="97" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">tests, lint</text>
-      <text x="620" y="110" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">build checks</text>
+      <!-- Layer 2: Git workflow -->
+      <text x="380" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text, #1a1a2e)">Layer 2: Git &amp; GitHub</text>
 
-      <!-- Arrow 4 -->
-      <line x1="680" y1="90" x2="730" y2="90" stroke="#22c55e" stroke-width="2"/>
-      <text x="705" y="80" text-anchor="middle" font-size="9" fill="#22c55e">deploy</text>
+      <rect x="30" y="135" width="130" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--warn, #f59e0b)" stroke-width="2.5"/>
+      <text x="95" y="158" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text, #1a1a2e)">💻 Your Code</text>
+      <text x="95" y="174" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">hello.py, main.py...</text>
 
-      <!-- Box: Deploy -->
-      <rect x="730" y="55" width="100" height="70" rx="10" fill="var(--card-bg, #fff)" stroke="#f59e0b" stroke-width="2.5"/>
-      <text x="780" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text, #1a1a2e)">🚀 Deploy</text>
-      <text x="780" y="97" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">production</text>
-      <text x="780" y="110" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">Railway/Fly.io</text>
+      <text x="178" y="162" text-anchor="middle" font-size="13" fill="var(--warn, #f59e0b)">→</text>
 
-      <!-- Flow row below -->
-      <rect x="75" y="145" width="40" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="95" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">edit</text>
-      <text x="122" y="160" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">→</text>
-      <rect x="130" y="145" width="50" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="155" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">stage</text>
-      <text x="187" y="160" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">→</text>
-      <rect x="195" y="145" width="50" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="220" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">commit</text>
-      <text x="252" y="160" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">→</text>
-      <rect x="260" y="145" width="50" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="285" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">branch</text>
-      <text x="317" y="160" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">→</text>
-      <rect x="325" y="145" width="50" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="350" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">merge</text>
-      <text x="382" y="160" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">→</text>
-      <rect x="390" y="145" width="50" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="415" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">push</text>
-      <text x="447" y="160" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">→</text>
-      <rect x="455" y="145" width="40" height="22" rx="4" fill="var(--flow-bg, #eef2ff)" stroke="var(--flow-text, #4f46e5)" stroke-width="1"/>
-      <text x="475" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="var(--flow-text, #4f46e5)">CI</text>
+      <rect x="195" y="135" width="120" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--accent, #6366f1)" stroke-width="2.5"/>
+      <text x="255" y="155" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text, #1a1a2e)">git add</text>
+      <text x="255" y="172" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">stage changes</text>
 
-      <text x="4" y="170" fill="var(--text-secondary, #4a4a6a)" font-size="8">Flow: edit → stage → commit → branch → merge → push → CI</text>
+      <text x="333" y="162" text-anchor="middle" font-size="13" fill="var(--accent, #6366f1)">→</text>
 
-      <!-- Arrow markers - simple approach -->
-      <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M0,0 L10,5 L0,10" fill="var(--accent, #6366f1)"/>
-        </marker>
-      </defs>
+      <rect x="350" y="135" width="130" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--accent, #6366f1)" stroke-width="2.5"/>
+      <text x="415" y="155" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text, #1a1a2e)">git commit</text>
+      <text x="415" y="172" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">take a snapshot</text>
+
+      <text x="498" y="162" text-anchor="middle" font-size="13" fill="var(--success, #22c55e)">→</text>
+
+      <rect x="515" y="135" width="120" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="var(--success, #22c55e)" stroke-width="2.5"/>
+      <text x="575" y="155" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text, #1a1a2e)">git push</text>
+      <text x="575" y="172" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">upload to GitHub</text>
+
+      <text x="653" y="162" text-anchor="middle" font-size="13" fill="var(--success, #22c55e)">→</text>
+
+      <rect x="670" y="135" width="90" height="55" rx="10" fill="var(--card-bg, #fff)" stroke="#eab308" stroke-width="2.5"/>
+      <text x="715" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text, #1a1a2e)">🐙 GitHub</text>
+      <text x="715" y="174" text-anchor="middle" font-size="10" fill="var(--text-secondary, #4a4a6a)">in the cloud</text>
     </svg>
   </div>
 
-  <!-- Flow Row (HTML version for clarity) -->
-  <div class="flow-row">
-    <span class="flow-step">✏️ Edit</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">📋 Stage</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">💾 Commit</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">🌿 Branch</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">🔀 Merge</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">📤 Push</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">🔄 CI</span>
+  <!-- Section 1: What is the Terminal? -->
+  <h2 class="section-title">1️⃣ What is the Terminal? <span class="count">Start Here</span></h2>
+  <p class="section-sub">If you've never opened a terminal before, don't worry — you're in exactly the right place.</p>
+
+  <p>Your computer has two ways to talk to you:</p>
+
+  <ul style="padding-left: 1.5rem; margin: .75rem 0; line-height: 1.8;">
+    <li><strong>GUI (Graphical User Interface)</strong> — windows, buttons, icons, the mouse. This is what you use every day: clicking folders, dragging files, opening apps.</li>
+    <li><strong>Terminal (Command Line Interface)</strong> — a text-based way to talk to your computer. Instead of clicking, you <em>type</em> commands. The computer types back the result.</li>
+  </ul>
+
+  <p>Think of the terminal as the <strong>direct channel</strong> to your computer's brain. The GUI hides complexity to make things visual. The terminal shows you everything — it's actually <em>more</em> powerful because you can say exactly what you want.</p>
+
+  <h3 style="font-size: 1rem; margin: 1.25rem 0 .5rem; color: var(--accent);">How to Open the Terminal on macOS</h3>
+  <ol style="padding-left: 1.5rem; margin: .5rem 0; line-height: 1.8;">
+    <li>Press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">⌘ Cmd</kbd> + <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Space</kbd> to open Spotlight Search.</li>
+    <li>Type <strong>"Terminal"</strong> and press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Enter</kbd>.</li>
+    <li>A window pops up with black (or dark) background and white text. That's it! You're in the terminal.</li>
+  </ol>
+
+  <p>You'll see something like <code>macbook@username ~ %</code> followed by a blinking cursor. That's called the <strong>prompt</strong> — it's waiting for your command.</p>
+
+  <div class="callout info">
+    <strong>💡 Tip:</strong> On Windows, you can use <strong>PowerShell</strong> or install <strong>Windows Subsystem for Linux (WSL)</strong>. On Linux, the terminal is usually in your app menu as "Terminal" or accessible with <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Ctrl</kbd>+<kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Alt</kbd>+<kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">T</kbd>.
   </div>
 
-  <!-- Why This Matters -->
-  <h2 class="section-title">🎯 Why These Skills Matter</h2>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-icon">🖥️</div>
-      <h3>You'll Live in the Terminal</h3>
-      <p>Every AI project involves running scripts, managing environments, inspecting logs, and deploying services. GUI tools won't cut it.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">📦</div>
-      <h3>Every AI Project is Git-Tracked</h3>
-      <p>From a single notebook to a multi-service agent system — git is how you collaborate, revert, and prove your work history.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">☁️</div>
-      <h3>Deployment Happens on Linux</h3>
-      <p>Railway, Fly.io, AWS Lambda, RunPod, vast.ai — almost every AI deployment target runs Linux. If you can't navigate a Linux terminal, you can't debug a production issue.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🤖</div>
-      <h3>AI Tooling is CLI-Native</h3>
-      <p>CLI tools like curl, jq, gh, and rg are the building blocks of AI pipelines. LLMs, vector DBs, and MCP servers all expose CLI interfaces.</p>
-    </div>
-  </div>
+  <!-- Section 2: Your First Commands -->
+  <h2 class="section-title">2️⃣ Your First Commands <span class="count">Do This</span></h2>
+  <p class="section-sub">Let's move around your computer using only text.</p>
 
-  <!-- Git -->
-  <h2 class="section-title">📦 Git — Version Control <span class="count">Core</span></h2>
-  <p class="section-sub">Git is the backbone of every professional software project. These are the commands you'll use daily.</p>
+  <p>Open your terminal and type these commands one at a time. Press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Enter</kbd> after each one.</p>
 
   <div class="terminal-window">
     <div class="terminal-header">
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-label">git-commands.sh</span>
+      <span class="terminal-label">bash — first-steps.sh</span>
     </div>
-    <div class="terminal-body"><span class="comment"># ——— Starting a project ———</span>
-<span class="prompt">$</span> <span class="cmd">git init</span>                                          <span class="comment"># Initialize a new repo</span>
-<span class="prompt">$</span> <span class="cmd">git clone https://github.com/user/repo.git</span>          <span class="comment"># Clone an existing repo</span>
+    <div class="terminal-body"><span class="comment"># "Print Working Directory" — shows where you are right now</span>
+<span class="prompt">$</span> <span class="cmd">pwd</span>
+<span class="output">/Users/macbook</span>
 
-<span class="comment"># ——— Daily workflow ———</span>
-<span class="prompt">$</span> <span class="cmd">git status</span>                                        <span class="comment"># See what changed</span>
-<span class="prompt">$</span> <span class="cmd">git add main.py</span>                                    <span class="comment"># Stage a file</span>
-<span class="prompt">$</span> <span class="cmd">git add -A</span>                                          <span class="comment"># Stage all changes</span>
-<span class="prompt">$</span> <span class="cmd">git commit -m "feat: add rate limiting to API client"</span> <span class="comment"># Commit with message</span>
+<span class="comment"># "List" — shows files and folders in the current directory</span>
+<span class="prompt">$</span> <span class="cmd">ls</span>
+<span class="output">Applications  Desktop  Documents  Downloads  Music  Pictures</span>
 
-<span class="comment"># ——— History & inspection ———</span>
-<span class="prompt">$</span> <span class="cmd">git log --oneline --graph --all</span>                    <span class="comment"># Visual commit history</span>
-<span class="prompt">$</span> <span class="cmd">git diff</span>                                           <span class="comment"># Unstaged changes</span>
-<span class="prompt">$</span> <span class="cmd">git diff --staged</span>                                   <span class="comment"># Staged changes</span>
-<span class="prompt">$</span> <span class="cmd">git show HEAD</span>                                        <span class="comment"># Show latest commit</span>
+<span class="comment"># "Change Directory" — move into a folder</span>
+<span class="prompt">$</span> <span class="cmd">cd Desktop</span>
 
-<span class="comment"># ——— Branching ———</span>
-<span class="prompt">$</span> <span class="cmd">git branch</span>                                           <span class="comment"># List branches</span>
-<span class="prompt">$</span> <span class="cmd">git checkout -b feat/add-embeddings</span>                  <span class="comment"># Create & switch branch</span>
-<span class="prompt">$</span> <span class="cmd">git switch main</span>                                      <span class="comment"># Switch to main</span>
+<span class="comment"># Check you're in Desktop now</span>
+<span class="prompt">$</span> <span class="cmd">pwd</span>
+<span class="output">/Users/macbook/Desktop</span>
 
-<span class="comment"># ——— Merging & rebasing ———</span>
-<span class="prompt">$</span> <span class="cmd">git merge feat/add-embeddings</span>                        <span class="comment"># Merge branch into current</span>
-<span class="prompt">$</span> <span class="cmd">git rebase main</span>                                       <span class="comment"># Rebase current branch onto main</span>
-<span class="prompt">$</span> <span class="cmd">git rebase -i HEAD~3</span>                                  <span class="comment"># Interactive rebase (squash, reword)</span>
+<span class="comment"># Go back to your home folder</span>
+<span class="prompt">$</span> <span class="cmd">cd ..</span>
 
-<span class="comment"># ——— Stashing ———</span>
-<span class="prompt">$</span> <span class="cmd">git stash</span>                                            <span class="comment"># Save uncommitted work temporarily</span>
-<span class="prompt">$</span> <span class="cmd">git stash pop</span>                                        <span class="comment"># Restore stashed work</span>
+<span class="comment"># "Make Directory" — create a new folder</span>
+<span class="prompt">$</span> <span class="cmd">mkdir ai-projects</span>
 
-<span class="comment"># ———— Remotes ———</span>
-<span class="prompt">$</span> <span class="cmd">git remote -v</span>                                         <span class="comment"># List remotes</span>
-<span class="prompt">$</span> <span class="cmd">git push -u origin feat/add-embeddings</span>               <span class="comment"># Push branch & set upstream</span>
-<span class="prompt">$</span> <span class="cmd">git pull</span>                                              <span class="comment"># Fetch + merge latest</span></div>
+<span class="comment"># Move into it</span>
+<span class="prompt">$</span> <span class="cmd">cd ai-projects</span>
+
+<span class="comment"># "Touch" — create an empty file</span>
+<span class="prompt">$</span> <span class="cmd">touch hello.py</span>
+
+<span class="comment"># List to see your new file</span>
+<span class="prompt">$</span> <span class="cmd">ls</span>
+<span class="output">hello.py</span></div>
+  </div>
+
+  <table class="cmd-table">
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>pwd</code></td><td>Show your current location (Print Working Directory)</td></tr>
+    <tr><td><code>ls</code></td><td>List files and folders in the current directory</td></tr>
+    <tr><td><code>cd &lt;name&gt;</code></td><td>Change directory — move into a folder</td></tr>
+    <tr><td><code>cd ..</code></td><td>Go up one folder (back to parent)</td></tr>
+    <tr><td><code>mkdir &lt;name&gt;</code></td><td>Create a new folder</td></tr>
+    <tr><td><code>touch &lt;filename&gt;</code></td><td>Create an empty file</td></tr>
+  </table>
+
+  <div class="callout info">
+    <strong>💡 Tip:</strong> You can press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Tab</kbd> to auto-complete file and folder names. Type <code>cd De</code> and press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Tab</kbd> — it finishes "Desktop" for you.
+  </div>
+
+  <!-- Section 3: Moving Files Around -->
+  <h2 class="section-title">3️⃣ Moving Files Around <span class="count">Essential</span></h2>
+  <p class="section-sub">Copy, move, rename, and delete files from the terminal.</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-label">bash — file-ops.sh</span>
+    </div>
+    <div class="terminal-body"><span class="comment"># Copy a file: cp source destination</span>
+<span class="prompt">$</span> <span class="cmd">cp hello.py hello-backup.py</span>
+
+<span class="comment"># Move (or rename) a file: mv source destination</span>
+<span class="prompt">$</span> <span class="cmd">mv hello.py main.py</span>    <span class="comment"># Rename hello.py to main.py</span>
+<span class="prompt">$</span> <span class="cmd">mv main.py ../</span>         <span class="comment"># Move main.py up one folder</span>
+
+<span class="comment"># Delete a file — ⚠️ WARNING: no undo!</span>
+<span class="prompt">$</span> <span class="cmd">rm hello-backup.py</span></div>
+  </div>
+
+  <table class="cmd-table">
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>cp &lt;source&gt; &lt;dest&gt;</code></td><td>Copy a file from source to destination</td></tr>
+    <tr><td><code>mv &lt;source&gt; &lt;dest&gt;</code></td><td>Move or rename a file</td></tr>
+    <tr><td><code>rm &lt;file&gt;</code></td><td>Delete a file (⚠️ permanent — no trash bin)</td></tr>
+    <tr><td><code>rm -r &lt;folder&gt;</code></td><td>Delete a folder and everything inside it</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <strong>🚨 Critical:</strong> <code>rm</code> does <strong>not</strong> send files to the Trash. Once deleted, they're gone forever. There is no "undo" for <code>rm</code>. Always double-check before deleting.
+  </div>
+
+  <!-- Section 4: Looking at Files -->
+  <h2 class="section-title">4️⃣ Looking at Files <span class="count">Handy</span></h2>
+  <p class="section-sub">View the contents of files without opening a text editor.</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-label">bash — view-files.sh</span>
+    </div>
+    <div class="terminal-body"><span class="comment"># "Concatenate" — print the whole file at once</span>
+<span class="prompt">$</span> <span class="cmd">cat hello.py</span>
+<span class="output">print("Hello, world!")</span>
+
+<span class="comment"># "Less" — scroll through a file (press q to quit)</span>
+<span class="prompt">$</span> <span class="cmd">less README.md</span>
+
+<span class="comment"># "Head" — show first 5 lines</span>
+<span class="prompt">$</span> <span class="cmd">head -5 data.csv</span>
+
+<span class="comment"># "Tail" — show last 5 lines</span>
+<span class="prompt">$</span> <span class="cmd">tail -5 data.csv</span></div>
+  </div>
+
+  <table class="cmd-table">
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>cat &lt;file&gt;</code></td><td>Print the entire file to the terminal</td></tr>
+    <tr><td><code>less &lt;file&gt;</code></td><td>Scroll through a file page by page (press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">q</kbd> to exit)</td></tr>
+    <tr><td><code>head -N &lt;file&gt;</code></td><td>Show the first N lines of a file</td></tr>
+    <tr><td><code>tail -N &lt;file&gt;</code></td><td>Show the last N lines of a file</td></tr>
+  </table>
+
+  <!-- Section 5: What is Version Control? -->
+  <h2 class="section-title">5️⃣ What is Version Control? <span class="count">Big Idea</span></h2>
+  <p class="section-sub">Why every developer uses Git — and why you should too.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎮</div>
+      <h3>Like Save Points in a Game</h3>
+      <p>You play a game, save at a checkpoint, try something risky, and if things go wrong — you load your save. Git does that for your code.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏰</div>
+      <h3>Time Machine for Your Code</h3>
+      <p>Every commit is a snapshot. You can go back to any snapshot, compare versions, and see exactly what changed and when.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤝</div>
+      <h3>Collaboration Without Chaos</h3>
+      <p>Multiple people can work on the same project at the same time. Git keeps track of who changed what and helps merge everything together.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h3>Safety Net</h3>
+      <p>Experiment freely! Try a crazy refactor, rewrite a whole file — if it breaks, just go back to the last working commit. No fear.</p>
+    </div>
+  </div>
+
+  <!-- Section 6: Setting Up Git -->
+  <h2 class="section-title">6️⃣ Setting Up Git <span class="count">One-Time</span></h2>
+  <p class="section-sub">Do this once on your computer, and you're ready to use Git forever.</p>
+
+  <p>First, check if Git is already installed:</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-label">bash — setup-git.sh</span>
+    </div>
+    <div class="terminal-body"><span class="comment"># Check git version (should show something like "git version 2.39.0")</span>
+<span class="prompt">$</span> <span class="cmd">git --version</span>
+<span class="output">git version 2.39.5</span>
+
+<span class="comment"># Tell Git your name — this gets attached to every commit</span>
+<span class="prompt">$</span> <span class="cmd">git config --global user.name "Your Name"</span>
+
+<span class="comment"># Tell Git your email (use the same one as your GitHub account)</span>
+<span class="prompt">$</span> <span class="cmd">git config --global user.email "you@example.com"</span></div>
+  </div>
+
+  <p>These settings are stored once and used for every Git project on your computer. You only need to do this <strong>once</strong>.</p>
+
+  <div class="callout info">
+    <strong>💡 No Git?</strong> Download it free from <a href="https://git-scm.com/downloads" target="_blank" style="color: var(--accent);">git-scm.com</a> or install via Homebrew: <code>brew install git</code>.
+  </div>
+
+  <!-- Section 7: Your First Repository -->
+  <h2 class="section-title">7️⃣ Your First Repository <span class="count">Let's Go</span></h2>
+  <p class="section-sub">A repository ("repo") is a folder that Git is watching. Let's make one.</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-label">bash — first-repo.sh</span>
+    </div>
+    <div class="terminal-body"><span class="comment"># Create a project folder (if you don't have one already)</span>
+<span class="prompt">$</span> <span class="cmd">mkdir ~/ai-projects</span>
+<span class="prompt">$</span> <span class="cmd">cd ~/ai-projects</span>
+
+<span class="comment"># Create a Python file</span>
+<span class="prompt">$</span> <span class="cmd">echo 'print("Hello, AI Engineer!")' &gt; hello.py</span>
+
+<span class="comment"># Turn this folder into a Git repository</span>
+<span class="prompt">$</span> <span class="cmd">git init</span>
+<span class="output">Initialized empty Git repository in /Users/macbook/ai-projects/.git/</span>
+
+<span class="comment"># THE most important command — check the status of your repo</span>
+<span class="prompt">$</span> <span class="cmd">git status</span>
+<span class="output">On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	hello.py</span></div>
+  </div>
+
+  <p><strong><code>git status</code></strong> is your best friend. Run it constantly. It tells you exactly what's going on: which files changed, what's staged, what branch you're on.</p>
+
+  <!-- Section 8: Making Your First Commit -->
+  <h2 class="section-title">8️⃣ Making Your First Commit <span class="count">Snapshot Time</span></h2>
+  <p class="section-sub">The two-step dance: <code>git add</code> + <code>git commit</code>.</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-label">bash — first-commit.sh</span>
+    </div>
+    <div class="terminal-body"><span class="comment"># Step 1: "Stage" your file — tell Git "I want to save this"</span>
+<span class="prompt">$</span> <span class="cmd">git add hello.py</span>
+
+<span class="comment"># Check status — file is now "staged" (green in most terminals)</span>
+<span class="prompt">$</span> <span class="cmd">git status</span>
+
+<span class="comment"># Step 2: Commit — take the snapshot with a message</span>
+<span class="prompt">$</span> <span class="cmd">git commit -m "first commit: hello script"</span>
+<span class="output">[main (root-commit) a1b2c3d] first commit: hello script
+ 1 file changed, 1 insertion(+)</span>
+
+<span class="comment"># Check the log — see your snapshot history</span>
+<span class="prompt">$</span> <span class="cmd">git log --oneline</span>
+<span class="output">a1b2c3d (HEAD -> main) first commit: hello script</span></div>
+  </div>
+
+  <div class="flow-row">
+    <span class="flow-step">✏️ Edit your file</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">📋 git add &lt;file&gt;</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">💾 git commit -m "message"</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">🔍 git status (check)</span>
   </div>
 
   <div class="callout info">
-    <strong>💡 Conventional Commits:</strong> Use <code>feat:</code> for new features, <code>fix:</code> for bug fixes, <code>docs:</code> for documentation, <code>refactor:</code> for code restructuring, <code>chore:</code> for maintenance. This format is standard across open source and industry.
+    <strong>💡 Good commit messages:</strong> Write short, descriptive messages in present tense, like "add rate limit to API client" or "fix broken import path". Future you (and collaborators) will thank you.
   </div>
 
-  <!-- CLI Tools -->
-  <h2 class="section-title">🖥️ CLI — Command Line Tools <span class="count">Essential</span></h2>
-  <p class="section-sub">These tools are your daily drivers as an AI engineer. Master pipes and you can compose any data pipeline.</p>
+  <!-- Section 9: GitHub -->
+  <h2 class="section-title">9️⃣ GitHub — Your Code in the Cloud <span class="count">Backup &amp; Share</span></h2>
+  <p class="section-sub">Git is local on your computer. GitHub is where you back up and share your code.</p>
+
+  <h3 style="font-size: 1rem; margin: 1.25rem 0 .5rem;">What is GitHub?</h3>
+  <p>GitHub is a website that hosts Git repositories in the cloud. It's like Dropbox for code — but way smarter. You can:</p>
+  <ul style="padding-left: 1.5rem; margin: .5rem 0; line-height: 1.8;">
+    <li>Back up your code so it's safe even if your laptop breaks</li>
+    <li>Share your code with others</li>
+    <li>Collaborate on projects with teammates</li>
+    <li>Show off your projects to employers</li>
+  </ul>
+
+  <h3 style="font-size: 1rem; margin: 1.25rem 0 .5rem; color: var(--accent);">Push your code to GitHub</h3>
 
   <div class="terminal-window">
     <div class="terminal-header">
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-label">terminal</span>
+      <span class="terminal-label">bash — push-to-github.sh</span>
     </div>
-    <div class="terminal-body"><span class="comment"># ——— curl — Test APIs ———</span>
-<span class="prompt">$</span> <span class="cmd">curl https://api.openai.com/v1/models \</span>
-<span class="cmd">  -H "Authorization: Bearer $OPENAI_API_KEY"</span>
-<span class="prompt">$</span> <span class="cmd">curl -X POST https://api.example.com/chat \</span>
-<span class="cmd">  -H "Content-Type: application/json" \</span>
-<span class="cmd">  -d '{"prompt": "Hello"}'</span>
+    <div class="terminal-body"><span class="comment"># Step 1: Create a new repo on github.com (no README, no .gitignore)</span>
+<span class="comment"># Step 2: Link your local repo to GitHub</span>
+<span class="prompt">$</span> <span class="cmd">git remote add origin https://github.com/YOUR-USERNAME/ai-projects.git</span>
 
-<span class="comment"># ——— jq — Parse JSON ———</span>
-<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/repos/user/repo | jq '.stargazers_count'</span>
-<span class="prompt">$</span> <span class="cmd">cat data.json | jq '.[] | {name, email}'</span>
+<span class="comment"># Step 3: Push your commits to GitHub</span>
+<span class="prompt">$</span> <span class="cmd">git push -u origin main</span>
+<span class="output">Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 247 bytes | 247.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/YOUR-USERNAME/ai-projects.git
+ * [new branch]      main -> main
+  Branch 'main' set up to track remote branch 'main' from 'origin'.</span>
 
-<span class="comment"># ——— grep / rg — Search ———</span>
-<span class="prompt">$</span> <span class="cmd">grep -rn "OPENAI_API_KEY" . --include="*.py"</span>
-<span class="prompt">$</span> <span class="cmd">rg "rate_limit" --type py</span>                         <span class="comment"># rg is 10x faster than grep</span>
-
-<span class="comment"># ——— Pipes & Redirection ———</span>
-<span class="prompt">$</span> <span class="cmd">python train.py 2>&1 | tee training.log</span>            <span class="comment"># Log stdout + stderr</span>
-<span class="prompt">$</span> <span class="cmd">gh pr list --json number,title | jq '.[] | .title'</span> <span class="comment"># Pipe chain example</span>
-
-<span class="comment"># ——— Aliases ———</span>
-<span class="prompt">$</span> <span class="cmd">alias ll="ls -la"</span>
-<span class="prompt">$</span> <span class="cmd">alias gst="git status"</span>
-<span class="prompt">$</span> <span class="cmd">alias glog="git log --oneline --graph --all"</span>
-<span class="prompt">$</span> <span class="cmd"># Add these to ~/.zshrc or ~/.bashrc to make them permanent</span></div>
+<span class="comment"># Now visit https://github.com/YOUR-USERNAME/ai-projects to see your code!</span></div>
   </div>
 
-  <!-- Linux -->
-  <h2 class="section-title">🐧 Linux — The OS You'll Deploy To <span class="count">Foundation</span></h2>
-  <p class="section-sub">Most AI infrastructure runs on Linux. Here's what you need to navigate and debug a production server.</p>
+  <div class="callout info">
+    <strong>💡 Need a GitHub account?</strong> Go to <a href="https://github.com" target="_blank" style="color: var(--accent);">github.com</a> and sign up for free. Then create a new repository by clicking the green "New" button on your profile page.
+  </div>
+
+  <!-- Section 10: Branching Basics -->
+  <h2 class="section-title">🔟 Branching Basics <span class="count">Safe Experimentation</span></h2>
+  <p class="section-sub">Branches let you work on new features without breaking your working code.</p>
+
+  <p>A <strong>branch</strong> is like a separate timeline. You start from your main timeline, make changes on a branch, and when everything works — you merge it back. Your main code stays safe the whole time.</p>
 
   <div class="terminal-window">
     <div class="terminal-header">
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-label">terminal</span>
+      <span class="terminal-label">bash — branching.sh</span>
     </div>
-    <div class="terminal-body"><span class="comment"># ——— Filesystem hierarchy ———</span>
-<span class="prompt">$</span> <span class="cmd">pwd</span>                                                 <span class="comment"># Where am I?</span>
-<span class="prompt">$</span> <span class="cmd">ls -la /home/project</span>                                  <span class="comment"># List files with details</span>
-<span class="prompt">$</span> <span class="cmd">du -sh /var/log</span>                                       <span class="comment"># Directory size</span>
-<span class="prompt">$</span> <span class="cmd">df -h</span>                                                 <span class="comment"># Disk space</span>
+    <div class="terminal-body"><span class="comment"># List your branches (* means you're on it)</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span>
+<span class="output">* main</span>
 
-<span class="comment"># ——— Permissions ———</span>
-<span class="prompt">$</span> <span class="cmd">chmod +x deploy.sh</span>                                    <span class="comment"># Make script executable</span>
-<span class="prompt">$</span> <span class="cmd">chmod 600 ~/.ssh/id_rsa</span>                              <span class="comment"># Private key (owner rw only)</span>
-<span class="prompt">$</span> <span class="cmd">chown -R deploy:deploy /app</span>                          <span class="comment"># Change owner</span>
-<span class="prompt">$</span> <span class="cmd">ls -la</span>                                                <span class="comment"># See permissions: drwxr-xr-x</span>
+<span class="comment"># Create and switch to a new branch in one command</span>
+<span class="prompt">$</span> <span class="cmd">git checkout -b feature-greeting</span>
+<span class="output">Switched to a new branch 'feature-greeting'</span>
 
-<span class="comment"># ——— Environment variables ———</span>
-<span class="prompt">$</span> <span class="cmd">export OPENAI_API_KEY="sk-..."</span>
-<span class="prompt">$</span> <span class="cmd">echo $OPENAI_API_KEY</span>
-<span class="prompt">$</span> <span class="cmd">source .env</span>                                            <span class="comment"># Load vars from file</span>
-<span class="prompt">$</span> <span class="cmd">env | grep API</span>                                         <span class="comment"># Show env vars matching API</span>
+<span class="comment"># Make changes on this branch</span>
+<span class="prompt">$</span> <span class="cmd">echo 'print("Hello from feature branch!")' &gt; greeting.py</span>
+<span class="prompt">$</span> <span class="cmd">git add greeting.py</span>
+<span class="prompt">$</span> <span class="cmd">git commit -m "add greeting script"</span>
+<span class="output">[feature-greeting b2c3d4e] add greeting script</span>
 
-<span class="comment"># ——— /proc & system inspection ———</span>
-<span class="prompt">$</span> <span class="cmd">cat /proc/cpuinfo | grep "model name" | head -1</span>
-<span class="prompt">$</span> <span class="cmd">cat /proc/meminfo | grep MemTotal</span>
-<span class="prompt">$</span> <span class="cmd">free -h</span>                                               <span class="comment"># Memory usage</span>
-<span class="prompt">$</span> <span class="cmd">nvidia-smi</span>                                             <span class="comment"># GPU status (AI-specific)</span>
+<span class="comment"># Switch back to main</span>
+<span class="prompt">$</span> <span class="cmd">git checkout main</span>
+<span class="output">Switched to branch 'main'</span>
 
-<span class="comment"># ——— systemd basics ———</span>
-<span class="prompt">$</span> <span class="cmd">systemctl status my-app</span>                               <span class="comment"># Check service status</span>
-<span class="prompt">$</span> <span class="cmd">journalctl -u my-app -f</span>                               <span class="comment"># Follow service logs</span>
-<span class="prompt">$</span> <span class="cmd">systemctl restart my-app</span>                              <span class="comment"># Restart a service</span></div>
+<span class="comment"># Merge your feature branch into main</span>
+<span class="prompt">$</span> <span class="cmd">git merge feature-greeting</span>
+<span class="output">Updating a1b2c3d..b2c3d4e
+Fast-forward
+ greeting.py | 1 +
+ 1 file changed, 1 insertion(+)</span>
+
+<span class="comment"># See the history with your branch</span>
+<span class="prompt">$</span> <span class="cmd">git log --oneline --graph</span>
+<span class="output">* b2c3d4e (HEAD -> main, feature-greeting) add greeting script
+* a1b2c3d first commit: hello script</span></div>
   </div>
 
-  <!-- Process Management -->
-  <h2 class="section-title">⚙️ Process Management <span class="count">Production Skill</span></h2>
-  <p class="section-sub">Knowing how processes work is the difference between "it stopped when I closed the terminal" and "it runs forever."</p>
+  <table class="cmd-table">
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>git branch</code></td><td>List all branches (the * shows which one you're on)</td></tr>
+    <tr><td><code>git checkout -b &lt;name&gt;</code></td><td>Create a new branch AND switch to it</td></tr>
+    <tr><td><code>git checkout &lt;name&gt;</code></td><td>Switch to an existing branch</td></tr>
+    <tr><td><code>git merge &lt;branch&gt;</code></td><td>Merge changes from another branch into your current one</td></tr>
+    <tr><td><code>git log --oneline --graph</code></td><td>See commit history as a visual graph</td></tr>
+  </table>
+
+  <!-- Section 11: Essential CLI Tools -->
+  <h2 class="section-title">1️⃣1️⃣ Essential CLI Tools <span class="count">Superpowers</span></h2>
+  <p class="section-sub">curl fetches web data, jq reads JSON, and pipes (|) chain commands together.</p>
+
+  <h3 style="font-size: 1rem; margin: 1.25rem 0 .5rem; color: var(--accent);">curl — Make Web Requests</h3>
+  <p><code>curl</code> is like a web browser for the terminal. You give it a URL, and it fetches the content.</p>
 
   <div class="terminal-window">
     <div class="terminal-header">
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-label">terminal</span>
+      <span class="terminal-label">bash — curl-jq.sh</span>
     </div>
-    <div class="terminal-body"><span class="comment"># ——— Foreground/background ———</span>
-<span class="prompt">$</span> <span class="cmd">python train.py</span>                                        <span class="comment"># Runs in foreground (Ctrl+C to stop)</span>
-<span class="prompt">$</span> <span class="cmd">python train.py &</span>                                       <span class="comment"># Runs in background</span>
-<span class="prompt">$</span> <span class="cmd">jobs</span>                                                    <span class="comment"># List background jobs</span>
-<span class="prompt">$</span> <span class="cmd">fg %1</span>                                                   <span class="comment"># Bring job 1 to foreground</span>
+    <div class="terminal-body"><span class="comment"># Basic GET request — fetch a webpage</span>
+<span class="prompt">$</span> <span class="cmd">curl https://api.github.com</span>
+<span class="output">{
+  "current_user_url": "https://api.github.com/user",
+  "current_user_authorizations_html_url": "...",
+  ...
+}</span>
 
-<span class="comment"># ——— Signals ———</span>
-<span class="prompt">$</span> <span class="cmd">kill -15 PID</span>                                           <span class="comment"># SIGTERM — graceful shutdown</span>
-<span class="prompt">$</span> <span class="cmd">kill -9 PID</span>                                            <span class="comment"># SIGKILL — force kill (last resort)</span>
-<span class="prompt">$</span> <span class="cmd">kill -2 PID</span>                                            <span class="comment"># SIGINT — Ctrl+C equivalent</span>
-
-<span class="comment"># ——— Keep alive after logout ———</span>
-<span class="prompt">$</span> <span class="cmd">nohup python train.py &</span>                                <span class="comment"># Immune to hup signal</span>
-<span class="prompt">$</span> <span class="cmd">disown %1</span>                                              <span class="comment"># Remove job from shell's table</span>
-
-<span class="comment"># ——— tmux (terminal multiplexer) ———</span>
-<span class="prompt">$</span> <span class="cmd">tmux new -s train-session</span>                              <span class="comment"># Create named session</span>
-<span class="prompt">$</span> <span class="cmd"># Inside tmux: Ctrl+b d  → detach</span>
-<span class="prompt">$</span> <span class="cmd">tmux attach -t train-session</span>                           <span class="comment"># Reattach later</span>
-<span class="prompt">$</span> <span class="cmd">tmux ls</span>                                                <span class="comment"># List sessions</span>
-
-<span class="comment"># ——— Cron (scheduled tasks) ———</span>
-<span class="prompt">$</span> <span class="cmd">crontab -e</span>                                             <span class="comment"># Edit cron jobs</span>
-<span class="prompt">$</span> <span class="cmd"># Example: run backup daily at 3am</span>
-<span class="prompt">$</span> <span class="cmd"># 0 3 * * * /home/user/scripts/backup.sh</span></div>
+<span class="comment"># Add -s (silent) to hide progress output</span>
+<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/users/octocat</span></div>
   </div>
 
-  <!-- Dotfiles & Config -->
-  <h2 class="section-title">📄 Dotfiles &amp; Config <span class="count">Quality of Life</span></h2>
-  <p class="section-sub">Your dotfiles are your developer environment identity. Invest early, save hours every week.</p>
+  <h3 style="font-size: 1rem; margin: 1.25rem 0 .5rem; color: var(--accent);">jq — Parse JSON</h3>
+  <p><code>jq</code> lets you extract specific data from JSON. The pipe symbol <code>|</code> sends output from one command into another.</p>
 
   <div class="terminal-window">
     <div class="terminal-header">
       <span class="terminal-dot red"></span>
       <span class="terminal-dot yellow"></span>
       <span class="terminal-dot green"></span>
-      <span class="terminal-label">~/.zshrc</span>
+      <span class="terminal-label">bash — using-jq.sh</span>
     </div>
-    <div class="terminal-body"><span class="comment"># Essential aliases</span>
-<span class="highlight">alias</span> ll="ls -la"
-<span class="highlight">alias</span> g="git"
-<span class="highlight">alias</span> gp="git push"
-<span class="highlight">alias</span> gl="git log --oneline --graph --all"
-<span class="highlight">alias</span> gs="git status"
-<span class="highlight">alias</span> gc="git commit -m"
-<span class="highlight">alias</span> python="python3"
+    <div class="terminal-body"><span class="comment"># The pipe (|) sends curl's output into jq</span>
+<span class="comment"># Extract just the "name" field</span>
+<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/users/octocat | jq .name</span>
+<span class="output">"The Octocat"</span>
 
-<span class="comment"># Git config</span>
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-git config --global alias.lg "log --oneline --graph --all"
+<span class="comment"># Get the user's public repo count</span>
+<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/users/octocat | jq .public_repos</span>
+<span class="output">8</span>
 
-<span class="comment"># Keep secrets out of git</span>
-<span class="comment"># Create .gitignore with:</span>
-.env
-*.log
-__pycache__/
-.DS_Store
-.venv/
-data/</div>
+<span class="comment"># Get the login and URL together</span>
+<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/users/octocat | jq '{login, html_url}'</span>
+<span class="output">{
+  "login": "octocat",
+  "html_url": "https://github.com/octocat"
+}</span></div>
   </div>
 
-  <!-- Card Grid: Concept Map -->
-  <h2 class="section-title">🗺️ Skill Map</h2>
+  <h3 style="font-size: 1rem; margin: 1.25rem 0 .5rem; color: var(--accent);">Pipes — The Secret Sauce</h3>
+  <p>The pipe <code>|</code> is the most powerful operator in the terminal. It takes the output of one command and feeds it as input to the next.</p>
 
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-icon">📦</div>
-      <h3>Git Workflow</h3>
-      <ul>
-        <li>init, add, commit, log, diff</li>
-        <li>branch, checkout, merge</li>
-        <li>rebase (interactive), stash</li>
-        <li>remote, push, pull, fetch</li>
-        <li>conventional commits</li>
-      </ul>
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-label">bash — pipes.sh</span>
     </div>
-    <div class="card">
-      <div class="card-icon">🔧</div>
-      <h3>CLI Tools</h3>
-      <ul>
-        <li>curl — API testing</li>
-        <li>jq — JSON parsing</li>
-        <li>grep / rg — search</li>
-        <li>pipes &amp; redirection</li>
-        <li>aliases &amp; shell config</li>
-      </ul>
-    </div>
-    <div class="card">
-      <div class="card-icon">🐧</div>
-      <h3>Linux Basics</h3>
-      <ul>
-        <li>filesystem hierarchy</li>
-        <li>permissions (chmod, chown)</li>
-        <li>environment variables</li>
-        <li>/proc inspection</li>
-        <li>systemd basics</li>
-      </ul>
-    </div>
-    <div class="card">
-      <div class="card-icon">⚙️</div>
-      <h3>Process Management</h3>
-      <ul>
-        <li>foreground / background</li>
-        <li>SIGTERM / SIGKILL / SIGINT</li>
-        <li>nohup &amp; disown</li>
-        <li>tmux sessions</li>
-        <li>cron scheduling</li>
-      </ul>
-    </div>
-    <div class="card">
-      <div class="card-icon">📄</div>
-      <h3>Dotfiles &amp; Config</h3>
-      <ul>
-        <li>~/.zshrc / ~/.bashrc</li>
-        <li>git aliases &amp; config</li>
-        <li>.gitignore patterns</li>
-        <li>.env file management</li>
-        <li>SSH key setup</li>
-      </ul>
-    </div>
+    <div class="terminal-body"><span class="comment"># Chain multiple commands together</span>
+<span class="comment"># ls → list files, then pipe into wc to count them</span>
+<span class="prompt">$</span> <span class="cmd">ls | wc -l</span>
+<span class="output">12</span>
+
+<span class="comment"># curl → jq → extract just what you want</span>
+<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/users/octocat | jq '.name, .bio'</span>
+<span class="output">"The Octocat"
+"Some bio text here"</span>
+
+<span class="comment"># Save output to a file with &gt;</span>
+<span class="prompt">$</span> <span class="cmd">curl -s https://api.github.com/users/octocat | jq .name &gt; username.txt</span></div>
   </div>
 
-  <!-- Pitfalls (BEFORE exercises) -->
+  <!-- Pitfalls -->
   <h2 class="section-title">⚠️ Pitfalls — Avoid These <span class="count">Read First</span></h2>
-  <p class="section-sub">These mistakes cost every engineer time. Read them before you start the exercises.</p>
+  <p class="section-sub">These mistakes trip up every beginner. Know them before you start the exercises.</p>
 
   <div class="pitfalls-grid">
     <div class="callout pitfall">
-      <strong>🔥 Merge Conflicts</strong><br>
-      When two people edit the same line of a file, git can't auto-merge. Don't panic — resolve manually:
-      <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> marks your version, <code>=======</code> separates, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> marks theirs. Edit the file, remove the markers, then <code>git add</code> and <code>git commit</code>.
+      <strong>🔥 Forgetting git add Before git commit</strong><br>
+      You edit a file, type <code>git commit -m "fix thing"</code> — and nothing happens! You must <code>git add</code> first. Git only commits what you've staged. Always run <code>git status</code> before committing to see what's staged.
     </div>
     <div class="callout pitfall">
-      <strong>🚨 Force Push on Shared Branches</strong><br>
-      <code>git push --force</code> rewrites history. If someone else has pulled your branch, their history diverges. Use <code>git push --force-with-lease</code> instead — it refuses if someone else has pushed new commits.
+      <strong>🚨 rm is Permanent — No Undo</strong><br>
+      On macOS, dragging a file to Trash lets you recover it. <code>rm</code> in the terminal does NOT use the Trash. Once deleted, it's gone. Always double-check the file name before hitting Enter.
     </div>
     <div class="callout pitfall">
-      <strong>🧨 Forgetting to source .env</strong><br>
-      Your app runs fine locally but crashes in production. 90% chance you forgot to load <code>.env</code>. Always check: <code>echo $API_KEY</code> before running. Use <code>export $(grep -v '^#' .env | xargs)</code> to load all vars at once.
+      <strong>🧨 Closing Terminal Kills Your Running Processes</strong><br>
+      If you start a Python script with <code>python app.py</code> and close the terminal window, the script dies. To keep it alive, prefix with <code>nohup</code>: <code>nohup python app.py &amp;</code>.
     </div>
     <div class="callout pitfall">
-      <strong>💀 Closing Terminal = Killing Process</strong><br>
-      A process started with <code>python app.py</code> dies when you close the shell. Use <code>nohup</code>, <code>tmux</code>, or a systemd service for anything that needs to survive logout. <code>nohup python app.py &</code> is your emergency escape.
+      <strong>💀 Forgetting -m on git commit Opens Vim</strong><br>
+      If you type <code>git commit</code> without <code>-m "message"</code>, Git opens a text editor called Vim. To exit Vim: press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Esc</kbd>, type <code>:q!</code>, press <kbd style="background: var(--card-bg); border: 1px solid var(--border); padding: .15rem .4rem; border-radius: 4px; font-family: var(--mono);">Enter</kbd>. Then use <code>git commit -m "your message"</code> next time.
     </div>
     <div class="callout pitfall">
-      <strong>🔑 Committing Secrets</strong><br>
-      Accidentally committed an API key? Even if you delete it in the next commit, it's in the git history forever. Use <code>git-secrets</code>, a pre-commit hook, or <code>.env</code> files to prevent this. If you do leak one, rotate the key immediately.
+      <strong>🔑 Committing API Keys or Secrets</strong><br>
+      If you commit a file with an API key, that key is in your Git history forever — even if you delete it in a later commit. Anyone can read your history. Use a <code>.env</code> file for secrets and add <code>.env</code> to a <code>.gitignore</code> file so Git ignores it.
     </div>
     <div class="callout pitfall">
-      <strong>📏 git add . Without Reviewing</strong><br>
-      <code>git add .</code> stages everything — including debug logs, compiled files, and secrets. Always run <code>git status</code> and <code>git diff</code> first. Use <code>.gitignore</code> aggressively.
+      <strong>📏 Using git add . Without Checking What You're Staging</strong><br>
+      <code>git add .</code> stages everything in the folder — including compiled files, logs, large datasets, and secrets. Always run <code>git status</code> first to see what would be staged. Create a <code>.gitignore</code> file to tell Git which files to always skip.
     </div>
   </div>
 
   <!-- Exercises -->
-  <h2 class="section-title">🏋️ Exercises <span class="count">Complete All to Pass</span></h2>
+  <h2 class="section-title">🏋️ Exercises <span class="count">Complete All 3</span></h2>
   <p class="section-sub">Do these in order. Each builds on the previous one. You need <strong>all 3</strong> to complete this module.</p>
 
   <div class="exercise">
     <span class="ex-num">Exercise 1</span>
-    <h3>Git Workout — Local Repo &amp; Branches</h3>
-    <p>Create a local git repository, make commits, experiment with branches, and practice resolving a merge conflict.</p>
+    <h3>Your First Git Project</h3>
+    <p>Create a project folder, make a Python file, initialize Git, and make your first commit.</p>
     <ol class="steps">
-      <li>Create a new directory <code>~/workout-repo</code>, initialize git</li>
-      <li>Create a <code>README.md</code>, stage it, commit with message <code>docs: initial readme</code></li>
-      <li>Create a branch <code>feature/greeting</code> and switch to it</li>
-      <li>Add a <code>hello.py</code> that prints "Hello from feature branch"</li>
-      <li>Commit with message <code>feat: add greeting script</code></li>
-      <li>Switch back to <code>main</code>, edit README.md to add a different line</li>
-      <li>Commit on main, then merge <code>feature/greeting</code> into main</li>
-      <li>View the commit graph: <code>git log --oneline --graph --all</code></li>
-      <li><strong>Challenge:</strong> Create a second branch, intentionally create a conflict, then resolve it manually</li>
+      <li>Open Terminal and create a folder called <code>~/my-first-project</code></li>
+      <li>Change into that folder with <code>cd</code></li>
+      <li>Create a file called <code>hello.py</code> that prints "Hello, Git!"</li>
+      <li>Run <code>git init</code> to turn the folder into a Git repository</li>
+      <li>Run <code>git status</code> — see how hello.py shows as "untracked"?</li>
+      <li>Run <code>git add hello.py</code> to stage it</li>
+      <li>Run <code>git status</code> again — now it's green!</li>
+      <li>Run <code>git commit -m "first commit: hello world"</code></li>
+      <li>Run <code>git log --oneline</code> to see your first commit</li>
     </ol>
     <div class="success-criteria">
       <strong>✅ Success Criteria</strong>
       <ul>
-        <li>Multi-branch history visible in <code>git log --graph</code></li>
-        <li>Merged feature branch (or a merge commit exists)</li>
-        <li>Merge conflict resolved cleanly (no conflict markers remain)</li>
-        <li>Conventional commit messages used throughout</li>
+        <li><code>git log --oneline</code> shows at least 1 commit with your message</li>
+        <li><code>git status</code> shows "nothing to commit, working tree clean"</li>
+        <li>The <code>hello.py</code> file exists and prints "Hello, Git!"</li>
       </ul>
     </div>
   </div>
 
   <div class="exercise">
     <span class="ex-num">Exercise 2</span>
-    <h3>CLI Pipeline — Inspect &amp; Transform an API Response</h3>
-    <p>Use curl + jq + grep to inspect a live API, extract meaningful data, and log it.</p>
+    <h3>Branches and Merging</h3>
+    <p>Create a feature branch, make changes, and merge them back into main.</p>
     <ol class="steps">
-      <li>Fetch the Hacker News top stories: <code>curl -s https://hacker-news.firebaseio.com/v0/topstories.json</code></li>
-      <li>Use <code>jq</code> to count how many stories are returned (<code>jq length</code>)</li>
-      <li>Fetch the first story's details: <code>curl -s https://hacker-news.firebaseio.com/v0/item/FIRST_ID.json</code></li>
-      <li>Use <code>jq</code> to extract the title, score, and url into a clean format</li>
-      <li>Use <code>grep</code> or <code>rg</code> to find stories mentioning "AI" or "LLM" from the top 50 IDs</li>
-      <li>Pipe the results into a file <code>ai-stories.log</code></li>
-      <li>Write a one-liner that does the entire pipeline in a single command using <code>|</code></li>
+      <li>In the same <code>~/my-first-project</code> folder, create a new branch: <code>git checkout -b feature-greeting</code></li>
+      <li>Create a new file <code>greeting.py</code> that prints "Hello from the feature branch!"</li>
+      <li>Stage and commit the file with message <code>feat: add greeting script</code></li>
+      <li>Switch back to <code>main</code>: <code>git checkout main</code></li>
+      <li>Notice <code>greeting.py</code> disappears! (It only exists on the feature branch)</li>
+      <li>Merge the feature branch: <code>git merge feature-greeting</code></li>
+      <li>Now <code>greeting.py</code> is back on main</li>
+      <li>Run <code>git log --oneline --graph</code> to see the history</li>
     </ol>
     <div class="success-criteria">
       <strong>✅ Success Criteria</strong>
       <ul>
-        <li><code>ai-stories.log</code> exists with real story data</li>
-        <li>jq queries used filters (<code>.[]</code>, <code>select()</code>, <code>{title, score}</code>)</li>
-        <li>Single-command pipeline demonstrated</li>
-        <li>Pipes (<code>|</code>) used to chain commands</li>
+        <li><code>git log --oneline --graph</code> shows at least 2 commits with branch info</li>
+        <li>Both <code>hello.py</code> and <code>greeting.py</code> exist on the main branch</li>
+        <li>Running <code>python greeting.py</code> prints "Hello from the feature branch!"</li>
       </ul>
     </div>
   </div>
 
   <div class="exercise">
     <span class="ex-num">Exercise 3</span>
-    <h3>Real-World Git — Open a Pull Request</h3>
-    <p>Clone a public repo, create a meaningful change on a new branch, commit properly, push, and open a PR via <code>gh</code> CLI.</p>
+    <h3>GitHub + API Pipeline</h3>
+    <p>Push your project to GitHub and use curl + jq to explore a public API.</p>
     <ol class="steps">
-      <li>Find a public repo by @cyrilXBT or any small open source Python project</li>
-      <li>Fork it via GitHub UI or <code>gh repo fork</code></li>
-      <li>Clone your fork locally: <code>gh repo clone YOUR_USER/REPO</code></li>
-      <li>Create a branch: <code>git checkout -b improve/docs</code></li>
-      <li>Make a <strong>meaningful</strong> change — fix a typo in README, improve a docstring, add a CLI flag, or write a better error message</li>
-      <li>Commit with conventional format: <code>docs: fix typos in README</code> or <code>feat: add --verbose flag to CLI</code></li>
-      <li>Push the branch: <code>git push -u origin improve/docs</code></li>
-      <li>Open a PR: <code>gh pr create --title "docs: fix typos in README" --body "..."</code></li>
-      <li>Verify: <code>gh pr view --web</code> or <code>gh pr list</code></li>
+      <li>Go to <a href="https://github.com" target="_blank" style="color: var(--accent);">github.com</a> and create a new repository called <strong>my-first-project</strong> (don't add README or .gitignore)</li>
+      <li>Copy the repository URL (looks like <code>https://github.com/YOUR-USERNAME/my-first-project.git</code>)</li>
+      <li>In your terminal, run: <code>git remote add origin PASTE_URL_HERE</code></li>
+      <li>Push your code: <code>git push -u origin main</code></li>
+      <li>Visit your GitHub URL in a browser to verify the files are there</li>
+      <li>Now use curl to fetch GitHub API info about yourself: <code>curl -s https://api.github.com/users/YOUR-USERNAME</code></li>
+      <li>Pipe the output into jq to extract your name and bio: <code>curl -s https://api.github.com/users/YOUR-USERNAME | jq '{name, bio}'</code></li>
+      <li>Save the output to a file: <code>curl -s https://api.github.com/users/YOUR-USERNAME | jq '{name, bio}' &gt; my-github-info.json</code></li>
+      <li>Verify with <code>cat my-github-info.json</code></li>
     </ol>
     <div class="success-criteria">
       <strong>✅ Success Criteria</strong>
       <ul>
-        <li><code>gh pr list</code> shows your PR with correct title and branch</li>
-        <li><code>gh pr diff</code> shows only your intended changes (no stray files)</li>
-        <li>Commit message follows conventional format</li>
-        <li>The PR branch is pushed to your fork on GitHub</li>
-        <li>The change is genuinely useful (not just a whitespace edit)</li>
+        <li>Your GitHub repo shows your files in the browser</li>
+        <li><code>git log --oneline</code> shows at least 2 commits (from exercises 1 &amp; 2)</li>
+        <li><code>my-github-info.json</code> exists with your name and bio from the API</li>
+        <li>The jq command successfully parsed the JSON and extracted specific fields</li>
       </ul>
     </div>
   </div>
 
+  <!-- Success Banner -->
+  <div id="successBanner">
+    <h3>🎉 All Exercises Complete!</h3>
+    <p>You've completed Module 3. You know how to use the terminal, version control with Git, push to GitHub, and use curl + jq. You're ready for Module 4!</p>
+  </div>
+
   <!-- Interactive Checklist -->
   <h2 class="section-title">✅ Progress Checklist</h2>
-  <p class="section-sub">Track your completion of this module. Your progress saves automatically.</p>
+  <p class="section-sub">Track your completion. Your progress saves automatically in your browser.</p>
 
   <div class="checklist-section">
     <div id="progress-bar-container">
       <div class="progress-bar">
         <div class="progress-fill" id="progressFill" style="width:0%"></div>
       </div>
-      <div class="progress-text" id="progressText">0 / 15 completed</div>
+      <div class="progress-text" id="progressText">0 / 10 completed</div>
     </div>
     <div id="checklist-root"></div>
   </div>
 
-  <!-- Summary -->
+  <!-- Module Summary -->
   <h2 class="section-title">📋 Module Summary</h2>
   <div class="callout info">
     <strong>You should now be able to:</strong>
     <ul style="margin-top: .5rem; padding-left: 1.25rem;">
-      <li>Initialize, commit, branch, merge, and rebase with git</li>
-      <li>Resolve merge conflicts confidently</li>
-      <li>Use curl + jq to inspect APIs from the terminal</li>
-      <li>Pipe CLI tools together for data pipelines</li>
-      <li>Navigate a Linux filesystem, set permissions, inspect processes</li>
-      <li>Keep processes alive with tmux and nohup</li>
-      <li>Open a PR with conventional commits via gh CLI</li>
-      <li>Configure your dotfiles for an efficient workflow</li>
+      <li>Open and navigate the terminal on macOS</li>
+      <li>Use basic file commands: ls, pwd, cd, mkdir, touch, cp, mv, rm</li>
+      <li>View file contents with cat, less, head, tail</li>
+      <li>Understand what version control is and why it matters</li>
+      <li>Initialize a Git repository with <code>git init</code></li>
+      <li>Stage and commit changes with <code>git add</code> and <code>git commit</code></li>
+      <li>Check your repo status with <code>git status</code> (your most-used command!)</li>
+      <li>Create branches and merge them back together</li>
+      <li>Push code to GitHub for backup and sharing</li>
+      <li>Fetch data from APIs with curl and parse JSON with jq</li>
+      <li>Chain commands together with pipes (|)</li>
     </ul>
   </div>
 
+  <!-- Flow Row -->
   <div class="flow-row" style="margin-top: 2rem;">
-    <span class="flow-step">✏️ Edit</span>
+    <span class="flow-step">⌨️ Terminal</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">📋 Stage</span>
+    <span class="flow-step">📂 Commands</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-step">📦 Git</span>
     <span class="flow-arrow">→</span>
     <span class="flow-step">💾 Commit</span>
     <span class="flow-arrow">→</span>
@@ -732,14 +987,12 @@ data/</div>
     <span class="flow-arrow">→</span>
     <span class="flow-step">🔀 Merge</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">📤 Push</span>
-    <span class="flow-arrow">→</span>
-    <span class="flow-step">🔄 CI</span>
+    <span class="flow-step">📤 Push to GitHub</span>
   </div>
 
   <footer style="text-align: center; padding: 3rem 0 1.5rem; color: var(--text-secondary); font-size: .85rem; border-top: 1px solid var(--border); margin-top: 3rem;">
     <p>Module 3 of the <a href="../index.html" style="color: var(--accent);">AI Engineer 2026 Curriculum</a></p>
-    <p style="margin-top: .25rem">Based on <a href="https://x.com/cyrilXBT/status/2073940565851361607" target="_blank" style="color: var(--accent);">@cyrilXBT's learning path</a>. Built with the /teach methodology.</p>
+    <p style="margin-top: .25rem">Built with the /teach methodology. Designed for complete beginners.</p>
   </footer>
 </div>
 
@@ -757,23 +1010,18 @@ data/</div>
     document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
   }
 
-  // === Checklist ===
+  // === Checklist (keys prefixed "gcl_") ===
   const checklistItems = [
-    "Understand why Git, CLI &amp; Linux matter for AI engineering",
-    "Initialize a git repo and make commits with conventional messages",
-    "Create, switch, and merge branches",
-    "Resolve a merge conflict manually",
-    "Use interactive rebase to squash and reword commits",
-    "Use git stash to save and restore work in progress",
-    "Use curl to test REST APIs from the terminal",
-    "Use jq to parse and filter JSON output",
-    "Use grep/ripgrep to search codebases",
-    "Chain commands with pipes and redirection",
-    "Navigate Linux filesystem and understand permissions (chmod, chown)",
-    "Manage environment variables and source .env files",
-    "Keep processes alive with nohup and tmux",
-    "Configure dotfiles with useful aliases",
-    "Open a pull request via gh CLI with conventional commits"
+    "Open the terminal and navigate with ls, pwd, cd",
+    "Create files and folders with mkdir, touch",
+    "Copy, move, and delete files with cp, mv, rm",
+    "View file contents with cat, less, head, tail",
+    "Understand what version control and Git are",
+    "Initialize a Git repo and make your first commit",
+    "Use git status constantly to check what's happening",
+    "Create branches and merge them back to main",
+    "Push code to GitHub with git push",
+    "Fetch API data with curl and parse JSON with jq"
   ];
 
   const root = document.getElementById('checklist-root');
@@ -783,7 +1031,7 @@ data/</div>
   function updateProgress() {
     let completed = 0;
     checklistItems.forEach((_, i) => {
-      if (localStorage.getItem('gcl' + i) === 'true') completed++;
+      if (localStorage.getItem('gcl_' + i) === 'true') completed++;
     });
     const pct = Math.round((completed / checklistItems.length) * 100);
     progressFill.style.width = pct + '%';
@@ -791,12 +1039,12 @@ data/</div>
   }
 
   checklistItems.forEach((text, i) => {
-    const id = 'gcl' + i;
+    const id = 'gcl_' + i;
     const checked = localStorage.getItem(id) === 'true';
     const label = document.createElement('label');
     const span = document.createElement('span');
     span.className = checked ? 'checked' : '';
-    span.textContent = text.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    span.textContent = text;
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.id = id;
@@ -805,6 +1053,10 @@ data/</div>
       localStorage.setItem(id, this.checked);
       this.nextSibling.classList.toggle('checked', this.checked);
       updateProgress();
+
+      // Check if all 10 items are completed → show success banner
+      const allDone = checklistItems.every((_, j) => localStorage.getItem('gcl_' + j) === 'true');
+      document.getElementById('successBanner').classList.toggle('visible', allDone);
     };
     label.appendChild(cb);
     label.appendChild(span);
@@ -813,50 +1065,11 @@ data/</div>
 
   updateProgress();
 
-  // === SVG color fix for dark mode ===
-  // Dynamically update SVG colors based on CSS variables
-  function updateSvgColors() {
-    const style = getComputedStyle(document.body);
-    const textColor = style.getPropertyValue('--text').trim();
-    const textSecondary = style.getPropertyValue('--text-secondary').trim();
-    const cardBg = style.getPropertyValue('--card-bg').trim();
-    const flowBg = style.getPropertyValue('--flow-bg').trim();
-    const flowText = style.getPropertyValue('--flow-text').trim();
-    const accent = style.getPropertyValue('--accent').trim();
-
-    const svg = document.querySelector('.arch-diagram svg');
-    if (!svg) return;
-
-    // Update all text elements
-    svg.querySelectorAll('text').forEach(t => {
-      const isFlow = t.getAttribute('fill') === 'var(--flow-text, #4f46e5)';
-      const isSecondary = t.getAttribute('fill') === 'var(--text-secondary, #4a4a6a)';
-      const isDefault = t.getAttribute('fill') === 'var(--text, #1a1a2e)';
-      if (isFlow) t.setAttribute('fill', flowText);
-      else if (isSecondary) t.setAttribute('fill', textSecondary);
-      else if (isDefault) t.setAttribute('fill', textColor);
-    });
-
-    // Update rect fills
-    svg.querySelectorAll('rect').forEach(r => {
-      const fill = r.getAttribute('fill');
-      if (fill === 'var(--card-bg, #fff)') r.setAttribute('fill', cardBg);
-      if (fill === 'var(--flow-bg, #eef2ff)') r.setAttribute('fill', flowBg);
-    });
-
-    // Update line colors
-    svg.querySelectorAll('line').forEach(l => {
-      const stroke = l.getAttribute('stroke');
-      if (stroke === 'var(--accent, #6366f1)') l.setAttribute('stroke', accent);
-    });
-  }
-
-  // Run on load and on theme toggle
-  // Use MutationObserver to detect class changes
-  const observer = new MutationObserver(() => updateSvgColors());
-  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  // Initial run after a small delay to let CSS variables resolve
-  setTimeout(updateSvgColors, 100);
+  // Check initial state for success banner
+  (function checkInitial() {
+    const allDone = checklistItems.every((_, j) => localStorage.getItem('gcl_' + j) === 'true');
+    document.getElementById('successBanner').classList.toggle('visible', allDone);
+  })();
 </script>
 </body>
 </html>

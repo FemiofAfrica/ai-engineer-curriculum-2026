@@ -11,12 +11,13 @@ This curriculum is based on **[CyrilXBT's definitive thread](https://x.com/cyril
 | **Stack** | 9 layers, strict order |
 | **Signature Projects** | 3 builds that prove capability |
 | **Timeline** | 90-day plan |
-| **Audience** | Self-taught builders breaking into AI engineering |
+| **Audience** | Self-taught builders breaking into AI engineering — **no prior coding experience required** |
 
 ---
 
 ## Quick Navigation
 
+- **[Start Here: index.html](index.html)** — The interactive curriculum homepage with progress tracking
 - **[STACK.md](STACK.md)** — The 9-layer learning stack in strict order
 - **[PROJECTS.md](PROJECTS.md)** — The 3 signature projects that get you hired
 - **[PLAN.md](PLAN.md)** — The 90-day plan

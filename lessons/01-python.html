@@ -93,12 +93,6 @@
   }
   .hero h1 { font-size: 2.25rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .75rem; }
   .hero .subtitle { font-size: 1.05rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto 1rem; }
-  .hero .quote {
-    font-style: italic; color: var(--accent); font-size: .95rem;
-    padding: 1rem 1.25rem; background: var(--accent-light);
-    border-radius: var(--radius); margin-top: 1.5rem;
-    border-left: 3px solid var(--accent); text-align: left;
-  }
 
   /* Section titles */
   .section-title {
@@ -106,6 +100,17 @@
     display: flex; align-items: center; gap: .5rem;
   }
   .section-desc { color: var(--text-secondary); font-size: .92rem; margin: .3rem 0 1.25rem; }
+
+  /* Info box */
+  .info-box {
+    padding: .9rem 1.1rem; border-radius: var(--radius-sm);
+    margin: 1rem 0; font-size: .9rem; border-left: 3px solid;
+  }
+  .info-box.info { background: var(--accent-light); border-color: var(--accent); }
+  .info-box.success { background: var(--success-light); border-color: var(--success); }
+  .info-box.warn { background: var(--warn-light); border-color: var(--warn); }
+  .info-box.danger { background: var(--danger-light); border-color: var(--danger); }
+  .info-box strong { display: block; margin-bottom: .25rem; }
 
   /* SVG Architecture */
   .arch-wrapper {
@@ -147,12 +152,6 @@
   .topic-card .icon { font-size: 1.5rem; margin-bottom: .5rem; }
   .topic-card h3 { font-size: 1rem; margin-bottom: .35rem; }
   .topic-card p { font-size: .85rem; color: var(--text-secondary); }
-  .topic-card .tags { margin-top: .5rem; display: flex; flex-wrap: wrap; gap: .3rem; }
-  .topic-card .tag {
-    font-size: .7rem; background: var(--accent-light);
-    color: var(--accent); padding: .15rem .45rem;
-    border-radius: 4px; font-weight: 500;
-  }
 
   /* Terminal code blocks */
   .code-block {
@@ -187,8 +186,6 @@
   .code-block pre .keyword { color: #818cf8; }
   .code-block pre .string { color: #34d399; }
   .code-block pre .func { color: #60a5fa; }
-  .code-block pre .type { color: #f472b6; }
-  .code-block pre .decorator { color: #c084fc; }
   .code-block pre .number { color: #fbbf24; }
 
   /* Inline code */
@@ -198,16 +195,25 @@
     border-radius: 4px; color: var(--accent);
   }
 
-  /* Info box */
-  .info-box {
-    padding: .9rem 1.1rem; border-radius: var(--radius-sm);
-    margin: 1rem 0; font-size: .9rem; border-left: 3px solid;
+  /* Output block */
+  .output-block {
+    background: #0f172a; border-radius: var(--radius-sm);
+    margin: .5rem 0 1.25rem; overflow: hidden;
+    border: 1px solid var(--border);
   }
-  .info-box.info { background: var(--accent-light); border-color: var(--accent); }
-  .info-box.success { background: var(--success-light); border-color: var(--success); }
-  .info-box.warn { background: var(--warn-light); border-color: var(--warn); }
-  .info-box.danger { background: var(--danger-light); border-color: var(--danger); }
-  .info-box strong { display: block; margin-bottom: .25rem; }
+  .output-block .header {
+    background: #020617; padding: .3rem 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .output-block .header .filename {
+    color: #64748b; font-size: .75rem; font-family: var(--mono);
+  }
+  .output-block pre {
+    padding: .5rem 1rem; overflow-x: auto;
+    font-family: var(--mono); font-size: .82rem; line-height: 1.5;
+    color: #a5f3fc; margin: 0;
+  }
 
   /* Pitfalls */
   .pitfall-list { list-style: none; padding: 0; margin: 0; }
@@ -252,7 +258,7 @@
     height: 6px; background: var(--border); border-radius: 3px;
     margin-bottom: 1rem; overflow: hidden;
   }
-  .checklist-section .progress-bar .fill {
+  .checklist-section .progress-bar .progress-fill {
     height: 100%; background: var(--accent); border-radius: 3px;
     transition: width .4s ease;
   }
@@ -265,36 +271,6 @@
     width: 16px; height: 16px; flex-shrink: 0;
   }
   .checklist-section .checked { text-decoration: line-through; color: var(--text-secondary); opacity: .6; }
-
-  /* Tabs */
-  .tab-bar {
-    display: flex; gap: 0; margin: 1.25rem 0 0;
-    border-bottom: 2px solid var(--border); overflow-x: auto;
-  }
-  .tab-btn {
-    padding: .5rem 1rem; font-size: .85rem; font-weight: 500;
-    background: transparent; border: none; cursor: pointer;
-    color: var(--text-secondary); border-bottom: 2px solid transparent;
-    margin-bottom: -2px; white-space: nowrap; font-family: var(--font);
-    transition: color var(--transition), border-color var(--transition);
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* Deliverable box */
-  .deliverable {
-    background: var(--card-bg); border: 2px solid var(--success);
-    border-radius: var(--radius); padding: 1.25rem 1.5rem;
-    box-shadow: var(--shadow); margin: 1.5rem 0;
-  }
-  .deliverable h3 {
-    color: var(--success); font-size: 1rem; margin-bottom: .5rem;
-    display: flex; align-items: center; gap: .5rem;
-  }
-  .deliverable p { font-size: .9rem; color: var(--text-secondary); margin-bottom: .5rem; }
-  .deliverable code { background: var(--success-light); color: var(--success); }
 
   /* Success banner */
   .success-banner {
@@ -328,568 +304,841 @@
     <div class="module-badge">Module 1 · Week 1</div>
     <h1>🐍 Python Fundamentals</h1>
     <p class="subtitle">
-      Python is the lingua franca of AI engineering. Everything you build — API integrations,
-      data pipelines, agents, RAG systems — starts and ends with Python. This module gives you
-      the core patterns that every AI engineer uses daily.
+      Welcome! This is your very first step into programming. Python is the language you'll use
+      to build everything in this course — from simple scripts to AI systems. No experience
+      needed. Let's start from zero.
     </p>
-    <div class="quote">
-      "You're not an ML researcher. You're a systems builder who connects models to data,
-      tools, memory, agents, guardrails, and deployment. Python is how you wire it all together."
-      <br>— <strong>@cyrilXBT</strong>
-    </div>
   </div>
 
-  <!-- Flow: where this module sits -->
+  <!-- Flow: what this module covers -->
   <div class="flow-row">
-    <span class="flow-step current">📘 Syntax</span>
+    <span class="flow-step current">📘 First Steps</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">🔧 Functions</span>
+    <span class="flow-step">📝 Your First Program</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">🏗️ Classes</span>
+    <span class="flow-step">🧠 Making Decisions</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">⚡ Async</span>
+    <span class="flow-step">🔁 Lists & Loops</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">📦 Env Mgmt</span>
+    <span class="flow-step">📦 Functions & Dictionaries</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">✅ Project</span>
+    <span class="flow-step">✅ Bring It Together</span>
   </div>
 
+  <!-- ============================================================ -->
+  <!-- SECTION 1: What is Python? -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">✨ What is Python?</h2>
+  <p class="section-desc">A gentle introduction to what we're learning and why.</p>
+
+  <p>
+    Python is a programming language — a way to give instructions to a computer. Think of it like
+    a recipe: you write down a series of steps (the "code"), and the computer follows them one at a
+    time. Python was designed to be easy to read and write, which is why it's the most popular
+    language for beginners <em>and</em> for building AI systems.
+  </p>
+  <p style="margin-top: 1rem;">
+    In this course, you'll use Python to load data, call AI models, save results, and build tools.
+    But first, you need to learn the basics — the alphabet before the sentences. By the end of this
+    module, you'll write your own Python scripts from scratch.
+  </p>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 2: Getting Set Up -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">🛠️ Getting Set Up</h2>
+  <p class="section-desc">Let's make sure Python is installed on your computer.</p>
+
+  <h3 style="font-size:1rem;margin-top:1rem;">Step 1: Check if Python is installed</h3>
+  <p>Open your terminal (Terminal on Mac, Command Prompt on Windows). Then type:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">terminal</span>
+    </div>
+    <pre>python3 --version</pre>
+  </div>
+  <p>If you see something like <code>Python 3.11</code> or <code>Python 3.12</code>, you're good! If you get an error, download Python from <a href="https://python.org/downloads" target="_blank" style="color:var(--accent);">python.org/downloads</a>.</p>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">Step 2: Open the Python REPL</h3>
+  <p>A "REPL" is an interactive Python playground. Run this command:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">terminal</span>
+    </div>
+    <pre>python3</pre>
+  </div>
+  <p>You'll see something like <code>>>>&nbsp;</code> — that means Python is waiting for you to type something.</p>
+
+  <div class="info-box info">
+    <strong>💡 Pro tip</strong>
+    You can exit the REPL by typing <code>exit()</code> and pressing Enter, or pressing <strong>Ctrl+D</strong> (Mac/Linux) / <strong>Ctrl+Z</strong> (Windows).
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">Step 3: Run a file</h3>
+  <p>Create a new file called <code>hello.py</code> in a folder on your computer. Add this line:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">hello.py</span>
+    </div>
+    <pre><span class="keyword">print</span>(<span class="string">"Hello, world!"</span>)</pre>
+  </div>
+  <p>Then run it from the terminal:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">terminal</span>
+    </div>
+    <pre>python3 hello.py</pre>
+  </div>
+  <p>You should see: <code>Hello, world!</code> printed on the screen. You just wrote and ran your first program!</p>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 3: Your First Program -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">📝 Your First Program</h2>
+  <p class="section-desc">Printing, variables, and simple math — the building blocks.</p>
+
+  <h3 style="font-size:1rem;margin-top:1rem;">print() — showing things on screen</h3>
+  <p><code>print()</code> is a command that tells Python to display something. Whatever you put inside the parentheses gets shown:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">hello.py</span>
+    </div>
+    <pre><span class="keyword">print</span>(<span class="string">"Hello, AI Engineering!"</span>)
+<span class="keyword">print</span>(<span class="number">42</span>)
+<span class="keyword">print</span>(<span class="string">"I am"</span>, <span class="number">25</span>, <span class="string">"years old"</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Hello, AI Engineering!
+42
+I am 25 years old</pre>
+  </div>
+
+  <div class="info-box info">
+    <strong>🔤 Strings vs Numbers</strong>
+    Text in quotes (<code>"hello"</code>) is called a <strong>string</strong>. Numbers without quotes (<code>42</code>) are <strong>numbers</strong>. Python treats them differently — you can do math with numbers, but not with strings!
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">Variables — storing information</h3>
+  <p>A variable is like a labeled box where you store data. You give it a name and a value with the <code>=</code> sign:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">variables.py</span>
+    </div>
+    <pre>name = <span class="string">"Alice"</span>
+age = <span class="number">25</span>
+is_student = <span class="keyword">True</span>
+
+<span class="keyword">print</span>(name)
+<span class="keyword">print</span>(age)
+<span class="keyword">print</span>(<span class="string">f"Hi, my name is {name}!"</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Alice
+25
+Hi, my name is Alice!</pre>
+  </div>
+
+  <p>Notice the <code>f</code> before the string in the last line? That's called an <strong>f-string</strong> — it lets you plug variables directly into your text using curly braces <code>{}</code>. You'll use this all the time.</p>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">Simple math</h3>
+  <p>Python can do arithmetic just like a calculator:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">math.py</span>
+    </div>
+    <pre>a = <span class="number">10</span>
+b = <span class="number">3</span>
+
+<span class="keyword">print</span>(a + b)    <span class="comment"># addition → 13</span>
+<span class="keyword">print</span>(a - b)    <span class="comment"># subtraction → 7</span>
+<span class="keyword">print</span>(a * b)    <span class="comment"># multiplication → 30</span>
+<span class="keyword">print</span>(a / b)    <span class="comment"># division → 3.333...</span>
+<span class="keyword">print</span>(a // b)   <span class="comment"># integer division → 3</span>
+<span class="keyword">print</span>(a ** b)   <span class="comment"># exponent (10 to the power 3) → 1000</span></pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>13
+7
+30
+3.3333333333333335
+3
+1000</pre>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 4: Making Decisions -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">🧠 Making Decisions</h2>
+  <p class="section-desc">Booleans, comparisons, and if/elif/else.</p>
+
+  <h3 style="font-size:1rem;margin-top:1rem;">True or False</h3>
+  <p>Python has a special type called <strong>Boolean</strong> — it's either <code>True</code> or <code>False</code>. You get them by comparing things:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">booleans.py</span>
+    </div>
+    <pre><span class="keyword">print</span>(<span class="number">5</span> > <span class="number">3</span>)     <span class="comment"># True — 5 is greater than 3</span>
+<span class="keyword">print</span>(<span class="number">5</span> < <span class="number">3</span>)     <span class="comment"># False — 5 is not less than 3</span>
+<span class="keyword">print</span>(<span class="number">5</span> == <span class="number">5</span>)    <span class="comment"># True — 5 equals 5 (note: double equals!)</span>
+<span class="keyword">print</span>(<span class="number">5</span> != <span class="number">3</span>)    <span class="comment"># True — 5 is not equal to 3</span>
+<span class="keyword">print</span>(<span class="number">5</span> >= <span class="number">5</span>)    <span class="comment"># True — 5 is greater than or equal to 5</span></pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>True
+False
+True
+True
+True</pre>
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">if / elif / else — making choices</h3>
+  <p>You can tell Python to do different things depending on conditions. The key rule: <strong>indentation matters</strong>. The code inside the if block must be indented (pressed Tab or 4 spaces).</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">conditions.py</span>
+    </div>
+    <pre>score = <span class="number">85</span>
+
+<span class="keyword">if</span> score >= <span class="number">90</span>:
+    <span class="keyword">print</span>(<span class="string">"Grade: A"</span>)
+<span class="keyword">elif</span> score >= <span class="number">80</span>:
+    <span class="keyword">print</span>(<span class="string">"Grade: B"</span>)     <span class="comment"># ← this runs because 85 >= 80</span>
+<span class="keyword">else</span>:
+    <span class="keyword">print</span>(<span class="string">"Grade: C or lower"</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Grade: B</pre>
+  </div>
+
+  <div class="info-box warn">
+    <strong>⚠️ Indentation is not optional!</strong>
+    In Python, spacing tells the computer which code belongs together. If your indentation is wrong, Python will give you an error. Always use 4 spaces (or 1 Tab) for each level of indentation.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 5: Lists and Loops -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">📋 Lists and Loops</h2>
+  <p class="section-desc">Working with multiple items at once.</p>
+
+  <h3 style="font-size:1rem;margin-top:1rem;">What is a list?</h3>
+  <p>A <strong>list</strong> is a collection of items, written with square brackets <code>[]</code>. You can store anything in a list — numbers, strings, or a mix:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">lists.py</span>
+    </div>
+    <pre>fruits = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>]
+numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+mixed = [<span class="string">"hello"</span>, <span class="number">42</span>, <span class="keyword">True</span>]
+
+<span class="keyword">print</span>(fruits)        <span class="comment"># ['apple', 'banana', 'cherry']</span>
+<span class="keyword">print</span>(fruits[<span class="number">0</span>])    <span class="comment"># 'apple'  — lists start at index 0!</span>
+<span class="keyword">print</span>(fruits[<span class="number">1</span>])    <span class="comment"># 'banana'</span>
+<span class="keyword">print</span>(fruits[-<span class="number">1</span>])   <span class="comment"># 'cherry'  — -1 gets the last item</span></pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>['apple', 'banana', 'cherry']
+apple
+banana
+cherry</pre>
+  </div>
+
+  <div class="info-box info">
+    <strong>🔢 Indexing starts at 0</strong>
+    The first item in a list is at position <code>0</code>, not <code>1</code>. This is confusing at first, but you'll get used to it!
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">for loops — doing something with each item</h3>
+  <p>A <code>for</code> loop lets you go through each item in a list, one at a time:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">for_loop.py</span>
+    </div>
+    <pre>topics = [<span class="string">"AI"</span>, <span class="string">"Python"</span>, <span class="string">"Data"</span>]
+
+<span class="keyword">for</span> topic <span class="keyword">in</span> topics:
+    <span class="keyword">print</span>(<span class="string">f"Learning about {topic}..."</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Learning about AI...
+Learning about Python...
+Learning about Data...</pre>
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">range() — counting loops</h3>
+  <p>If you want to repeat something a specific number of times, use <code>range()</code>:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">range_demo.py</span>
+    </div>
+    <pre><span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(<span class="number">5</span>):
+    <span class="keyword">print</span>(<span class="string">f"Count: {i}"</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Count: 0
+Count: 1
+Count: 2
+Count: 3
+Count: 4</pre>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 6: Functions -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">📦 Functions</h2>
+  <p class="section-desc">Reusable blocks of code. No type hints, no decorators — just the basics.</p>
+
+  <p>A <strong>function</strong> is a reusable block of code. You define it once with <code>def</code>, then call it by name whenever you need it:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">functions.py</span>
+    </div>
+    <pre><span class="comment"># Define a function</span>
+<span class="keyword">def</span> <span class="func">greet</span>(name):
+    <span class="keyword">return</span> <span class="string">f"Hello {name}!"</span>
+
+<span class="comment"># Call the function</span>
+message = <span class="func">greet</span>(<span class="string">"Alice"</span>)
+<span class="keyword">print</span>(message)
+
+<span class="comment"># Functions can take multiple parameters</span>
+<span class="keyword">def</span> <span class="func">add</span>(x, y):
+    <span class="keyword">return</span> x + y
+
+result = <span class="func">add</span>(<span class="number">3</span>, <span class="number">7</span>)
+<span class="keyword">print</span>(result)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Hello Alice!
+10</pre>
+  </div>
+
+  <div class="info-box info">
+    <strong>💡 What is <code>return</code>?</strong>
+    <code>return</code> sends a value back to wherever the function was called. If you don't use <code>return</code>, the function returns <code>None</code> (Python's way of saying "nothing").
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 7: Dictionaries -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">📖 Dictionaries</h2>
+  <p class="section-desc">Storing data as key-value pairs — the backbone of JSON and APIs.</p>
+
+  <p>A <strong>dictionary</strong> (or <code>dict</code> for short) stores data in key-value pairs. Think of it like a phonebook: you look up a name (the key) and get a number (the value):</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">dicts.py</span>
+    </div>
+    <pre><span class="comment"># Create a dictionary</span>
+user = {
+    <span class="string">"name"</span>: <span class="string">"Alice"</span>,
+    <span class="string">"score"</span>: <span class="number">95</span>,
+    <span class="string">"active"</span>: <span class="keyword">True</span>
+}
+
+<span class="comment"># Access values by key</span>
+<span class="keyword">print</span>(user[<span class="string">"name"</span>])   <span class="comment"># Alice</span>
+<span class="keyword">print</span>(user[<span class="string">"score"</span>])  <span class="comment"># 95</span>
+
+<span class="comment"># Add or update a value</span>
+user[<span class="string">"email"</span>] = <span class="string">"alice@example.com"</span>
+<span class="keyword">print</span>(user)
+
+<span class="comment"># Loop through keys and values</span>
+<span class="keyword">for</span> key <span class="keyword">in</span> user:
+    <span class="keyword">print</span>(<span class="string">f"{key}: {user[key]}"</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Alice
+95
+{'name': 'Alice', 'score': 95, 'active': True, 'email': 'alice@example.com'}
+name: Alice
+score: 95
+active: True
+email: alice@example.com</pre>
+  </div>
+
+  <div class="info-box info">
+    <strong>🤖 Why dictionaries matter for AI</strong>
+    When you call an AI API like OpenAI or Anthropic, the response comes back as a dictionary (or a list of dictionaries). Learning to work with dicts now means you'll be ready to handle real API responses later.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 8: Working with Files -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">📂 Working with Files</h2>
+  <p class="section-desc">Reading and writing text and JSON files.</p>
+
+  <p>Python can read and write files on your computer. The <code>with open()</code> pattern is the standard way:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">write_file.py</span>
+    </div>
+    <pre>data = [<span class="string">"AI"</span>, <span class="string">"Engineering"</span>, <span class="string">"Python"</span>]
+
+<span class="comment"># Write to a file</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">"topics.txt"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f:
+    <span class="keyword">for</span> topic <span class="keyword">in</span> data:
+        f.write(topic + <span class="string">"\n"</span>)
+
+<span class="comment"># Read the file back</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">"topics.txt"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    content = f.read()
+
+<span class="keyword">print</span>(content)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>AI
+Engineering
+Python</pre>
+  </div>
+
+  <div class="info-box info">
+    <strong>💡 What does <code>with</code> do?</strong>
+    The <code>with</code> statement makes sure the file is properly closed after we're done reading or writing — even if something goes wrong. You don't need to remember to call <code>f.close()</code>. Just use <code>with open(...) as f:</code> every time.
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">Working with JSON</h3>
+  <p>JSON is the standard format for sending data between systems. Python's <code>json</code> module makes it easy:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">json_demo.py</span>
+    </div>
+    <pre><span class="keyword">import</span> json
+
+person = {
+    <span class="string">"name"</span>: <span class="string">"Bob"</span>,
+    <span class="string">"age"</span>: <span class="number">30</span>,
+    <span class="string">"skills"</span>: [<span class="string">"Python"</span>, <span class="string">"AI"</span>]
+}
+
+<span class="comment"># Write to a JSON file</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">"person.json"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f:
+    json.dump(person, f, indent=<span class="number">2</span>)
+
+<span class="comment"># Read the JSON file back</span>
+<span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">"person.json"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    loaded = json.load(f)
+
+<span class="keyword">print</span>(loaded[<span class="string">"name"</span>])
+<span class="keyword">print</span>(loaded[<span class="string">"skills"</span>])</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Bob
+['Python', 'AI']</pre>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 9: Handling Errors -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">🚨 Handling Errors</h2>
+  <p class="section-desc">When things go wrong, catch them gracefully.</p>
+
+  <p>Programs crash. That's normal. Python gives you <code>try/except</code> to handle errors without stopping your whole program:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">errors.py</span>
+    </div>
+    <pre><span class="keyword">try</span>:
+    <span class="keyword">with</span> <span class="keyword">open</span>(<span class="string">"nonexistent.txt"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+        content = f.read()
+        <span class="keyword">print</span>(content)
+<span class="keyword">except</span> FileNotFoundError:
+    <span class="keyword">print</span>(<span class="string">"That file doesn't exist! But the program kept going."</span>)
+
+<span class="keyword">print</span>(<span class="string">"This line runs no matter what."</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>That file doesn't exist! But the program kept going.
+This line runs no matter what.</pre>
+  </div>
+
+  <h3 style="font-size:1rem;margin-top:1.25rem;">Common beginner errors</h3>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">common_errors.py</span>
+    </div>
+    <pre><span class="comment"># NameError: misspelled a variable name</span>
+name = <span class="string">"Alice"</span>
+<span class="keyword">print</span>(nme)            <span class="comment"># NameError: name 'nme' is not defined</span>
+
+<span class="comment"># TypeError: mixed up types</span>
+<span class="keyword">print</span>(<span class="string">"Age: "</span> + <span class="number">25</span>)   <span class="comment"># TypeError: can only concatenate str (not "int") to str</span>
+
+<span class="comment"># IndentationError: spacing is wrong</span>
+<span class="comment">#   print("hello")   # ← this line has wrong indentation</span>
+<span class="keyword">print</span>(<span class="string">"ok"</span>)          <span class="comment"># ← this one is fine</span></pre>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 10: Using Libraries -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">📚 Using Libraries</h2>
+  <p class="section-desc">Installing and importing code that other people wrote.</p>
+
+  <p>Python has a huge ecosystem of <strong>libraries</strong> — code packages written by other people that you can use. You install them with <code>pip</code>:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">terminal</span>
+    </div>
+    <pre>pip install requests</pre>
+  </div>
+
+  <p>Then you can use it in your code:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">library_demo.py</span>
+    </div>
+    <pre><span class="keyword">import</span> requests
+
+response = requests.get(<span class="string">"https://api.github.com"</span>)
+data = response.json()
+
+<span class="keyword">print</span>(data[<span class="string">"current_user_url"</span>])</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>https://api.github.com/user</pre>
+  </div>
+
+  <div class="info-box info">
+    <strong>📦 What is <code>import</code>?</strong>
+    <code>import</code> loads a library into your program so you can use its functions. Think of it like borrowing a toolbox — someone else built the tools, you just use them.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 11: Virtual Environments -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">🧪 Virtual Environments</h2>
+  <p class="section-desc">Keeping each project's dependencies separate.</p>
+
+  <p>A <strong>virtual environment</strong> is an isolated space for each Python project. It keeps libraries from one project from interfering with another. Here's the workflow:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">terminal</span>
+    </div>
+    <pre><span class="comment"># Step 1: Create a virtual environment</span>
+python3 -m venv myenv
+
+<span class="comment"># Step 2: Activate it</span>
+<span class="comment"># On Mac/Linux:</span>
+<span class="keyword">source</span> myenv/bin/activate
+
+<span class="comment"># On Windows:</span>
+<span class="comment"># myenv\Scripts\activate</span>
+
+<span class="comment"># Step 3: Install libraries inside the environment</span>
+pip install requests</pre>
+  </div>
+
+  <p>You'll know it's active because you'll see <code>(myenv)</code> at the start of your terminal prompt. To leave the environment, type <code>deactivate</code>.</p>
+
+  <div class="info-box warn">
+    <strong>⚠️ Always use a virtual environment!</strong>
+    Never install project libraries globally. Each project gets its own virtual environment. This is one of the first things professionals check.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECTION 12: Bringing It All Together -->
+  <!-- ============================================================ -->
+  <h2 class="section-title">🎯 Bringing It All Together</h2>
+  <p class="section-desc">A short script that uses everything you've learned.</p>
+
+  <p>Here's a complete script that creates a list of AI topics, loops through them, stores the data in a dictionary, saves it to a JSON file, and reads it back — all with error handling:</p>
+  <div class="code-block">
+    <div class="header">
+      <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <span class="filename">final_script.py</span>
+    </div>
+    <pre><span class="keyword">import</span> json
+
+<span class="keyword">def</span> <span class="func">process_topics</span>(topic_list):
+    <span class="string">"""Turns a list of topics into score data."""</span>
+    results = []
+    <span class="keyword">for</span> topic <span class="keyword">in</span> topic_list:
+        entry = {
+            <span class="string">"topic"</span>: topic,
+            <span class="string">"length"</span>: len(topic),
+            <span class="string">"processed"</span>: <span class="keyword">True</span>
+        }
+        results.append(entry)
+    <span class="keyword">return</span> results
+
+<span class="keyword">def</span> <span class="func">save_to_json</span>(data, filename):
+    <span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"w"</span>) <span class="keyword">as</span> f:
+        json.dump(data, f, indent=<span class="number">2</span>)
+    <span class="keyword">print</span>(<span class="string">f"Saved to {filename}"</span>)
+
+<span class="keyword">def</span> <span class="func">load_from_json</span>(filename):
+    <span class="keyword">try</span>:
+        <span class="keyword">with</span> <span class="keyword">open</span>(filename, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+            <span class="keyword">return</span> json.load(f)
+    <span class="keyword">except</span> FileNotFoundError:
+        <span class="keyword">print</span>(<span class="string">"File not found!"</span>)
+        <span class="keyword">return</span> []
+
+<span class="comment"># --- Run it! ---</span>
+topics = [<span class="string">"RAG"</span>, <span class="string">"Agents"</span>, <span class="string">"Fine-tuning"</span>, <span class="string">"Embeddings"</span>]
+results = <span class="func">process_topics</span>(topics)
+<span class="func">save_to_json</span>(results, <span class="string">"ai_topics.json"</span>)
+loaded = <span class="func">load_from_json</span>(<span class="string">"ai_topics.json"</span>)
+
+<span class="keyword">for</span> item <span class="keyword">in</span> loaded:
+    <span class="keyword">print</span>(<span class="string">f"{item['topic']}: {item['length']} characters"</span>)</pre>
+  </div>
+
+  <div class="output-block">
+    <div class="header"><span class="filename">output</span></div>
+    <pre>Saved to ai_topics.json
+RAG: 3 characters
+Agents: 6 characters
+Fine-tuning: 11 characters
+Embeddings: 10 characters</pre>
+  </div>
+
+  <!-- ============================================================ -->
   <!-- SVG Architecture Diagram -->
-  <h2 class="section-title">🏗️ Python in the AI Stack</h2>
-  <p class="section-desc">How Python connects every layer of an AI engineering system.</p>
+  <!-- ============================================================ -->
+  <h2 class="section-title">🏗️ How Python Works</h2>
+  <p class="section-desc">A simple picture of how code becomes output.</p>
   <div class="arch-wrapper">
-    <svg viewBox="0 0 880 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Background layers -->
-      <rect x="0" y="0" width="880" height="320" rx="8" fill="var(--card-bg)" opacity="0"/>
+    <svg viewBox="0 0 800 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Row 1: You Write Code → Python Runs It → Output -->
+      <rect x="50" y="20" width="180" height="70" rx="10" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="140" y="50" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600" font-family="var(--font)">✏️ You Write Code</text>
+      <text x="140" y="72" text-anchor="middle" fill="var(--text-secondary)" font-size="10" font-family="var(--font)">hello.py</text>
 
-      <!-- Python Core -->
-      <rect x="330" y="10" width="220" height="50" rx="8" fill="url(#pyGrad)" stroke="var(--accent)" stroke-width="2"/>
-      <text x="440" y="42" text-anchor="middle" fill="white" font-size="16" font-weight="700" font-family="var(--font)">🐍 Python Core</text>
+      <text x="269" y="58" text-anchor="middle" fill="var(--text-secondary)" font-size="20" font-family="var(--font)">→</text>
 
-      <!-- Connecting lines down from Python -->
-      <line x1="440" y1="60" x2="440" y2="85" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3"/>
+      <rect x="310" y="20" width="180" height="70" rx="10" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="400" y="50" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600" font-family="var(--font)">🐍 Python Runs It</text>
+      <text x="400" y="72" text-anchor="middle" fill="var(--text-secondary)" font-size="10" font-family="var(--font)">python3 hello.py</text>
 
-      <!-- Row 1: Key Libraries -->
-      <rect x="90" y="85" width="160" height="42" rx="6" fill="var(--accent-light)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="170" y="113" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">asyncio · httpx · aiohttp</text>
+      <text x="529" y="58" text-anchor="middle" fill="var(--text-secondary)" font-size="20" font-family="var(--font)">→</text>
 
-      <line x1="250" y1="106" x2="340" y2="106" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <rect x="570" y="20" width="180" height="70" rx="10" fill="var(--success-light)" stroke="var(--success)" stroke-width="2"/>
+      <text x="660" y="50" text-anchor="middle" fill="var(--success)" font-size="13" font-weight="600" font-family="var(--font)">📤 You Get Output</text>
+      <text x="660" y="72" text-anchor="middle" fill="var(--text-secondary)" font-size="10" font-family="var(--font)">Hello, world!</text>
 
-      <rect x="340" y="85" width="200" height="42" rx="6" fill="var(--accent-light)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="440" y="113" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">openai · anthropic · requests</text>
+      <!-- Row 2: Variables → Functions → Files → Libraries -->
+      <line x1="140" y1="90" x2="140" y2="125" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="400" y1="90" x2="400" y2="125" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="660" y1="90" x2="660" y2="125" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
 
-      <line x1="540" y1="106" x2="630" y2="106" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <rect x="40" y="130" width="120" height="50" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5"/>
+      <text x="100" y="152" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600" font-family="var(--font)">📦 Variables</text>
+      <text x="100" y="169" text-anchor="middle" fill="var(--text-secondary)" font-size="9" font-family="var(--font)">Store data</text>
 
-      <rect x="630" y="85" width="160" height="42" rx="6" fill="var(--accent-light)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="710" y="113" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">json · pathlib · csv</text>
+      <text x="199" y="160" text-anchor="middle" fill="var(--text-secondary)" font-size="16" font-family="var(--font)">→</text>
 
-      <!-- Row 2: What you build -->
-      <line x1="170" y1="127" x2="170" y2="150" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <line x1="440" y1="127" x2="440" y2="150" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <line x1="710" y1="127" x2="710" y2="150" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <rect x="240" y="130" width="120" height="50" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5"/>
+      <text x="300" y="152" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600" font-family="var(--font)">🔧 Functions</text>
+      <text x="300" y="169" text-anchor="middle" fill="var(--text-secondary)" font-size="9" font-family="var(--font)">Reuse code</text>
 
-      <rect x="50" y="150" width="240" height="60" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5" filter="url(#shadow)"/>
-      <text x="170" y="175" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">⚡ Async API Client</text>
-      <text x="170" y="195" text-anchor="middle" fill="var(--text-secondary)" font-size="10">Concurrent LLM calls · parallel I/O</text>
+      <text x="399" y="160" text-anchor="middle" fill="var(--text-secondary)" font-size="16" font-family="var(--font)">→</text>
 
-      <rect x="320" y="150" width="240" height="60" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5" filter="url(#shadow)"/>
-      <text x="440" y="175" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">🧠 Data Pipeline</text>
-      <text x="440" y="195" text-anchor="middle" fill="var(--text-secondary)" font-size="10">Parse · transform · store JSON</text>
+      <rect x="440" y="130" width="120" height="50" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5"/>
+      <text x="500" y="152" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600" font-family="var(--font)">📂 Files</text>
+      <text x="500" y="169" text-anchor="middle" fill="var(--text-secondary)" font-size="9" font-family="var(--font)">Save/load data</text>
 
-      <rect x="590" y="150" width="240" height="60" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5" filter="url(#shadow)"/>
-      <text x="710" y="175" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="600">🔧 CLI Tool</text>
-      <text x="710" y="195" text-anchor="middle" fill="var(--text-secondary)" font-size="10">argparse · typer · click</text>
+      <text x="599" y="160" text-anchor="middle" fill="var(--text-secondary)" font-size="16" font-family="var(--font)">→</text>
 
-      <!-- Row 3: External world -->
-      <line x1="170" y1="210" x2="170" y2="233" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <line x1="440" y1="210" x2="440" y2="233" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <line x1="710" y1="210" x2="710" y2="233" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <rect x="640" y="130" width="120" height="50" rx="8" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1.5"/>
+      <text x="700" y="152" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600" font-family="var(--font)">📚 Libraries</text>
+      <text x="700" y="169" text-anchor="middle" fill="var(--text-secondary)" font-size="9" font-family="var(--font)">Borrow tools</text>
 
-      <rect x="50" y="233" width="240" height="40" rx="6" fill="var(--success-light)" stroke="var(--success)" stroke-width="1.5"/>
-      <text x="170" y="258" text-anchor="middle" fill="var(--success)" font-size="12" font-weight="600">🌐 LLM APIs (OpenAI, Anthropic, etc.)</text>
-
-      <rect x="320" y="233" width="240" height="40" rx="6" fill="var(--warn-light)" stroke="var(--warn)" stroke-width="1.5"/>
-      <text x="440" y="258" text-anchor="middle" fill="var(--warn)" font-size="12" font-weight="600">💾 Files · Databases · APIs</text>
-
-      <rect x="590" y="233" width="240" height="40" rx="6" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="1.5"/>
-      <text x="710" y="258" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="600">📦 pip · uv · venv</text>
-
-      <!-- Gradient defs -->
       <defs>
         <linearGradient id="pyGrad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#6366f1"/>
           <stop offset="100%" stop-color="#4f46e5"/>
         </linearGradient>
-        <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
-        </filter>
       </defs>
     </svg>
-    <div class="arch-label">Python sits at the center — connecting async I/O libraries, LLM SDKs, data handling tools, and deployment infrastructure.</div>
+    <div class="arch-label">You write code → Python interprets it → You get output. Variables, functions, files, and libraries are the four tools you'll use most.</div>
   </div>
 
-  <!-- Checklist -->
-  <div class="checklist-section">
-    <h3>✅ Module Progress</h3>
-    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
-    <div id="checklist-root"></div>
-  </div>
-
-  <!-- Card Grid: Core Topics -->
-  <h2 class="section-title">📦 Core Topics</h2>
-  <p class="section-desc">Five pillars of Python that every AI engineer needs to own.</p>
-
-  <div class="card-grid">
-    <div class="topic-card">
-      <div class="icon">🔧</div>
-      <h3>Functions</h3>
-      <p><code>def</code>, args/kwargs, return types, type hints, <code>lambda</code>, decorators, context managers</p>
-      <div class="tags">
-        <span class="tag">#fundamental</span>
-        <span class="tag">#type-hints</span>
-        <span class="tag">#decorators</span>
-      </div>
-    </div>
-    <div class="topic-card">
-      <div class="icon">🏗️</div>
-      <h3>Classes + OOP</h3>
-      <p>Inheritance, dunder methods, <code>dataclasses</code>, properties, ABCs</p>
-      <div class="tags">
-        <span class="tag">#inheritance</span>
-        <span class="tag">#dataclasses</span>
-        <span class="tag">#dunder</span>
-      </div>
-    </div>
-    <div class="topic-card">
-      <div class="icon">⚡</div>
-      <h3>Async / Await</h3>
-      <p><code>asyncio</code>, async/await syntax, <code>httpx</code> client, concurrent API calls</p>
-      <div class="tags">
-        <span class="tag">#asyncio</span>
-        <span class="tag">#concurrency</span>
-        <span class="tag">#httpx</span>
-      </div>
-    </div>
-    <div class="topic-card">
-      <div class="icon">📦</div>
-      <h3>Virtual Environments</h3>
-      <p><code>venv</code>, <code>uv</code> for speed, <code>pip</code>, <code>requirements.txt</code> vs <code>pyproject.toml</code></p>
-      <div class="tags">
-        <span class="tag">#venv</span>
-        <span class="tag">#uv</span>
-        <span class="tag">#packaging</span>
-      </div>
-    </div>
-    <div class="topic-card">
-      <div class="icon">📂</div>
-      <h3>File I/O + JSON</h3>
-      <p><code>open()</code>, <code>pathlib</code>, JSON read/write, CSV, error handling</p>
-      <div class="tags">
-        <span class="tag">#pathlib</span>
-        <span class="tag">#json</span>
-        <span class="tag">#io</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tabs: Code Examples -->
-  <h2 class="section-title">💻 Code Examples</h2>
-  <p class="section-desc">Real patterns you'll use every day as an AI engineer.</p>
-
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('functions', this)">functions.py</button>
-    <button class="tab-btn" onclick="switchTab('classes', this)">classes.py</button>
-    <button class="tab-btn" onclick="switchTab('async-demo', this)">async_demo.py</button>
-    <button class="tab-btn" onclick="switchTab('env', this)">env_setup.sh</button>
-    <button class="tab-btn" onclick="switchTab('io', this)">file_io.py</button>
-  </div>
-
-  <!-- Tab: Functions -->
-  <div id="tab-functions" class="tab-content active">
-    <div class="code-block">
-      <div class="header">
-        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-        <span class="filename">functions.py</span>
-      </div>
-<pre><span class="comment"># ==============================</span>
-<span class="comment"># Functions — the AI engineer's bread and butter</span>
-<span class="comment"># ==============================</span>
-
-<span class="keyword">from</span> typing <span class="keyword">import</span> List, Dict, Optional, Callable
-<span class="keyword">import</span> time
-
-<span class="comment"># Basic function with type hints</span>
-<span class="keyword">def</span> <span class="func">call_llm</span>(prompt: str, model: <span class="type">str</span> = <span class="string">"gpt-4o-mini"</span>) -> Dict[str, <span class="type">str</span>]:
-    <span class="string">"""Simulate an LLM API call. Returns a response dict."""</span>
-    <span class="keyword">return</span> {<span class="string">"role"</span>: model, <span class="string">"content"</span>: f<span class="string">"Response to: {prompt[:50]}..."</span>}
-
-<span class="comment"># *args and **kwargs (common in AI SDK wrappers)</span>
-<span class="keyword">def</span> <span class="func">api_wrapper</span>(endpoint: str, *args, **kwargs) -> <span class="type">None</span>:
-    <span class="string">"""Flexible API wrapper pattern."""</span>
-    headers = kwargs.get(<span class="string">"headers"</span>, {})
-    timeout = kwargs.get(<span class="string">"timeout"</span>, 30)
-    print(f<span class="string">"Calling {endpoint} with timeout={timeout}"</span>)
-
-<span class="comment"># Lambda — inline functions for quick transformations</span>
-topics = [<span class="string">"RAG"</span>, <span class="string">"agents"</span>, <span class="string">"fine-tuning"</span>]
-capitalise = <span class="keyword">lambda</span> x: x.upper()
-print(list(map(capitalise, topics)))  <span class="comment"># ['RAG', 'AGENTS', 'FINE-TUNING']</span>
-
-<span class="comment"># Decorator — timing wrapper for profiling LLM calls</span>
-<span class="decorator">@decorator</span>
-<span class="keyword">def</span> <span class="func">timer</span>(func: Callable) -> Callable:
-    <span class="keyword">def</span> <span class="func">wrapper</span>(*args, **kwargs):
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        elapsed = time.perf_counter() - start
-        print(f<span class="string">"[{func.__name__}] took {elapsed:.3f}s"</span>)
-        <span class="keyword">return</span> result
-    <span class="keyword">return</span> wrapper
-
-<span class="decorator">@timer</span>
-<span class="keyword">def</span> <span class="func">fetch_data</span>(url: str) -> <span class="type">str</span>:
-    <span class="keyword">return</span> <span class="string">"simulated response"</span>
-
-fetch_data(<span class="string">"https://api.openai.com/v1/chat/completions"</span>)</pre>
-    </div>
-  </div>
-
-  <!-- Tab: Classes -->
-  <div id="tab-classes" class="tab-content">
-    <div class="code-block">
-      <div class="header">
-        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-        <span class="filename">classes.py</span>
-      </div>
-<pre><span class="comment"># ==============================</span>
-<span class="comment"># Classes + OOP — modelling AI concepts</span>
-<span class="comment"># ==============================</span>
-
-<span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass, field
-<span class="keyword">from</span> typing <span class="keyword">import</span> List, Optional
-<span class="keyword">from</span> abc <span class="keyword">import</span> ABC, abstractmethod
-
-<span class="comment"># Dataclass — zero-boilerplate data container</span>
-<span class="decorator">@dataclass</span>
-<span class="keyword">class</span> <span class="func">LLMResponse</span>:
-    model: <span class="type">str</span>
-    content: <span class="type">str</span>
-    tokens_used: <span class="type">int</span> = <span class="number">0</span>
-    metadata: Dict[str, <span class="type">str</span>] = field(default_factory=dict)
-
-    <span class="keyword">def</span> <span class="func">__post_init__</span>(self):
-        <span class="keyword">if</span> self.tokens_used < <span class="number">0</span>:
-            <span class="keyword">raise</span> ValueError(<span class="string">"tokens_used cannot be negative"</span>)
-
-<span class="comment"># Property — controlled attribute access</span>
-<span class="keyword">class</span> <span class="func">ModelConfig</span>:
-    <span class="keyword">def</span> <span class="func">__init__</span>(self, name: str, max_tokens: int):
-        self._name = name
-        self._max_tokens = max_tokens
-
-    <span class="decorator">@property</span>
-    <span class="keyword">def</span> <span class="func">max_tokens</span>(self) -> <span class="type">int</span>:
-        <span class="keyword">return</span> self._max_tokens
-
-    <span class="decorator">@max_tokens.setter</span>
-    <span class="keyword">def</span> <span class="func">max_tokens</span>(self, value: int):
-        <span class="keyword">if</span> value < <span class="number">1</span> <span class="keyword">or</span> value > <span class="number">128_000</span>:
-            <span class="keyword">raise</span> ValueError(<span class="string">"max_tokens out of range"</span>)
-        self._max_tokens = value
-
-<span class="comment"># Abstract Base Class — contract for LLM providers</span>
-<span class="keyword">class</span> <span class="func">LLMProvider</span>(ABC):
-    <span class="decorator">@abstractmethod</span>
-    <span class="keyword">def</span> <span class="func">generate</span>(self, prompt: str) -> LLMResponse:
-        ...
-
-    <span class="decorator">@abstractmethod</span>
-    <span class="keyword">def</span> <span class="func">count_tokens</span>(self, text: str) -> <span class="type">int</span>:
-        ...
-
-<span class="keyword">class</span> <span class="func">OpenAIProvider</span>(LLMProvider):
-    <span class="keyword">def</span> <span class="func">generate</span>(self, prompt: str) -> LLMResponse:
-        <span class="keyword">return</span> LLMResponse(model=<span class="string">"gpt-4o"</span>, content=<span class="string">"..."</span>, tokens_used=<span class="number">50</span>)
-
-    <span class="keyword">def</span> <span class="func">count_tokens</span>(self, text: str) -> <span class="type">int</span>:
-        <span class="keyword">return</span> len(text.split()) * <span class="number">2</span></pre>
-    </div>
-  </div>
-
-  <!-- Tab: Async -->
-  <div id="tab-async-demo" class="tab-content">
-    <div class="code-block">
-      <div class="header">
-        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-        <span class="filename">async_demo.py</span>
-      </div>
-<pre><span class="comment"># ==============================</span>
-<span class="comment"># Async — the superpower every AI engineer needs</span>
-<span class="comment"># ==============================</span>
-
-<span class="keyword">import</span> asyncio
-<span class="keyword">import</span> httpx
-<span class="keyword">from</span> typing <span class="keyword">import</span> List, Dict
-
-<span class="comment"># Single async function — the basic unit</span>
-<span class="keyword">async</span> <span class="keyword">def</span> <span class="func">fetch_one</span>(client: httpx.AsyncClient, topic: str) -> Dict[str, <span class="type">str</span>]:
-    <span class="comment"># In real code: call OpenAI/Anthropic here</span>
-    <span class="keyword">await</span> asyncio.sleep(<span class="number">0.5</span>)  <span class="comment"># simulate network call</span>
-    <span class="keyword">return</span> {<span class="string">"topic"</span>: topic, <span class="string">"summary"</span>: f<span class="string">"Key insights about {topic}"</span>}
-
-<span class="comment"># Concurrent fan-out — the killer pattern for AI engineering</span>
-<span class="keyword">async</span> <span class="keyword">def</span> <span class="func">process_topics</span>(topics: List[str]) -> List[Dict]:
-    <span class="keyword">async</span> <span class="keyword">with</span> httpx.AsyncClient(timeout=<span class="number">30</span>) <span class="keyword">as</span> client:
-        tasks = [fetch_one(client, topic) <span class="keyword">for</span> topic <span class="keyword">in</span> topics]
-        results = <span class="keyword">await</span> asyncio.gather(*tasks, return_exceptions=<span class="type">True</span>)
-
-    <span class="comment"># Handle errors per-task (never fail silently)</span>
-    output = []
-    <span class="keyword">for</span> topic, result <span class="keyword">in</span> zip(topics, results):
-        <span class="keyword">if</span> isinstance(result, Exception):
-            output.append({<span class="string">"topic"</span>: topic, <span class="string">"error"</span>: str(result)})
-        <span class="keyword">else</span>:
-            output.append(result)
-    <span class="keyword">return</span> output
-
-<span class="comment"># Entry point</span>
-<span class="keyword">async</span> <span class="keyword">def</span> <span class="func">main</span>():
-    topics = [<span class="string">"RAG pipelines"</span>, <span class="string">"agent orchestration"</span>,
-              <span class="string">"embedding models"</span>, <span class="string">"fine-tuning strategies"</span>]
-    results = <span class="keyword">await</span> process_topics(topics)
-    <span class="keyword">for</span> r <span class="keyword">in</span> results:
-        print(r)
-
-<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
-    asyncio.run(main())</pre>
-    </div>
-  </div>
-
-  <!-- Tab: Env -->
-  <div id="tab-env" class="tab-content">
-    <div class="code-block">
-      <div class="header">
-        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-        <span class="filename">env_setup.sh</span>
-      </div>
-<pre><span class="comment"># ==============================</span>
-<span class="comment"># Environment management — never pip install globally</span>
-<span class="comment"># ==============================</span>
-
-<span class="comment"># Traditional venv (built-in)</span>
-python3 -m venv .venv
-<span class="keyword">source</span> .venv/bin/activate
-pip install httpx openai anthropic
-
-<span class="comment"># Modern: uv (10-100x faster, Rust-based)</span>
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv
-<span class="keyword">source</span> .venv/bin/activate
-uv pip install httpx openai anthropic
-
-<span class="comment"># Dependencies — recommend pyproject.toml over requirements.txt</span>
-cat > pyproject.toml << EOF
-[project]
-name = <span class="string">"ai-toolkit"</span>
-version = <span class="string">"0.1.0"</span>
-dependencies = [
-    <span class="string">"httpx>=0.27"</span>,
-    <span class="string">"openai>=1.0"</span>,
-    <span class="string">"anthropic>=0.30"</span>,
-]
-EOF
-
-uv sync  <span class="comment"># installs everything from pyproject.toml</span>
-
-<span class="comment"># Freeze existing</span>
-pip freeze > requirements.txt
-<span class="comment"># Or with uv:</span>
-uv pip freeze > requirements.txt</pre>
-    </div>
-  </div>
-
-  <!-- Tab: I/O -->
-  <div id="tab-io" class="tab-content">
-    <div class="code-block">
-      <div class="header">
-        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-        <span class="filename">file_io.py</span>
-      </div>
-<pre><span class="comment"># ==============================</span>
-<span class="comment"># File I/O + JSON — persisting AI outputs</span>
-<span class="comment"># ==============================</span>
-
-<span class="keyword">import</span> json
-<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
-<span class="keyword">from</span> typing <span class="keyword">import</span> List, Dict, Any
-
-<span class="comment"># pathlib — the modern way (avoid os.path)</span>
-output_dir = Path(<span class="string">"output"</span>)
-output_dir.mkdir(parents=<span class="type">True</span>, exist_ok=<span class="type">True</span>)
-
-<span class="comment"># Writing JSON with proper encoding</span>
-<span class="keyword">def</span> <span class="func">save_results</span>(filepath: Path, data: List[Dict[str, <span class="type">Any</span>]]) -> <span class="type">None</span>:
-    <span class="keyword">with</span> open(filepath, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
-        json.dump(data, f, indent=<span class="number">2</span>, ensure_ascii=<span class="type">False</span>)
-
-<span class="comment"># Reading JSON with error handling</span>
-<span class="keyword">def</span> <span class="func">load_results</span>(filepath: Path) -> List[Dict[str, <span class="type">Any</span>]]:
-    <span class="keyword">if not</span> filepath.exists():
-        <span class="keyword">return</span> []
-    <span class="keyword">with</span> open(filepath, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
-        <span class="keyword">return</span> json.load(f)
-
-<span class="comment"># Usage</span>
-results = [
-    {<span class="string">"topic"</span>: <span class="string">"RAG"</span>, <span class="string">"summary"</span>: <span class="string">"..."</span>},
-    {<span class="string">"topic"</span>: <span class="string">"Agents"</span>, <span class="string">"summary"</span>: <span class="string">"..."</span>},
-]
-save_results(output_dir / <span class="string">"llm_results.json"</span>, results)
-loaded = load_results(output_dir / <span class="string">"llm_results.json"</span>)</pre>
-    </div>
-  </div>
-
-  <!-- Pitfalls -->
+  <!-- ============================================================ -->
+  <!-- PITFALLS -->
+  <!-- ============================================================ -->
   <h2 class="section-title">⚠️ Common Pitfalls</h2>
-  <p class="section-desc">These will break your production AI code. Avoid them from day one.</p>
+  <p class="section-desc">Mistakes every beginner makes — learn to spot them early.</p>
 
   <ul class="pitfall-list">
     <li>
       <span class="p-icon">🔥</span>
       <div class="p-text">
-        <strong>Blocking the event loop</strong> — Calling <code>time.sleep()</code> or <code>requests.get()</code>
-        inside an <code>async</code> function blocks ALL concurrent tasks. Always use <code>await asyncio.sleep()</code>
-        and <code>httpx.AsyncClient</code> in async code.
+        <strong>Forgetting the colon</strong> — Every <code>if</code>, <code>for</code>, <code>def</code>, and <code>class</code> line must end with a colon (<code>:</code>).
+        <code>if score > 50:</code> ✅ — <code>if score > 50</code> ❌
+      </div>
+    </li>
+    <li>
+      <span class="p-icon">🚨</span>
+      <div class="p-text">
+        <strong>Indentation errors</strong> — Python uses indentation (spaces/tabs) to know which code belongs inside a block. Mixed tabs and spaces or missing indentation = error. Always use 4 spaces.
+      </div>
+    </li>
+    <li>
+      <span class="p-icon">🧨</span>
+      <div class="p-text">
+        <strong>Forgetting to activate your virtual environment</strong> — You install a library, your code says <code>ModuleNotFoundError</code>. You probably installed it globally but your project's venv isn't active. <code>source myenv/bin/activate</code> first!
       </div>
     </li>
     <li>
       <span class="p-icon">💣</span>
       <div class="p-text">
-        <strong>Mutable default arguments</strong> —
-        <code>def fetch(topics=[])</code> shares the SAME list across all calls.
-        Always use <code>def fetch(topics=None)</code> and default to <code>None</code>,
-        then assign inside the function.
+        <strong>Variable name errors (typos)</strong> — <code>name = "Alice"</code> then <code>print(nme)</code> gives a <code>NameError</code>. Python is case-sensitive — <code>Name</code> and <code>name</code> are different!
       </div>
     </li>
     <li>
-      <span class="p-icon">📦</span>
+      <span class="p-icon">🔑</span>
       <div class="p-text">
-        <strong>Shallow venv understanding</strong> — Running <code>pip install</code> globally
-        (or without an active venv) will break your system Python eventually.
-        Always create and activate a virtual environment. Use <code>uv</code> for speed.
+        <strong>Hardcoding secrets</strong> — Never put API keys, passwords, or tokens directly in your code. Use environment variables or a <code>.env</code> file. And never commit secrets to GitHub!
       </div>
     </li>
     <li>
-      <span class="p-icon">👻</span>
+      <span class="p-icon">📏</span>
       <div class="p-text">
-        <strong>Ignoring type hints</strong> — Raw dicts everywhere with no type annotations
-        make code unreadable at scale. Use <code>dataclasses</code> for structured data and
-        always annotate function signatures with proper types.
-      </div>
-    </li>
-    <li>
-      <span class="p-icon">🌊</span>
-      <div class="p-text">
-        <strong>Swallowing exceptions silently</strong> — Bare <code>except:</code> with no logging
-        hides bugs. Always log errors (or use <code>return_exceptions=True</code> in gather) and
-        handle failures per-task, not at the global level.
+        <strong>Confusing <code>==</code> and <code>=</code></strong> — <code>=</code> assigns a value (<code>x = 5</code>). <code>==</code> checks if two things are equal (<code>if x == 5</code>). Using the wrong one breaks your code.
       </div>
     </li>
   </ul>
 
-  <!-- Exercises -->
+  <!-- ============================================================ -->
+  <!-- EXERCISES -->
+  <!-- ============================================================ -->
   <h2 class="section-title">🏋️ Exercises</h2>
-  <p class="section-desc">Complete these to prove you can use Python for AI engineering work.</p>
+  <p class="section-desc">Practice makes permanent. Complete these in order.</p>
 
   <div class="exercise-card">
-    <h3><span class="ex-num">1</span> Warm-up: Type-Hinted Function Library</h3>
+    <h3><span class="ex-num">1</span> List of AI Topics</h3>
     <div class="desc">
-      Write a Python file <code>ai_utils.py</code> with three functions using proper type hints:
+      Write a script called <code>topics.py</code> that:
       <ul style="margin-top:.4rem;padding-left:1.2rem;color:var(--text-secondary);font-size:.88rem;">
-        <li><code>chunk_text(text: str, chunk_size: int) -> List[str]</code> — split text into chunks</li>
-        <li><code>format_prompt(system: str, user: str) -> Dict[str, str]</code> — build request dict</li>
-        <li><code>retry(max_retries: int = 3) -> Callable</code> — decorator that retries on failure</li>
+        <li>Creates a list with 3 AI topic names (e.g., <code>"Machine Learning"</code>, <code>"Neural Networks"</code>, <code>"Computer Vision"</code>)</li>
+        <li>Loops through the list with a <code>for</code> loop</li>
+        <li>Prints each topic in the format <code>"Topic: [name]"</code></li>
       </ul>
     </div>
     <div class="criteria">
       <strong>✅ Success criteria:</strong>
       <ul style="padding-left:1.2rem;margin-top:.25rem;">
-        <li>All functions have complete type annotations</li>
-        <li><code>retry</code> is a working decorator that retries on exception</li>
-        <li>Runs with <code>python -c "from ai_utils import chunk_text, format_prompt; print(chunk_text('hello world', 5))"</code></li>
-        <li>No <code>Any</code> types — use specific generics</li>
+        <li>Run <code>python3 topics.py</code> and see all 3 topics printed</li>
+        <li>Each line starts with "Topic: "</li>
       </ul>
     </div>
   </div>
 
   <div class="exercise-card">
-    <h3><span class="ex-num">2</span> Data Pipeline with Dataclasses</h3>
+    <h3><span class="ex-num">2</span> Function + Dict + File</h3>
     <div class="desc">
-      Build a mini data pipeline that reads a JSON file, transforms it, and writes the result.
-      Use a <code>@dataclass</code> for your data model.
+      Write a script called <code>student.py</code> that:
+      <ul style="margin-top:.4rem;padding-left:1.2rem;color:var(--text-secondary);font-size:.88rem;">
+        <li>Defines a function <code>make_student(name, score)</code> that returns a dictionary <code>{"name": name, "score": score}</code></li>
+        <li>Creates two students by calling the function</li>
+        <li>Puts them in a list</li>
+        <li>Saves the list to <code>students.json</code> using <code>json.dump</code></li>
+        <li>Reads the file back and prints each student</li>
+      </ul>
     </div>
     <div class="criteria">
       <strong>✅ Success criteria:</strong>
       <ul style="padding-left:1.2rem;margin-top:.25rem;">
-        <li>One <code>@dataclass</code> with at least 3 fields and validation in <code>__post_init__</code></li>
-        <li>Reads a JSON array from disk using <code>pathlib</code></li>
-        <li>Transforms each item and writes a new JSON file</li>
-        <li>Uses proper error handling (file not found, malformed JSON)</li>
+        <li>Run <code>python3 student.py</code> — no errors</li>
+        <li>A file called <code>students.json</code> exists with valid JSON content</li>
+        <li>The script prints both students after reading the file</li>
       </ul>
     </div>
   </div>
 
-  <!-- Main Exercise -->
   <div class="exercise-card" style="border:2px solid var(--accent);">
-    <h3><span class="ex-num" style="background:var(--accent-hover)">★</span> Main Deliverable: Async CLI Tool</h3>
+    <h3><span class="ex-num" style="background:var(--accent-hover)">3</span> Topic Processor with Error Handling</h3>
     <div class="desc">
-      Build a CLI tool called <code>llm_batch.py</code> that takes a list of topics (from command-line
-      arguments or a file), calls an LLM API (or simulates the call) <strong>concurrently</strong> using
-      <code>asyncio</code> and <code>httpx</code>, and writes the results to a JSON file.
+      Write a script called <code>topic_processor.py</code> that:
+      <ul style="margin-top:.4rem;padding-left:1.2rem;color:var(--text-secondary);font-size:.88rem;">
+        <li>Reads a list of topics from a text file called <code>topics.txt</code> (one topic per line)</li>
+        <li>If <code>topics.txt</code> doesn't exist, creates it with some default topics</li>
+        <li>Defines a function that "processes" each topic by calculating its character count and uppercasing the name</li>
+        <li>Saves the results to <code>processed_topics.json</code></li>
+        <li>Prints the results using a loop</li>
+      </ul>
     </div>
     <div class="criteria">
       <strong>✅ Success criteria:</strong>
       <ul style="padding-left:1.2rem;margin-top:.25rem;">
-        <li>Uses <code>asyncio.gather</code> with <code>return_exceptions=True</code></li>
-        <li>Each topic gets its own concurrent task — no sequential waiting</li>
-        <li>Handles errors per-topic (one failure doesn't kill the batch)</li>
-        <li>Writes results to <code>output/results.json</code> with proper JSON formatting</li>
-        <li>Accepts topics via CLI args: <code>python llm_batch.py "RAG" "Agents" "Embeddings"</code></li>
-        <li>Runs with one command and produces valid JSON output</li>
+        <li>Run <code>python3 topic_processor.py</code> — no errors</li>
+        <li>Run it <em>twice</em> — the second run should read the existing <code>topics.txt</code> and process it</li>
+        <li><code>processed_topics.json</code> contains valid JSON with topic name, length, and uppercase version</li>
       </ul>
-    </div>
-    <div class="info-box info" style="margin-top:.75rem;">
-      <strong>💡 Simulation mode</strong>
-      If you don't have an API key yet, simulate the LLM call with
-      <code>await asyncio.sleep(random.uniform(0.3, 1.0))</code> and return a mock response.
-      The async pattern is the same either way.
     </div>
   </div>
 
-  <!-- Deliverable Box -->
-  <div class="deliverable">
-    <h3>🎯 Verifiable Deliverable</h3>
-    <p>
-      By the end of this module, you should have these files committed to your GitHub repo:
-    </p>
-    <ul style="padding-left:1.2rem;font-size:.88rem;color:var(--text-secondary);">
-      <li><code>ai_utils.py</code> — type-hinted function library</li>
-      <li><code>pipeline.py</code> — dataclass-based data pipeline</li>
-      <li><code>llm_batch.py</code> — async CLI tool (★ main deliverable)</li>
-      <li><code>output/results.json</code> — sample output from your batch tool</li>
-      <li><code>pyproject.toml</code> or <code>requirements.txt</code> — project dependencies</li>
-    </ul>
+  <!-- ============================================================ -->
+  <!-- CHECKLIST -->
+  <!-- ============================================================ -->
+  <div class="checklist-section">
+    <h3>✅ Module Progress</h3>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="checklist-root"></div>
   </div>
 
   <!-- Success Banner -->
   <div class="success-banner" id="successBanner">
-    <h3>🎉 All exercises complete!</h3>
-    <p>You've proven you can write production-quality Python for AI engineering. Move to Module 2: SQL &amp; Data Handling.</p>
+    <h3>🎉 You did it!</h3>
+    <p>You've completed Module 1: Python Fundamentals. You now know enough Python to write real scripts — variables, loops, functions, dicts, files, error handling, libraries, and virtual environments. Move on to Module 2!</p>
     <a href="02-sql-data.html" style="display:inline-block;margin-top:.75rem;background:var(--success);color:#fff;text-decoration:none;padding:.5rem 1.5rem;border-radius:8px;font-weight:600;">Next Module →</a>
   </div>
 
   <footer style="text-align:center;padding:2rem 0 0;color:var(--text-secondary);font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem;">
-    <p>Module 1 of 9 — AI Engineer 2026 Curriculum · Based on <a href="https://x.com/cyrilXBT/status/2073940565851361607" target="_blank" style="color:var(--accent);">@cyrilXBT's learning path</a></p>
+    <p>Module 1 of 9 — AI Engineer 2026 Curriculum</p>
     <p style="margin-top:.25rem">Built with the /teach methodology · Complete the exercises before advancing.</p>
   </footer>
 </div>
@@ -904,12 +1153,10 @@ loaded = load_results(output_dir / <span class="string">"llm_results.json"</span
     localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
   }
 
-  // Update toggle button icon
   function updateToggleIcon() {
     const btn = document.querySelector('.theme-toggle');
     btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
   }
-  // Watch for theme changes
   const origToggle = toggleTheme;
   toggleTheme = function() {
     origToggle();
@@ -917,24 +1164,21 @@ loaded = load_results(output_dir / <span class="string">"llm_results.json"</span
   };
   updateToggleIcon();
 
-  // ===================== TABS =====================
-  function switchTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + tabId).classList.add('active');
-    btn.classList.add('active');
-  }
-
   // ===================== CHECKLIST =====================
   const checklistItems = [
-    "Functions: def, args/kwargs, type hints, lambda, decorators",
-    "Classes: dataclasses, properties, inheritance, ABCs",
-    "Async: asyncio, async/await, httpx, concurrent gather",
-    "File I/O: pathlib, JSON read/write, error handling",
-    "Environment: venv, uv, pip, pyproject.toml / requirements.txt",
-    "Exercise 1: Type-hinted function library (ai_utils.py)",
-    "Exercise 2: Dataclass data pipeline (pipeline.py)",
-    "★ Main: Async CLI batch tool (llm_batch.py)",
+    "Python is installed and I ran my first program",
+    "I can use print(), variables, and simple math",
+    "I understand if/elif/else and indentation",
+    "I can create lists and loop through them",
+    "I can write and call a function",
+    "I can create and access dictionaries",
+    "I can read and write files (including JSON)",
+    "I understand try/except for error handling",
+    "I can install a library with pip and import it",
+    "I can create and activate a virtual environment",
+    "Exercise 1: topics.py — list and loop",
+    "Exercise 2: student.py — function, dict, file",
+    "Exercise 3: topic_processor.py — full script with error handling",
   ];
 
   const root = document.getElementById('checklist-root');
@@ -977,7 +1221,6 @@ loaded = load_results(output_dir / <span class="string">"llm_results.json"</span
 
   function checkAllDone() {
     let allDone = true;
-    // Only check the first 5 knowledge items + the 3 exercises
     for (let i = 0; i < checklistItems.length; i++) {
       if (localStorage.getItem('chk_py_' + i) !== 'true') {
         allDone = false;
@@ -992,7 +1235,6 @@ loaded = load_results(output_dir / <span class="string">"llm_results.json"</span
     }
   }
 
-  // Init progress on load
   updateProgress();
   checkAllDone();
 </script>

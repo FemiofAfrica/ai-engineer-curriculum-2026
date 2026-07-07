@@ -1,152 +1,115 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Module 2 — SQL & Data Handling</title>
+<title>Module 2 — SQL for Beginners</title>
 <style>
   :root {
-    --bg: #fafafa;
-    --fg: #1a1a1e;
-    --card: #ffffff;
-    --border: #e0e0e0;
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #4a4a6a;
     --accent: #6366f1;
     --accent-light: #eef2ff;
-    --success: #16a34a;
+    --border: #e2e8f0;
+    --success: #22c55e;
     --success-bg: #dcfce7;
-    --warn: #d97706;
+    --warn: #f59e0b;
     --warn-bg: #fef3c7;
+    --danger: #ef4444;
+    --danger-bg: #fef2f2;
     --code-bg: #f1f5f9;
-    --code-fg: #1e293b;
-    --muted: #6b7280;
+    --code-text: #1e293b;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --card-border: #e2e8f0;
     --heading: #0f172a;
     --terminal-bg: #1e293b;
     --terminal-fg: #e2e8f0;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08);
-    --radius: 10px;
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
   }
-  [data-theme="dark"] {
+  .dark {
     --bg: #0f172a;
-    --fg: #e2e8f0;
-    --card: #1e293b;
-    --border: #334155;
+    --card-bg: #1e293b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
     --accent: #818cf8;
     --accent-light: #1e1b4b;
+    --border: #334155;
     --success: #4ade80;
     --success-bg: #166534;
     --warn: #fbbf24;
     --warn-bg: #78350f;
+    --danger: #f87171;
+    --danger-bg: #7f1d1d;
     --code-bg: #0f172a;
-    --code-fg: #e2e8f0;
-    --muted: #94a3b8;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4);
+    --card-border: #334155;
     --heading: #f1f5f9;
     --terminal-bg: #020617;
     --terminal-fg: #e2e8f0;
-    --shadow: 0 1px 3px rgba(0,0,0,0.3);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: var(--font);
     background: var(--bg);
-    color: var(--fg);
+    color: var(--text);
     line-height: 1.7;
-    padding: 0;
+    transition: background .3s, color .3s;
   }
   .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Theme toggle */
   .theme-toggle {
-    position: fixed; top: 16px; right: 16px;
-    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--fg);
-    box-shadow: var(--shadow); z-index: 100;
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; cursor: pointer; font-size: 18px; color: var(--text);
+    box-shadow: var(--shadow); width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
   }
   .theme-toggle:hover { border-color: var(--accent); }
 
+  /* Back link */
+  .back-link {
+    display: inline-block; color: var(--accent); text-decoration: none;
+    font-size: 14px; font-weight: 500; margin-bottom: 24px;
+    transition: opacity .15s;
+  }
+  .back-link:hover { opacity: .7; }
+
   h1 { font-size: 32px; color: var(--heading); margin-bottom: 8px; line-height: 1.3; }
-  .subtitle { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
+  .subtitle { font-size: 18px; color: var(--text-secondary); margin-bottom: 40px; }
   h2 {
     font-size: 22px; color: var(--heading); margin: 48px 0 16px;
     padding-bottom: 8px; border-bottom: 2px solid var(--border);
   }
   h3 { font-size: 17px; color: var(--heading); margin: 24px 0 12px; }
   p { margin-bottom: 16px; }
+  strong { color: var(--heading); }
+  a { color: var(--accent); }
+  ul, ol { margin: 12px 0 16px 24px; }
+  li { margin-bottom: 8px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 
-  /* Architecture Box */
-  .architecture-box {
-    background: var(--accent-light); border: 1px solid var(--accent); border-radius: 12px;
-    padding: 24px; margin: 24px 0;
+  /* Analogy box */
+  .analogy-box {
+    background: var(--accent-light); border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 20px 24px; margin: 20px 0;
   }
-  .architecture-box h3 { margin-top: 0; color: var(--accent); }
+  .analogy-box h3 { margin-top: 0; color: var(--accent); }
+  .analogy-box p:last-child { margin-bottom: 0; }
 
-  /* Pitfall box */
-  .pitfall-box {
-    background: var(--warn-bg); border-left: 4px solid var(--warn); border-radius: 0 8px 8px 0;
-    padding: 16px 20px; margin: 16px 0;
-  }
-  .pitfall-box strong { color: var(--warn); }
-
-  /* Step Cards */
-  .step-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow);
-  }
-  .step-number {
-    display: inline-block; background: var(--accent); color: #fff;
-    width: 28px; height: 28px; border-radius: 50%;
-    text-align: center; line-height: 28px; font-size: 14px; font-weight: 700;
-    margin-right: 10px;
-  }
-
-  /* Terminal Window */
-  .terminal-window {
-    background: var(--terminal-bg); color: var(--terminal-fg); border-radius: 8px;
-    margin: 16px 0; overflow: hidden; font-family: var(--mono); font-size: 14px;
-  }
-  .terminal-header {
-    background: rgba(255,255,255,0.05); padding: 8px 16px;
-    display: flex; align-items: center; gap: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-size: 12px; color: var(--muted);
-  }
-  .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .terminal-dot.red { background: #ef4444; }
-  .terminal-dot.yellow { background: #eab308; }
-  .terminal-dot.green { background: #22c55e; }
-  .terminal-content { padding: 16px; white-space: pre-wrap; overflow-x: auto; }
-  .terminal-content .comment { color: #94a3b8; font-style: italic; }
-  .terminal-content .highlight { color: #818cf8; }
-  .terminal-content .ok { color: #4ade80; }
-  .terminal-content .warn-text { color: #fbbf24; }
-  .terminal-content .key { color: #f472b6; }
-  .terminal-content .string { color: #34d399; }
-
-  /* SVG Diagram Area */
+  /* Architecture SVG */
   .svg-container {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 24px; margin: 24px 0; overflow-x: auto;
   }
   .svg-container svg { display: block; margin: 0 auto; max-width: 100%; }
 
-  /* Card Grid */
-  .card-grid {
-    display: grid; gap: 16px; margin: 20px 0;
-  }
-  .card-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-  .card-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-  .topic-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--shadow);
-  }
-  .topic-card h4 { color: var(--accent); margin-bottom: 8px; font-size: 15px; }
-  .topic-card p { color: var(--muted); font-size: 14px; margin-bottom: 0; }
-  .topic-card .code-label {
-    display: inline-block; background: var(--accent-light); color: var(--accent);
-    padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 12px;
-    margin-top: 8px;
-  }
-
-  /* Flow Row */
+  /* Flow row */
   .flow-row {
     display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
     margin: 16px 0; padding: 14px 16px; background: var(--code-bg); border-radius: 8px;
@@ -156,34 +119,21 @@
     background: var(--accent); color: #fff; padding: 6px 14px; border-radius: 20px;
     font-size: 12px; white-space: nowrap; font-weight: 600;
   }
-  .flow-arrow { color: var(--muted); font-size: 20px; }
+  .flow-arrow { color: var(--text-secondary); font-size: 20px; }
 
-  /* Code Block */
-  .code-block {
-    background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
-    margin: 16px 0; overflow: hidden;
+  /* Card grid */
+  .card-grid {
+    display: grid; gap: 16px; margin: 20px 0;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
-  .code-header {
-    background: var(--card); padding: 6px 14px; border-bottom: 1px solid var(--border);
-    font-family: var(--mono); font-size: 12px; color: var(--muted);
-    display: flex; align-items: center; gap: 8px;
+  .topic-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow);
   }
-  .code-header .lang-icon { color: var(--accent); font-weight: 600; }
-  .code-body {
-    padding: 14px 16px; overflow-x: auto; font-family: var(--mono);
-    font-size: 13px; line-height: 1.6; color: var(--code-fg); white-space: pre;
-  }
-  .code-body .sql-kw { color: #6366f1; font-weight: 600; }
-  .code-body .sql-fn { color: #0891b2; }
-  .code-body .sql-str { color: #16a34a; }
-  .code-body .sql-cmt { color: #94a3b8; font-style: italic; }
-  .code-body .py-kw { color: #e11d48; font-weight: 600; }
-  .code-body .py-fn { color: #0891b2; }
-  .code-body .py-str { color: #16a34a; }
-  .code-body .py-cmt { color: #94a3b8; font-style: italic; }
-  .code-body .py-blt { color: #7c3aed; }
+  .topic-card h4 { color: var(--accent); margin-bottom: 8px; font-size: 15px; }
+  .topic-card p { color: var(--text-secondary); font-size: 14px; margin-bottom: 0; }
 
-  /* Tables in content */
+  /* Content table */
   .content-table {
     width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;
   }
@@ -196,9 +146,83 @@
   }
   .content-table tr:nth-child(even) { background: var(--code-bg); }
 
-  /* Lists */
-  ul, ol { margin: 12px 0 16px 24px; }
-  li { margin-bottom: 8px; }
+  /* Code block (terminal style) */
+  .code-block {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+    margin: 16px 0; overflow: hidden;
+  }
+  .code-block .header {
+    background: var(--card-bg); padding: 6px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px; color: var(--text-secondary);
+  }
+  .code-block .header .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .code-block .header .dot.red { background: #ef4444; }
+  .code-block .header .dot.yellow { background: #eab308; }
+  .code-block .header .dot.green { background: #22c55e; }
+  .code-block pre {
+    padding: 14px 16px; overflow-x: auto; font-family: var(--mono);
+    font-size: 13px; line-height: 1.6; color: var(--code-text); white-space: pre;
+    margin: 0;
+  }
+  .sql-kw { color: #6366f1; font-weight: 600; }
+  .sql-fn { color: #0891b2; }
+  .sql-str { color: #16a34a; }
+  .sql-cmt { color: #94a3b8; font-style: italic; }
+
+  /* Terminal window */
+  .terminal-window {
+    background: var(--terminal-bg); color: var(--terminal-fg); border-radius: 8px;
+    margin: 16px 0; overflow: hidden; font-family: var(--mono); font-size: 14px;
+  }
+  .terminal-window .terminal-header {
+    background: rgba(255,255,255,0.05); padding: 8px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px; color: #94a3b8;
+  }
+  .terminal-window .terminal-content { padding: 16px; white-space: pre-wrap; overflow-x: auto; }
+  .terminal-window .prompt { color: #4ade80; }
+  .terminal-window .output { color: #e2e8f0; }
+  .terminal-window .comment { color: #94a3b8; font-style: italic; }
+
+  /* Pitfall box */
+  .pitfall-box {
+    background: var(--warn-bg); border-left: 4px solid var(--warn); border-radius: 0 8px 8px 0;
+    padding: 16px 20px; margin: 16px 0;
+  }
+  .pitfall-box .pitfall-icon { font-size: 18px; margin-right: 6px; }
+
+  /* Pro tip */
+  .pro-tip {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; margin: 16px 0; box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent);
+  }
+
+  /* Exercise card */
+  .exercise-card {
+    background: var(--card-bg); border: 2px solid var(--accent); border-radius: var(--radius);
+    padding: 24px; margin: 24px 0; box-shadow: var(--shadow);
+  }
+  .exercise-card h3 { margin-top: 0; display: flex; align-items: center; gap: 10px; }
+  .ex-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--accent); color: #fff;
+    width: 30px; height: 30px; border-radius: 50%;
+    font-size: 14px; font-weight: 700;
+  }
+  .exercise-card ol { margin: 12px 0 16px 24px; }
+  .exercise-card ol li { margin-bottom: 8px; }
+  .success-criteria {
+    border: 1px solid var(--success); border-radius: 8px;
+    padding: 12px 16px; margin: 12px 0; background: var(--success-bg);
+  }
+  .success-criteria strong { color: var(--success); }
+  .exercise-card .hint {
+    background: var(--code-bg); border-radius: 8px; padding: 12px 16px; margin: 12px 0;
+    font-size: 14px; border-left: 3px solid var(--accent);
+  }
 
   /* Checklist */
   .checklist { margin: 24px 0; }
@@ -207,100 +231,184 @@
     padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
     margin-bottom: 8px; cursor: pointer; transition: background 0.15s;
   }
-  .checklist-item:hover { background: var(--card); }
+  .checklist-item:hover { background: var(--card-bg); }
   .checklist-item.done {
     background: var(--success-bg); border-color: var(--success);
     text-decoration: line-through; opacity: 0.7;
   }
   .checklist-item input { margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
 
-  /* Exercise Box */
-  .exercise-box {
-    background: var(--card); border: 2px solid var(--accent); border-radius: 12px;
-    padding: 24px; margin: 24px 0; box-shadow: var(--shadow);
+  /* Progress bar */
+  .progress-container {
+    margin: 24px 0;
+    background: var(--border); border-radius: 8px; height: 10px; overflow: hidden;
   }
-  .exercise-box h3 { margin-top: 0; color: var(--accent); }
-  .exercise-box .hint {
-    background: var(--code-bg); border-radius: 6px; padding: 12px 16px; margin: 12px 0;
-    font-size: 14px;
+  .progress-bar {
+    height: 100%; background: var(--accent); border-radius: 8px;
+    transition: width .3s; width: 0%;
   }
-  .success-criteria {
-    border: 1px solid var(--success); border-radius: 8px;
-    padding: 12px 16px; margin: 12px 0; background: var(--success-bg);
-  }
-  .success-criteria strong { color: var(--success); }
+  .progress-text { font-size: 14px; color: var(--text-secondary); text-align: right; margin-top: 4px; }
 
-  /* Pro Tip */
-  .pro-tip {
-    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    padding: 16px; margin: 16px 0; box-shadow: var(--shadow);
-    border-left: 4px solid var(--accent);
+  /* Success banner */
+  #successBanner {
+    display: none; background: var(--success-bg); border: 2px solid var(--success);
+    border-radius: var(--radius); padding: 24px; margin: 24px 0; text-align: center;
+  }
+  #successBanner.show { display: block; }
+  #successBanner h3 { color: var(--success); margin-top: 0; font-size: 20px; }
+  #successBanner p { color: var(--text); margin-bottom: 0; }
+
+  /* Step card */
+  .step-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow);
+  }
+  .step-number {
+    display: inline-block; background: var(--accent); color: #fff;
+    width: 28px; height: 28px; border-radius: 50%;
+    text-align: center; line-height: 28px; font-size: 14px; font-weight: 700;
+    margin-right: 10px;
   }
 
-  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+  /* What's Next section */
+  .next-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin: 20px 0;
+  }
+  .next-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; box-shadow: var(--shadow); text-align: center;
+  }
+  .next-card .next-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .next-card h4 { color: var(--accent); font-size: 14px; }
+
+  footer { text-align: center; padding: 40px 0 0; color: var(--text-secondary); font-size: 14px; border-top: 1px solid var(--border); margin-top: 40px; }
 
   @media (max-width: 600px) {
     .container { padding: 24px 16px 60px; }
     h1 { font-size: 26px; }
     .flow-row { font-size: 11px; }
-    .card-grid.cols-2, .card-grid.cols-3 { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+    .next-grid { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
 <body>
-<button class="theme-toggle" id="themeToggle">🌓 Theme</button>
+
+<button class="theme-toggle" id="themeToggle">🌙</button>
+
 <div class="container">
 
+  <!-- ==================== BACK LINK ==================== -->
+  <a href="../index.html" class="back-link">← Back to Curriculum</a>
+
   <!-- ==================== HERO ==================== -->
-  <h1>🗃️ Module 2: SQL & Data Handling</h1>
-  <p class="subtitle">Every AI system feeds on data — before, during, and after every LLM call.</p>
+  <h1>🗄️ Module 2: SQL for Beginners</h1>
+  <p class="subtitle">Databases, queries, and your first SQL statements — no experience needed.</p>
+
+  <!-- ==================== PROGRESS BAR ==================== -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 / 12 completed</div>
 
   <!-- ==================== INTRODUCTION ==================== -->
-  <h2>Why This Matters</h2>
-  <p>Here's a truth most LLM tutorials don't tell you: <strong>the model is the easy part.</strong> The hard work — and the real value — is in the data pipeline around it.</p>
-  <p>Every AI system follows the same pattern:</p>
-  <ul>
-    <li><strong>Before</strong> an LLM call: fetch, clean, filter, and structure your data</li>
-    <li><strong>During</strong> an LLM call: format it into context that fits the model's window</li>
-    <li><strong>After</strong> an LLM call: parse, validate, format, and store the response</li>
-  </ul>
-  <p>SQL is how you ask questions of structured data. Pandas is how you clean and transform it. Together, they cover 80% of what an AI engineer does with data day-to-day.</p>
+  <h2>Why Learn SQL?</h2>
+  <p>Every AI system works with data. The model you call with an API is only the last 10% — the <strong>real work</strong> is getting the right data into it and handling what comes out.</p>
+  <p>SQL is how you talk to databases. It's been around for 50 years and it's not going anywhere. Every AI engineer — whether they're building RAG pipelines, analyzing datasets, or fine-tuning models — needs to be comfortable with SQL.</p>
+  <p>The best part? You already know the most important concept: <strong>asking questions</strong>. SQL is just a language for asking questions of structured data.</p>
 
-  <div class="architecture-box">
-    <h3>🎯 Reality Check</h3>
-    <p><strong>Most AI projects fail because of bad data, not bad models.</strong> Spend time here. If you can't query, clean, and structure data fluently, you can't build anything reliable on top. This module gives you the data skills every AI engineer needs — SQL for structured queries, pandas for messy real-world data, and ETL patterns for RAG pipelines.</p>
+  <!-- ==================== SECTION 1 ==================== -->
+  <h2>1️⃣ What is a Database?</h2>
+  <p>A <strong>database</strong> is a place to store structured data in an organized way. Think of it like a smart filing cabinet — you put data in, you take data out, and you can find exactly what you need without digging through everything.</p>
+
+  <div class="analogy-box">
+    <h3>📎 Think of it like Excel</h3>
+    <p>If you've ever used Excel or Google Sheets, you already understand databases at a high level:</p>
+    <ul>
+      <li><strong>An Excel workbook = a database</strong> (a file that holds everything)</li>
+      <li><strong>A sheet/tab = a table</strong> (one structured set of data, like "Movies" or "Customers")</li>
+      <li><strong>A row = a record</strong> (one item, like one movie)</li>
+      <li><strong>A column = a field</strong> (one piece of info, like the movie's title or year)</li>
+    </ul>
+    <p style="margin-top: 12px;">The difference? Databases are <strong>faster</strong>, <strong>more powerful</strong>, handle <strong>way more data</strong>, and let you ask complex questions across multiple tables at once.</p>
   </div>
 
-  <!-- ==================== SVG ARCHITECTURE ==================== -->
-  <h2>📊 The Data Pipeline Architecture</h2>
-  <p>Here's the full data flow for any AI system. Every box is something you'll build in this module.</p>
+  <p>Here's what a simple table called <strong>movies</strong> might look like:</p>
+
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>year</th>
+        <th>rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>The Matrix</td><td>1999</td><td>8.7</td></tr>
+      <tr><td>2</td><td>Inception</td><td>2010</td><td>8.8</td></tr>
+      <tr><td>3</td><td>Interstellar</td><td>2014</td><td>8.6</td></tr>
+    </tbody>
+  </table>
+
+  <p>Each row is one movie. Each column is one attribute of that movie. Simple, right?</p>
+
+  <!-- ==================== SECTION 2 ==================== -->
+  <h2>2️⃣ What is SQL?</h2>
+  <p><strong>SQL</strong> stands for <strong>Structured Query Language</strong> (pronounced "sequel" or "ess-queue-ell" — both are fine).</p>
+  <p>It's the language you use to talk to a database. You write a <strong>query</strong> — a question — and the database answers with data.</p>
+
+  <div class="card-grid">
+    <div class="topic-card">
+      <h4>SELECT</h4>
+      <p>"Show me data from this table"</p>
+    </div>
+    <div class="topic-card">
+      <h4>WHERE</h4>
+      <p>"Only include rows that match this condition"</p>
+    </div>
+    <div class="topic-card">
+      <h4>INSERT</h4>
+      <p>"Add new data to this table"</p>
+    </div>
+    <div class="topic-card">
+      <h4>UPDATE</h4>
+      <p>"Change existing data"</p>
+    </div>
+    <div class="topic-card">
+      <h4>DELETE</h4>
+      <p>"Remove data from this table"</p>
+    </div>
+    <div class="topic-card">
+      <h4>CREATE TABLE</h4>
+      <p>"Define a new table structure"</p>
+    </div>
+  </div>
+
+  <p>These <strong>six operations</strong> cover 95% of what you'll do day-to-day. You don't need to memorize everything at once — you'll learn by doing.</p>
+
+  <!-- ==================== SVG DIAGRAM ==================== -->
+  <h2>🔁 How SQL Works</h2>
 
   <div class="svg-container">
-    <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+    <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
       <defs>
-        <linearGradient id="g-sql" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1"/>
-          <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1"/>
+        <linearGradient id="g-db" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#6366f1"/>
+          <stop offset="100%" stop-color="#818cf8"/>
         </linearGradient>
-        <linearGradient id="g-pd" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#e11d48;stop-opacity:1"/>
-          <stop offset="100%" style="stop-color:#fb7185;stop-opacity:1"/>
+        <linearGradient id="g-query" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0891b2"/>
+          <stop offset="100%" stop-color="#22d3ee"/>
         </linearGradient>
-        <linearGradient id="g-fv" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1"/>
-          <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1"/>
+        <linearGradient id="g-result" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#16a34a"/>
+          <stop offset="100%" stop-color="#4ade80"/>
         </linearGradient>
-        <linearGradient id="g-llm" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#0891b2;stop-opacity:1"/>
-          <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:1"/>
-        </linearGradient>
-        <linearGradient id="g-raw" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#78716c;stop-opacity:1"/>
-          <stop offset="100%" style="stop-color:#a8a29e;stop-opacity:1"/>
-        </linearGradient>
-        <linearGradient id="g-etl" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1"/>
-          <stop offset="100%" style="stop-color:#4ade80;stop-opacity:1"/>
+        <linearGradient id="g-op" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7c3aed"/>
+          <stop offset="100%" stop-color="#a78bfa"/>
         </linearGradient>
         <filter id="shadow">
           <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
@@ -310,552 +418,794 @@
         </marker>
       </defs>
 
-      <!-- Background -->
-      <rect x="0" y="0" width="800" height="280" rx="8" fill="transparent"/>
+      <rect x="0" y="0" width="760" height="240" rx="8" fill="transparent"/>
 
-      <!-- Row 1: Raw Data Sources -->
-      <rect x="30" y="20" width="130" height="50" rx="8" fill="url(#g-raw)" filter="url(#shadow)"/>
-      <text x="95" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Raw Data</text>
+      <!-- Row 1: DB File → SQL Query → Results -->
+      <rect x="40" y="15" width="180" height="60" rx="8" fill="url(#g-db)" filter="url(#shadow)"/>
+      <text x="130" y="50" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">Database File</text>
 
-      <rect x="200" y="20" width="130" height="50" rx="8" fill="url(#g-sql)" filter="url(#shadow)"/>
-      <text x="265" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">SQL Queries</text>
+      <line x1="220" y1="45" x2="268" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
 
-      <rect x="370" y="20" width="130" height="50" rx="8" fill="url(#g-pd)" filter="url(#shadow)"/>
-      <text x="435" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Pandas Clean</text>
+      <rect x="275" y="15" width="180" height="60" rx="8" fill="url(#g-query)" filter="url(#shadow)"/>
+      <text x="365" y="50" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">SQL Query</text>
 
-      <rect x="540" y="20" width="130" height="50" rx="8" fill="url(#g-fv)" filter="url(#shadow)"/>
-      <text x="605" y="50" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Feature Vecs</text>
+      <line x1="455" y1="45" x2="503" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
 
-      <rect x="710" y="20" width="60" height="50" rx="8" fill="url(#g-llm)" filter="url(#shadow)"/>
-      <text x="740" y="50" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">LLM</text>
+      <rect x="510" y="15" width="180" height="60" rx="8" fill="url(#g-result)" filter="url(#shadow)"/>
+      <text x="600" y="50" text-anchor="middle" fill="#fff" font-size="14" font-weight="600">Results</text>
 
-      <!-- Row 1 arrows -->
-      <line x1="160" y1="45" x2="195" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-      <line x1="330" y1="45" x2="365" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-      <line x1="500" y1="45" x2="535" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-      <line x1="670" y1="45" x2="705" y2="45" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-
-      <!-- Labels row 1 -->
-      <text x="95" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">CSV, JSON, Parquet, DB</text>
-      <text x="265" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">SELECT, JOIN, GROUP BY</text>
-      <text x="435" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">nulls, dedup, types</text>
-      <text x="605" y="85" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">embeddings, encodings</text>
+      <text x="130" y="92" text-anchor="middle" fill="var(--text-secondary, #4a4a6a)" font-size="10">movies.db</text>
+      <text x="365" y="92" text-anchor="middle" fill="var(--text-secondary, #4a4a6a)" font-size="10">SELECT * FROM movies</text>
+      <text x="600" y="92" text-anchor="middle" fill="var(--text-secondary, #4a4a6a)" font-size="10">3 rows returned</text>
 
       <!-- Bridge label -->
-      <rect x="180" y="105" width="440" height="28" rx="14" fill="var(--code-bg, #f1f5f9)" stroke="var(--border, #e0e0e0)" stroke-width="1"/>
-      <text x="400" y="124" text-anchor="middle" fill="var(--fg, #1a1a1e)" font-size="12">⛓️ This module: raw data → SQL → clean → transform → export</text>
+      <rect x="180" y="108" width="400" height="28" rx="14" fill="var(--code-bg, #f1f5f9)" stroke="var(--border, #e2e8f0)" stroke-width="1"/>
+      <text x="380" y="127" text-anchor="middle" fill="var(--text, #1a1a2e)" font-size="12" font-weight="600">Your SQL goes in → the database runs it → you get results back</text>
 
-      <!-- Row 2: ETL for RAG -->
-      <rect x="30" y="155" width="130" height="50" rx="8" fill="url(#g-raw)" filter="url(#shadow)"/>
-      <text x="95" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Source Data</text>
+      <!-- Row 2: The 5 essential operations -->
+      <rect x="30" y="155" width="110" height="50" rx="8" fill="url(#g-op)" filter="url(#shadow)"/>
+      <text x="85" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">CREATE</text>
 
-      <rect x="200" y="155" width="130" height="50" rx="8" fill="url(#g-etl)" filter="url(#shadow)"/>
-      <text x="265" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Extract</text>
+      <line x1="140" y1="180" x2="168" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
 
-      <rect x="370" y="155" width="130" height="50" rx="8" fill="url(#g-etl)" filter="url(#shadow)"/>
-      <text x="435" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Transform</text>
+      <rect x="175" y="155" width="110" height="50" rx="8" fill="url(#g-op)" filter="url(#shadow)"/>
+      <text x="230" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">INSERT</text>
 
-      <rect x="540" y="155" width="130" height="50" rx="8" fill="url(#g-etl)" filter="url(#shadow)"/>
-      <text x="605" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Load (DB)</text>
+      <line x1="285" y1="180" x2="313" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
 
-      <rect x="710" y="155" width="60" height="50" rx="8" fill="url(#g-llm)" filter="url(#shadow)"/>
-      <text x="740" y="185" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">RAG</text>
+      <rect x="320" y="155" width="110" height="50" rx="8" fill="url(#g-op)" filter="url(#shadow)"/>
+      <text x="375" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">SELECT</text>
 
-      <!-- Row 2 arrows -->
-      <line x1="160" y1="180" x2="195" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-      <line x1="330" y1="180" x2="365" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-      <line x1="500" y1="180" x2="535" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
-      <line x1="670" y1="180" x2="705" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="430" y1="180" x2="458" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
 
-      <!-- Row 2 labels -->
-      <text x="95" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">DB, API, files</text>
-      <text x="265" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">read, fetch, stream</text>
-      <text x="435" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">clean, chunk, embed</text>
-      <text x="605" y="220" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="10">SQLite, pgvector</text>
+      <rect x="465" y="155" width="110" height="50" rx="8" fill="url(#g-op)" filter="url(#shadow)"/>
+      <text x="520" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">UPDATE</text>
 
-      <!-- Bottom annotation -->
-      <text x="400" y="255" text-anchor="middle" fill="var(--muted, #6b7280)" font-size="11" font-style="italic">Top: generic pipeline  ·  Bottom: ETL for RAG (the pattern you'll use most)</text>
+      <line x1="575" y1="180" x2="603" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <rect x="610" y="155" width="110" height="50" rx="8" fill="url(#g-op)" filter="url(#shadow)"/>
+      <text x="665" y="185" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">DELETE</text>
+
+      <text x="380" y="223" text-anchor="middle" fill="var(--text-secondary, #4a4a6a)" font-size="11" font-style="italic">Top: how data flows  ·  Bottom: the 5 operations you'll use most</text>
     </svg>
   </div>
 
   <!-- ==================== FLOW ROW ==================== -->
-  <h2>🔁 The Module Flow</h2>
-  <p>This module follows one chain. Every section connects to the next.</p>
-
   <div class="flow-row">
-    <span class="flow-step">Raw Data</span>
+    <span class="flow-step">CREATE TABLE</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">SQL</span>
+    <span class="flow-step">INSERT Data</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">Clean</span>
+    <span class="flow-step">SELECT / WHERE</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">Transform</span>
+    <span class="flow-step">UPDATE</span>
     <span class="flow-arrow">→</span>
-    <span class="flow-step">Export</span>
+    <span class="flow-step">DELETE</span>
   </div>
 
-  <!-- ==================== SECTION 1: SQL ==================== -->
-  <h2>1️⃣ SQL: Your Data Query Language</h2>
-  <p>SQL is <em>the</em> language for talking to structured data. No matter what DB you use — SQLite, PostgreSQL, DuckDB, BigQuery — the syntax is the same at the core.</p>
-  <p>You don't need to be a DBA. You <em>do</em> need to be fluent in SELECT, WHERE, JOIN, GROUP BY, and window functions. These five patterns cover 95% of what you'll do as an AI engineer.</p>
+  <!-- ==================== SECTION 3 ==================== -->
+  <h2>3️⃣ Getting Started with SQLite</h2>
+  <p>We'll use <strong>SQLite</strong> for this module. Why?</p>
+  <ul>
+    <li><strong>No server needed</strong> — the database is just a single file on your computer</li>
+    <li><strong>Pre-installed on Mac</strong> — you already have it</li>
+    <li><strong>Same SQL</strong> — everything you learn works with PostgreSQL, MySQL, DuckDB, etc.</li>
+    <li><strong>What you learn here applies everywhere</strong> — SQL is SQL</li>
+  </ul>
 
-  <h3>The Five Essential SQL Patterns</h3>
+  <h3>Check if SQLite is installed</h3>
+  <p>Open your terminal and run:</p>
 
-  <div class="card-grid cols-2">
-    <div class="topic-card">
-      <h4>SELECT & WHERE</h4>
-      <p>Filter and project the columns and rows you need. The foundation of every query.</p>
-      <span class="code-label">SELECT col FROM tbl WHERE condition</span>
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">terminal</span>
     </div>
-    <div class="topic-card">
-      <h4>JOIN (INNER & LEFT)</h4>
-      <p>Combine related tables. INNER = only matching rows. LEFT = keep all from left table.</p>
-      <span class="code-label">FROM a JOIN b ON a.id = b.a_id</span>
-    </div>
-    <div class="topic-card">
-      <h4>GROUP BY & HAVING</h4>
-      <p>Aggregate rows into groups. HAVING filters groups (WHERE filters rows before grouping).</p>
-      <span class="code-label">GROUP BY col HAVING COUNT(*) > 5</span>
-    </div>
-    <div class="topic-card">
-      <h4>Window Functions</h4>
-      <p>Rank, number, and aggregate across window frames without collapsing rows. Essential for AI data prep.</p>
-      <span class="code-label">ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)</span>
-    </div>
-    <div class="topic-card" style="grid-column: 1 / -1;">
-      <h4>Subqueries & CTEs</h4>
-      <p>Query within a query. CTEs (WITH clause) make complex queries readable. Used constantly in AI pipelines.</p>
-      <span class="code-label">WITH ranked AS (SELECT ...) SELECT * FROM ranked WHERE rn = 1</span>
-    </div>
+    <div class="terminal-content"><span class="prompt">$</span> sqlite3 --version
+<span class="output">3.43.2 2024-10-10 16:45:00</span></div>
   </div>
+
+  <p>If you see a version number, you're all set. If not, install it with Homebrew:</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">terminal</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">$</span> brew install sqlite3</div>
+  </div>
+
+  <h3>Create your first database</h3>
+  <p>A SQLite database is just a file. To create one (or open an existing one), run:</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">terminal</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">$</span> sqlite3 my-first-db.db
+<span class="output">SQLite version 3.43.2 2024-10-10 16:45:00
+Enter ".help" for usage hints.</span>
+<span class="prompt">sqlite&gt;</span></div>
+  </div>
+
+  <p>That <code class="sql-kw">sqlite&gt;</code> prompt means you're inside SQLite. You can now type SQL commands. Type <code>.quit</code> to exit.</p>
+
+  <!-- ==================== SECTION 4 ==================== -->
+  <h2>4️⃣ Creating Your First Table</h2>
+  <p>A table needs a structure before you can put data in it. You define that structure with <code class="sql-kw">CREATE TABLE</code>.</p>
 
   <div class="code-block">
-    <div class="code-header">
-      <span class="lang-icon">▸</span> query.sql — All five patterns in action
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">create_movies.sql</span>
     </div>
-    <div class="code-body"><span class="sql-cmt">-- Pattern 1: SELECT & WHERE — find recent high-value users</span>
-<span class="sql-kw">SELECT</span> id, name, email, total_spent, last_active
-<span class="sql-kw">FROM</span> users
-<span class="sql-kw">WHERE</span> total_spent > 100
-  <span class="sql-kw">AND</span> last_active >= <span class="sql-str">'2026-01-01'</span>
-<span class="sql-kw">ORDER BY</span> total_spent <span class="sql-kw">DESC</span>
-<span class="sql-kw">LIMIT</span> 100;
-
-<span class="sql-cmt">-- Pattern 2: JOIN — enrich user data with order history</span>
-<span class="sql-kw">SELECT</span> u.name, o.id <span class="sql-kw">AS</span> order_id, o.total, o.created_at
-<span class="sql-kw">FROM</span> users u
-<span class="sql-kw">INNER JOIN</span> orders o <span class="sql-kw">ON</span> u.id = o.user_id
-<span class="sql-kw">WHERE</span> o.created_at >= <span class="sql-str">'2026-06-01'</span>;
-
-<span class="sql-cmt">-- Pattern 3: GROUP BY + HAVING — categories with lots of orders</span>
-<span class="sql-kw">SELECT</span> category, <span class="sql-fn">COUNT</span>(*) <span class="sql-kw">AS</span> order_count, <span class="sql-fn">SUM</span>(total) <span class="sql-kw">AS</span> revenue
-<span class="sql-kw">FROM</span> orders o
-<span class="sql-kw">JOIN</span> products p <span class="sql-kw">ON</span> o.product_id = p.id
-<span class="sql-kw">GROUP BY</span> category
-<span class="sql-kw">HAVING</span> <span class="sql-fn">COUNT</span>(*) > 10;
-
-<span class="sql-cmt">-- Pattern 4: Window — rank products within each category</span>
-<span class="sql-kw">SELECT</span>
-  name, category, price,
-  <span class="sql-fn">ROW_NUMBER</span>() <span class="sql-kw">OVER</span> (
-    <span class="sql-kw">PARTITION BY</span> category <span class="sql-kw">ORDER BY</span> price <span class="sql-kw">DESC</span>
-  ) <span class="sql-kw">AS</span> price_rank,
-  <span class="sql-fn">RANK</span>() <span class="sql-kw">OVER</span> (
-    <span class="sql-kw">PARTITION BY</span> category <span class="sql-kw">ORDER BY</span> sales <span class="sql-kw">DESC</span>
-  ) <span class="sql-kw">AS</span> sales_rank
-<span class="sql-kw">FROM</span> products;
-
-<span class="sql-cmt">-- Pattern 5: CTE — find top 3 products per category</span>
-<span class="sql-kw">WITH</span> ranked_products <span class="sql-kw">AS</span> (
-  <span class="sql-kw">SELECT</span>
-    name, category, price,
-    <span class="sql-fn">ROW_NUMBER</span>() <span class="sql-kw">OVER</span> (
-      <span class="sql-kw">PARTITION BY</span> category <span class="sql-kw">ORDER BY</span> price <span class="sql-kw">DESC</span>
-    ) <span class="sql-kw">AS</span> rn
-  <span class="sql-kw">FROM</span> products
-)
-<span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> ranked_products <span class="sql-kw">WHERE</span> rn <= 3;</div>
+    <pre><span class="sql-cmt">-- Create a table called 'movies'</span>
+<span class="sql-kw">CREATE TABLE</span> movies (
+    id      <span class="sql-kw">INTEGER PRIMARY KEY</span>,  <span class="sql-cmt">-- unique ID for each movie</span>
+    title   <span class="sql-kw">TEXT</span>,                  <span class="sql-cmt">-- the movie title (text)</span>
+    year    <span class="sql-kw">INTEGER</span>,               <span class="sql-cmt">-- release year (whole number)</span>
+    rating  <span class="sql-kw">REAL</span>                   <span class="sql-cmt">-- rating out of 10 (decimal)</span>
+);</pre>
   </div>
 
-  <div class="pro-tip">
-    💡 <strong>AI engineer's note:</strong> The CTE + window function combo (Pattern 5) is <em>the</em> most useful pattern for AI pipelines. "Give me the top N items per category" — that's your RAG context building right there. Master this.
-  </div>
-
-  <!-- ==================== SECTION 2: DATA CLEANING ==================== -->
-  <h2>2️⃣ Data Cleaning with Pandas</h2>
-  <p>Real-world data is <em>always</em> messy. Nulls, duplicates, wrong types, inconsistent formatting. Pandas is the standard tool for cleaning it up.</p>
-
-  <div class="card-grid cols-2">
-    <div class="topic-card">
-      <h4>Handle Nulls</h4>
-      <p><code>df.isnull()</code>, <code>df.dropna()</code>, <code>df.fillna()</code>. Know when to drop vs. fill. Never ignore them.</p>
-    </div>
-    <div class="topic-card">
-      <h4>Deduplication</h4>
-      <p><code>df.duplicated()</code>, <code>df.drop_duplicates()</code>. Always check before loading into a DB.</p>
-    </div>
-    <div class="topic-card">
-      <h4>Type Conversion</h4>
-      <p><code>df.astype()</code>, <code>pd.to_datetime()</code>, <code>pd.to_numeric()</code>. Dates and numbers stored as strings will break your queries.</p>
-    </div>
-    <div class="topic-card">
-      <h4>Merge DataFrames</h4>
-      <p><code>pd.merge(df1, df2, on='key', how='inner')</code>. The pandas equivalent of SQL JOIN.</p>
-    </div>
-  </div>
-
-  <div class="code-block">
-    <div class="code-header">
-      <span class="lang-icon">▸</span> transform.py — Cleaning pipeline for AI
-    </div>
-    <div class="code-body"><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
-
-<span class="py-cmt"># 1. Load raw data</span>
-df = pd.read_csv(<span class="py-str">"raw_orders.csv"</span>)
-<span class="py-blt">print</span>(df.info())     <span class="py-cmt"># See types, null counts</span>
-<span class="py-blt">print</span>(df.head())     <span class="py-cmt"># Peek at values</span>
-
-<span class="py-cmt"># 2. Handle nulls</span>
-df = df.dropna(subset=[<span class="py-str">"order_id"</span>, <span class="py-str">"user_id"</span>])  <span class="py-cmt"># Can't recover these</span>
-df[<span class="py-str">"amount"</span>] = df[<span class="py-str">"amount"</span>].fillna(<span class="py-blt">float</span>(<span class="py-str">"nan"</span>)).astype(<span class="py-str">"float64"</span>)
-df[<span class="py-str">"category"</span>] = df[<span class="py-str">"category"</span>].fillna(<span class="py-str">"unknown"</span>)
-
-<span class="py-cmt"># 3. Type conversion</span>
-df[<span class="py-str">"created_at"</span>] = pd.to_datetime(df[<span class="py-str">"created_at"</span>], errors=<span class="py-str">"coerce"</span>)
-df[<span class="py-str">"amount"</span>] = pd.to_numeric(df[<span class="py-str">"amount"</span>], errors=<span class="py-str">"coerce"</span>)
-
-<span class="py-cmt"># 4. Dedup</span>
-df = df.drop_duplicates(subset=[<span class="py-str">"order_id"</span>])
-
-<span class="py-cmt"># 5. Feature engineering for AI</span>
-df[<span class="py-str">"order_month"</span>] = df[<span class="py-str">"created_at"</span>].dt.month
-df[<span class="py-str">"is_weekend"</span>] = df[<span class="py-str">"created_at"</span>].dt.dayofweek >= 5
-
-<span class="py-cmt"># 6. Export clean data</span>
-df.to_csv(<span class="py-str">"clean_orders.csv"</span>, index=<span class="py-blt">False</span>)
-df.to_parquet(<span class="py-str">"clean_orders.parquet"</span>, index=<span class="py-blt">False</span>)  <span class="py-cmt"># Smaller, faster</span></div>
-  </div>
-
-  <!-- ==================== SECTION 3: FILE FORMATS ==================== -->
-  <h2>3️⃣ File Formats: CSV vs. JSON vs. Parquet</h2>
-  <p>You'll encounter three main formats. Each has a job.</p>
+  <p>Let's break down what each part means:</p>
 
   <table class="content-table">
     <thead>
       <tr>
-        <th>Format</th>
-        <th>Best For</th>
-        <th>Pros</th>
-        <th>Cons</th>
-        <th>AI Pipeline Use</th>
+        <th>Part</th>
+        <th>Meaning</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><strong>CSV</strong></td>
-        <td>Human-readable tabular data, small-medium datasets</td>
-        <td>Universal, opens in Excel, easy to inspect</td>
-        <td>No schema, big files are slow, no nested data</td>
-        <td>Quick exports, debugging, sharing with non-engineers</td>
+        <td><code class="sql-kw">INTEGER</code></td>
+        <td>A whole number (like 1999, 42, 0)</td>
       </tr>
       <tr>
-        <td><strong>JSON</strong></td>
-        <td>Nested/hierarchical data, API responses</td>
-        <td>Flexible, self-describing, LLMs understand it natively</td>
-        <td>Verbose, slower to parse, no columnar compression</td>
-        <td>LLM I/O format, web API data, config files</td>
+        <td><code class="sql-kw">TEXT</code></td>
+        <td>Letters and words (like "The Matrix")</td>
       </tr>
       <tr>
-        <td><strong>Parquet</strong></td>
-        <td>Large datasets, columnar workloads, ML/analytics</td>
-        <td>Fast, compressed, schema'd, columnar pruning</td>
-        <td>Binary, not human-readable, requires tooling</td>
-        <td>Production AI/ML pipelines, large-scale feature stores</td>
+        <td><code class="sql-kw">REAL</code></td>
+        <td>A decimal number (like 8.7, 3.14)</td>
+      </tr>
+      <tr>
+        <td><code class="sql-kw">PRIMARY KEY</code></td>
+        <td>Marks this column as the unique identifier — no two rows can have the same value</td>
       </tr>
     </tbody>
   </table>
 
-  <div class="code-block">
-    <div class="code-header">
-      <span class="lang-icon">▸</span> io_patterns.py — Reading & writing all three
+  <p>Copy-paste the CREATE TABLE statement at the <code class="sql-kw">sqlite&gt;</code> prompt:</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
     </div>
-    <div class="code-body"><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
-
-<span class="py-cmt"># CSV — universal, human-readable</span>
-df = pd.read_csv(<span class="py-str">"data.csv"</span>)
-df.to_csv(<span class="py-str">"output.csv"</span>, index=<span class="py-blt">False</span>)
-
-<span class="py-cmt"># JSON — flexible, LLM-friendly</span>
-df = pd.read_json(<span class="py-str">"data.json"</span>)
-df.to_json(<span class="py-str">"output.json"</span>, orient=<span class="py-str">"records"</span>)
-
-<span class="py-cmt"># Parquet — fast, compressed, production-ready</span>
-df = pd.read_parquet(<span class="py-str">"data.parquet"</span>)
-df.to_parquet(<span class="py-str">"output.parquet"</span>, compression=<span class="py-str">"snappy"</span>)
-
-<span class="py-cmt"># Rule of thumb:</span>
-<span class="py-cmt"># - During development: CSV (inspect easily)</span>
-<span class="py-cmt"># - LLM context building: JSON (models parse it well)</span>
-<span class="py-cmt"># - Production pipelines: Parquet (speed &amp; compression)</span></div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> CREATE TABLE movies (
+   ...&gt;     id INTEGER PRIMARY KEY,
+   ...&gt;     title TEXT,
+   ...&gt;     year INTEGER,
+   ...&gt;     rating REAL
+   ...&gt; );
+<span class="prompt">sqlite&gt;</span></div>
   </div>
 
-  <!-- ==================== SECTION 4: ETL PATTERNS ==================== -->
-  <h2>4️⃣ ETL Patterns for AI & RAG</h2>
-  <p>ETL (Extract, Transform, Load) is the backbone of every data pipeline. For AI engineers, it's how you build the data layer that feeds your models.</p>
+  <p>If you don't see an error, it worked! The table now exists in your database. Run <code>.tables</code> to confirm:</p>
 
-  <div class="step-card">
-    <span class="step-number">E</span>
-    <strong>Extract</strong> — Get data from source: CSV files, JSON APIs, SQL databases, web scraping. Often pull incrementally (only new/changed records).
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> .tables
+<span class="output">movies</span></div>
   </div>
-  <div class="step-card">
-    <span class="step-number">T</span>
-    <strong>Transform</strong> — Clean, normalize, chunk, embed. This is where pandas shines. For RAG: split documents into chunks, generate embeddings, store metadata.
-  </div>
-  <div class="step-card">
-    <span class="step-number">L</span>
-    <strong>Load</strong> — Write to target: SQLite for dev, PostgreSQL for prod, vector DB for embeddings. The format must match what your application expects.
-  </div>
+
+  <!-- ==================== SECTION 5 ==================== -->
+  <h2>5️⃣ Adding Data</h2>
+  <p>An empty table isn't very useful. Let's add some movies with <code class="sql-kw">INSERT</code>.</p>
 
   <div class="code-block">
-    <div class="code-header">
-      <span class="lang-icon">▸</span> etl_pipeline.py — Minimal RAG ETL
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">insert_movies.sql</span>
     </div>
-    <div class="code-body"><span class="py-kw">import</span> pandas <span class="py-kw">as</span> pd
-<span class="py-kw">import</span> sqlite3
+    <pre><span class="sql-kw">INSERT INTO</span> movies <span class="sql-kw">VALUES</span> (<span class="sql-str">1</span>, <span class="sql-str">'The Matrix'</span>, <span class="sql-str">1999</span>, <span class="sql-str">8.7</span>);
+<span class="sql-kw">INSERT INTO</span> movies <span class="sql-kw">VALUES</span> (<span class="sql-str">2</span>, <span class="sql-str">'Inception'</span>, <span class="sql-str">2010</span>, <span class="sql-str">8.8</span>);
+<span class="sql-kw">INSERT INTO</span> movies <span class="sql-kw">VALUES</span> (<span class="sql-str">3</span>, <span class="sql-str">'Interstellar'</span>, <span class="sql-str">2014</span>, <span class="sql-str">8.6</span>);
+<span class="sql-kw">INSERT INTO</span> movies <span class="sql-kw">VALUES</span> (<span class="sql-str">4</span>, <span class="sql-str">'The Godfather'</span>, <span class="sql-str">1972</span>, <span class="sql-str">9.2</span>);
+<span class="sql-kw">INSERT INTO</span> movies <span class="sql-kw">VALUES</span> (<span class="sql-str">5</span>, <span class="sql-str">'Parasite'</span>, <span class="sql-str">2019</span>, <span class="sql-str">8.5</span>);
+<span class="sql-kw">INSERT INTO</span> movies <span class="sql-kw">VALUES</span> (<span class="sql-str">6</span>, <span class="sql-str">'Spirited Away'</span>, <span class="sql-str">2001</span>, <span class="sql-str">8.6</span>);</pre>
+  </div>
 
-<span class="py-cmt"># ── EXTRACT ──</span>
-raw = pd.read_json(<span class="py-str">"documents.json"</span>)  <span class="py-cmt"># documents with 'id', 'title', 'body', 'source'</span>
+  <p>Type each line at the <code class="sql-kw">sqlite&gt;</code> prompt. The order of values must match the order of columns you defined: <code>(id, title, year, rating)</code>.</p>
 
-<span class="py-cmt"># ── TRANSFORM ──</span>
-<span class="py-cmt"># Clean</span>
-clean = raw.dropna(subset=[<span class="py-str">"id"</span>, <span class="py-str">"body"</span>])
-clean = clean.drop_duplicates(subset=[<span class="py-str">"id"</span>])
-clean[<span class="py-str">"body"</span>] = clean[<span class="py-str">"body"</span>].str.strip()
+  <div class="pro-tip">
+    💡 <strong>Important:</strong> Text values <strong>must</strong> be in single quotes: <code class="sql-str">'The Matrix'</code>. Numbers don't need quotes.
+  </div>
 
-<span class="py-cmt"># Chunk for RAG (simple character split)</span>
-chunks = []
-<span class="py-kw">for</span> _, row <span class="py-kw">in</span> clean.iterrows():
-    body = row[<span class="py-str">"body"</span>]
-    <span class="py-kw">for</span> i <span class="py-kw">in</span> <span class="py-blt">range</span>(<span class="py-blt">0</span>, <span class="py-blt">len</span>(body), <span class="py-blt">500</span>):
-        chunks.append({
-            <span class="py-str">"doc_id"</span>: row[<span class="py-str">"id"</span>],
-            <span class="py-str">"title"</span>: row[<span class="py-str">"title"</span>],
-            <span class="py-str">"chunk_index"</span>: i // <span class="py-blt">500</span>,
-            <span class="py-str">"chunk_text"</span>: body[i:i+<span class="py-blt">500</span>],
-            <span class="py-str">"source"</span>: row[<span class="py-str">"source"</span>],
-        })
+  <!-- ==================== SECTION 6 ==================== -->
+  <h2>6️⃣ Asking Questions with SELECT</h2>
+  <p><code class="sql-kw">SELECT</code> is the most important SQL command. You use it to get data out of a database.</p>
 
-chunk_df = pd.DataFrame(chunks)
+  <h3>Get everything</h3>
+  <p>The simplest query — get all columns and all rows:</p>
 
-<span class="py-cmt"># ── LOAD ──</span>
-conn = sqlite3.connect(<span class="py-str">"rag_store.db"</span>)
-chunk_df.to_sql(<span class="py-str">"chunks"</span>, conn, if_exists=<span class="py-str">"replace"</span>, index=<span class="py-blt">False</span>)
-conn.close()
-<span class="py-blt">print</span>(<span class="py-str">f"Loaded {len(chunk_df)} chunks into rag_store.db"</span>)</div>
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">query.sql</span>
+    </div>
+    <pre><span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> movies;</pre>
+  </div>
+
+  <p>The <code class="sql-kw">*</code> means "all columns". Let's see what comes back:</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> SELECT * FROM movies;
+<span class="output">1|The Matrix|1999|8.7
+2|Inception|2010|8.8
+3|Interstellar|2014|8.6
+4|The Godfather|1972|9.2
+5|Parasite|2019|8.5
+6|Spirited Away|2001|8.6</span></div>
+  </div>
+
+  <h3>Get specific columns</h3>
+  <p>Instead of <code class="sql-kw">*</code>, list the columns you want:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">query.sql</span>
+    </div>
+    <pre><span class="sql-kw">SELECT</span> title, year <span class="sql-kw">FROM</span> movies;</pre>
+  </div>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> SELECT title, year FROM movies;
+<span class="output">The Matrix|1999
+Inception|2010
+Interstellar|2014
+The Godfather|1972
+Parasite|2019
+Spirited Away|2001</span></div>
+  </div>
+
+  <h3>Filter with WHERE</h3>
+  <p>The real power of SQL is <strong>filtering</strong>. Use <code class="sql-kw">WHERE</code> to only get the rows you care about.</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">query.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- Movies after the year 2000</span>
+<span class="sql-kw">SELECT</span> title, year <span class="sql-kw">FROM</span> movies <span class="sql-kw">WHERE</span> year > <span class="sql-str">2000</span>;
+
+<span class="sql-cmt">-- Movies with rating 8.7 or higher</span>
+<span class="sql-kw">SELECT</span> title, rating <span class="sql-kw">FROM</span> movies <span class="sql-kw">WHERE</span> rating >= <span class="sql-str">8.7</span>;
+
+<span class="sql-cmt">-- Exactly one movie by title</span>
+<span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> movies <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Inception'</span>;
+
+<span class="sql-cmt">-- Combine conditions</span>
+<span class="sql-kw">SELECT</span> * <span class="sql-kw">FROM</span> movies
+<span class="sql-kw">WHERE</span> year > <span class="sql-str">2000</span> <span class="sql-kw">AND</span> rating >= <span class="sql-str">8.6</span>;</pre>
+  </div>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> SELECT title FROM movies WHERE year > 2000;
+<span class="output">Inception
+Interstellar
+Parasite
+Spirited Away</span>
+<span class="prompt">sqlite&gt;</span> SELECT title, rating FROM movies WHERE rating >= 8.7;
+<span class="output">The Matrix|8.7
+Inception|8.8
+The Godfather|9.2</span>
+<span class="prompt">sqlite&gt;</span> SELECT * FROM movies WHERE title = 'Inception';
+<span class="output">2|Inception|2010|8.8</span></div>
+  </div>
+
+  <p>Comparison operators you can use in <code class="sql-kw">WHERE</code>:</p>
+  <table class="content-table">
+    <thead>
+      <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>=</code></td><td>Equal to</td><td><code>WHERE title = 'The Matrix'</code></td></tr>
+      <tr><td><code>></code></td><td>Greater than</td><td><code>WHERE year > 2000</code></td></tr>
+      <tr><td><code><</code></td><td>Less than</td><td><code>WHERE year < 2010</code></td></tr>
+      <tr><td><code>>=</code></td><td>Greater than or equal</td><td><code>WHERE rating >= 8.0</code></td></tr>
+      <tr><td><code><=</code></td><td>Less than or equal</td><td><code>WHERE year <= 2001</code></td></tr>
+      <tr><td><code>!=</code> or <code><></code></td><td>Not equal to</td><td><code>WHERE title != 'Inception'</code></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== SECTION 7 ==================== -->
+  <h2>7️⃣ Updating and Deleting</h2>
+
+  <h3>UPDATE — change existing data</h3>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">update.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- ⚠️ Update Parasite's rating (note the WHERE!)</span>
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> rating = <span class="sql-str">8.6</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Parasite'</span>;
+
+<span class="sql-cmt">-- Change multiple columns at once</span>
+<span class="sql-kw">UPDATE</span> movies
+<span class="sql-kw">SET</span> rating = <span class="sql-str">9.0</span>, year = <span class="sql-str">2010</span>
+<span class="sql-kw">WHERE</span> title = <span class="sql-str">'Inception'</span>;</pre>
+  </div>
+
+  <div class="pitfall-box">
+    <span class="pitfall-icon">🔥</span> <strong>CRITICAL: Never forget WHERE on UPDATE!</strong><br>
+    <code class="sql-kw">UPDATE movies SET rating = 10.0;</code> — without WHERE, this changes <strong>EVERY ROW</strong>. Every movie's rating becomes 10.0. Always double-check your WHERE clause before hitting Enter.
+  </div>
+
+  <h3>DELETE — remove data</h3>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">delete.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- ⚠️ Delete one movie (note the WHERE!)</span>
+<span class="sql-kw">DELETE FROM</span> movies <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Spirited Away'</span>;
+
+<span class="sql-cmt">-- Delete all movies with rating below 8.0</span>
+<span class="sql-kw">DELETE FROM</span> movies <span class="sql-kw">WHERE</span> rating < <span class="sql-str">8.0</span>;</pre>
+  </div>
+
+  <div class="pitfall-box">
+    <span class="pitfall-icon">🔥</span> <strong>CRITICAL: Never forget WHERE on DELETE!</strong><br>
+    <code class="sql-kw">DELETE FROM movies;</code> — without WHERE, this deletes <strong>EVERY ROW</strong> in the table. There is no undo (unless you have a backup). Always, always use WHERE with DELETE.
+  </div>
+
+  <div class="pro-tip">
+    💡 <strong>Pro tip:</strong> When testing an UPDATE or DELETE, first write it as a SELECT to see which rows will be affected:<br>
+    <code class="sql-kw">SELECT</em> * <span class="sql-kw">FROM</span> movies <span class="sql-kw">WHERE</span> rating < 8.0;</code> ← runs this first, then change <code class="sql-kw">SELECT *</code> to <code class="sql-kw">DELETE</code>.
+  </div>
+
+  <!-- ==================== SECTION 8 ==================== -->
+  <h2>8️⃣ Sorting and Limiting</h2>
+
+  <p>Use <code class="sql-kw">ORDER BY</code> to sort results and <code class="sql-kw">LIMIT</code> to get only a certain number of rows.</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">sorting.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- Movies sorted by year, oldest first</span>
+<span class="sql-kw">SELECT</span> title, year <span class="sql-kw">FROM</span> movies <span class="sql-kw">ORDER BY</span> year;
+
+<span class="sql-cmt">-- Movies sorted by rating, highest first</span>
+<span class="sql-kw">SELECT</span> title, rating <span class="sql-kw">FROM</span> movies <span class="sql-kw">ORDER BY</span> rating <span class="sql-kw">DESC</span>;
+
+<span class="sql-cmt">-- Only the top 3 highest-rated movies</span>
+<span class="sql-kw">SELECT</span> title, rating <span class="sql-kw">FROM</span> movies
+<span class="sql-kw">ORDER BY</span> rating <span class="sql-kw">DESC</span>
+<span class="sql-kw">LIMIT</span> <span class="sql-str">3</span>;
+
+<span class="sql-cmt">-- Latest 2 movies (by year, descending, take top 2)</span>
+<span class="sql-kw">SELECT</span> title, year <span class="sql-kw">FROM</span> movies
+<span class="sql-kw">ORDER BY</span> year <span class="sql-kw">DESC</span>
+<span class="sql-kw">LIMIT</span> <span class="sql-str">2</span>;</pre>
+  </div>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> SELECT title, rating FROM movies ORDER BY rating DESC LIMIT 3;
+<span class="output">The Godfather|9.2
+Inception|9.0
+The Matrix|8.7</span></div>
+  </div>
+
+  <p>By default, <code class="sql-kw">ORDER BY</code> sorts <strong>ascending</strong> (A-Z, 0-9). Add <code class="sql-kw">DESC</code> for descending (Z-A, 9-0).</p>
+
+  <!-- ==================== SECTION 9 ==================== -->
+  <h2>9️⃣ Grouping and Counting</h2>
+
+  <p>Sometimes you don't want individual rows — you want <strong>summary information</strong>. That's where <code class="sql-kw">GROUP BY</code> comes in.</p>
+
+  <p>Let's add a "genre" column to make grouping more interesting:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">alter.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- Add a genre column to our movies table</span>
+<span class="sql-kw">ALTER TABLE</span> movies <span class="sql-kw">ADD COLUMN</span> genre <span class="sql-kw">TEXT</span>;
+
+<span class="sql-cmt">-- Update with genre values</span>
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> genre = <span class="sql-str">'Sci-Fi'</span> <span class="sql-kw">WHERE</span> title <span class="sql-kw">IN</span> (<span class="sql-str">'The Matrix'</span>, <span class="sql-str">'Inception'</span>, <span class="sql-str">'Interstellar'</span>);
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> genre = <span class="sql-str">'Drama'</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'The Godfather'</span>;
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> genre = <span class="sql-str">'Thriller'</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Parasite'</span>;
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> genre = <span class="sql-str">'Animation'</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Spirited Away'</span>;</pre>
+  </div>
+
+  <p>Now let's ask some grouped questions:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">group_by.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- How many movies per genre?</span>
+<span class="sql-kw">SELECT</span> genre, <span class="sql-fn">COUNT</span>(*) <span class="sql-kw">AS</span> count
+<span class="sql-kw">FROM</span> movies
+<span class="sql-kw">GROUP BY</span> genre;
+
+<span class="sql-cmt">-- What's the average rating per genre?</span>
+<span class="sql-kw">SELECT</span> genre, <span class="sql-fn">AVG</span>(rating) <span class="sql-kw">AS</span> avg_rating
+<span class="sql-kw">FROM</span> movies
+<span class="sql-kw">GROUP BY</span> genre;
+
+<span class="sql-cmt">-- How many movies per decade?</span>
+<span class="sql-kw">SELECT</span> year / <span class="sql-str">10</span> * <span class="sql-str">10</span> <span class="sql-kw">AS</span> decade, <span class="sql-fn">COUNT</span>(*) <span class="sql-kw">AS</span> count
+<span class="sql-kw">FROM</span> movies
+<span class="sql-kw">GROUP BY</span> decade;</pre>
+  </div>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> SELECT genre, COUNT(*) AS count FROM movies GROUP BY genre;
+<span class="output">Animation|1
+Drama|1
+Sci-Fi|3
+Thriller|1</span></div>
+  </div>
+
+  <p><code class="sql-fn">COUNT(*)</code> counts how many rows in each group. Other useful functions: <code class="sql-fn">AVG()</code> (average), <code class="sql-fn">SUM()</code> (total), <code class="sql-fn">MIN()</code>, <code class="sql-fn">MAX()</code>.</p>
+
+  <!-- ==================== SECTION 10 ==================== -->
+  <h2>🔗 Simple JOINs</h2>
+  <p>So far we've worked with one table. Real databases have <strong>many tables</strong> that connect to each other.</p>
+
+  <p>Let's create a second table — <strong>directors</strong> — and connect it to our movies:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">directors.sql</span>
+    </div>
+    <pre><span class="sql-kw">CREATE TABLE</span> directors (
+    id   <span class="sql-kw">INTEGER PRIMARY KEY</span>,
+    name <span class="sql-kw">TEXT</span>
+);
+
+<span class="sql-kw">INSERT INTO</span> directors <span class="sql-kw">VALUES</span> (<span class="sql-str">1</span>, <span class="sql-str">'Lana Wachowski'</span>);
+<span class="sql-kw">INSERT INTO</span> directors <span class="sql-kw">VALUES</span> (<span class="sql-str">2</span>, <span class="sql-str">'Christopher Nolan'</span>);
+<span class="sql-kw">INSERT INTO</span> directors <span class="sql-kw">VALUES</span> (<span class="sql-str">3</span>, <span class="sql-str">'Francis Ford Coppola'</span>);
+<span class="sql-kw">INSERT INTO</span> directors <span class="sql-kw">VALUES</span> (<span class="sql-str">4</span>, <span class="sql-str">'Bong Joon-ho'</span>);
+<span class="sql-kw">INSERT INTO</span> directors <span class="sql-kw">VALUES</span> (<span class="sql-str">5</span>, <span class="sql-str">'Hayao Miyazaki'</span>);</pre>
+  </div>
+
+  <p>Now we need a way to say "this movie was directed by this director." We'll add a <code>director_id</code> column to our movies table:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">link.sql</span>
+    </div>
+    <pre><span class="sql-kw">ALTER TABLE</span> movies <span class="sql-kw">ADD COLUMN</span> director_id <span class="sql-kw">INTEGER</span>;
+
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> director_id = <span class="sql-str">1</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'The Matrix'</span>;
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> director_id = <span class="sql-str">2</span> <span class="sql-kw">WHERE</span> title <span class="sql-kw">IN</span> (<span class="sql-str">'Inception'</span>, <span class="sql-str">'Interstellar'</span>);
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> director_id = <span class="sql-str">3</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'The Godfather'</span>;
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> director_id = <span class="sql-str">4</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Parasite'</span>;
+<span class="sql-kw">UPDATE</span> movies <span class="sql-kw">SET</span> director_id = <span class="sql-str">5</span> <span class="sql-kw">WHERE</span> title = <span class="sql-str">'Spirited Away'</span>;</pre>
+  </div>
+
+  <p>Now the movies table has a <code>director_id</code> column that refers to the <code>id</code> column in the directors table. This is called a <strong>foreign key</strong> — it links rows across tables.</p>
+
+  <p>To get information from <strong>both tables at once</strong>, we use <code class="sql-kw">JOIN</code>:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">join.sql</span>
+    </div>
+    <pre><span class="sql-cmt">-- Combine movies and directors — match rows where the IDs align</span>
+<span class="sql-kw">SELECT</span> movies.title, directors.name
+<span class="sql-kw">FROM</span> movies
+<span class="sql-kw">INNER JOIN</span> directors <span class="sql-kw">ON</span> movies.director_id = directors.id;</pre>
+  </div>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="prompt">sqlite&gt;</span> SELECT movies.title, directors.name
+   ...&gt; FROM movies
+   ...&gt; INNER JOIN directors ON movies.director_id = directors.id;
+<span class="output">The Matrix|Lana Wachowski
+Inception|Christopher Nolan
+Interstellar|Christopher Nolan
+The Godfather|Francis Ford Coppola
+Parasite|Bong Joon-ho
+Spirited Away|Hayao Miyazaki</span></div>
+  </div>
+
+  <div class="analogy-box">
+    <h3>🧩 How JOIN works</h3>
+    <p>Think of it as looking up a value in one table and finding its match in another:</p>
+    <ol>
+      <li>Take a row from the <strong>movies</strong> table</li>
+      <li>Look at its <code>director_id</code> (e.g., 2)</li>
+      <li>Find the row in <strong>directors</strong> where <code>id = 2</code></li>
+      <li>Combine them into one big row — movie data + director data</li>
+    </ol>
+    <p>That's what <code class="sql-kw">ON movies.director_id = directors.id</code> does. It matches rows where the IDs are equal.</p>
+  </div>
+
+  <p>You can also use a shorter form with table aliases:</p>
+
+  <div class="code-block">
+    <div class="header">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      <span style="margin-left:6px;">join_short.sql</span>
+    </div>
+    <pre><span class="sql-kw">SELECT</span> m.title, d.name
+<span class="sql-kw">FROM</span> movies m
+<span class="sql-kw">INNER JOIN</span> directors d <span class="sql-kw">ON</span> m.director_id = d.id
+<span class="sql-kw">WHERE</span> m.year > <span class="sql-str">2000</span>
+<span class="sql-kw">ORDER BY</span> m.rating <span class="sql-kw">DESC</span>;</pre>
+  </div>
+
+  <!-- ==================== SECTION 11 ==================== -->
+  <h2>📤 Exporting from SQL</h2>
+  <p>Once you've queried your data, you'll often want to export it to a file. SQLite has built-in commands for this.</p>
+
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="comment">sqlite3 my-first-db.db</span>
+    </div>
+    <div class="terminal-content"><span class="comment">-- Export query results to CSV</span>
+<span class="prompt">sqlite&gt;</span> .mode csv
+<span class="prompt">sqlite&gt;</span> .output movies.csv
+<span class="prompt">sqlite&gt;</span> SELECT * FROM movies;
+<span class="prompt">sqlite&gt;</span> .output stdout
+
+<span class="comment">-- Now check the file</span>
+<span class="prompt">sqlite&gt;</span> .quit
+<span class="prompt">$</span> cat movies.csv</div>
+  </div>
+
+  <p>Step by step:</p>
+  <ol>
+    <li><code>.mode csv</code> — tell SQLite to output in CSV format</li>
+    <li><code>.output movies.csv</code> — send output to a file instead of the screen</li>
+    <li>Run your <code class="sql-kw">SELECT</code> query</li>
+    <li><code>.output stdout</code> — send output back to the screen</li>
+  </ol>
+
+  <p>The resulting CSV file can be opened in Excel, imported into Python with pandas, or shared with anyone.</p>
+
+  <!-- ==================== SECTION 12 ==================== -->
+  <h2>🚀 What's Next?</h2>
+  <p>You now know the fundamentals of SQL! Here's what comes next in your learning journey:</p>
+
+  <div class="next-grid">
+    <div class="next-card">
+      <span class="next-icon">📊</span>
+      <h4>Window Functions</h4>
+      <p>ROW_NUMBER, RANK — rank items within groups without collapsing rows</p>
+    </div>
+    <div class="next-card">
+      <span class="next-icon">🧩</span>
+      <h4>CTEs (WITH clause)</h4>
+      <p>Break complex queries into readable steps</p>
+    </div>
+    <div class="next-card">
+      <span class="next-icon">🐼</span>
+      <h4>Pandas</h4>
+      <p>Clean and transform data in Python — the next module in this curriculum</p>
+    </div>
+    <div class="next-card">
+      <span class="next-icon">🏛️</span>
+      <h4>PostgreSQL</h4>
+      <p>The production database used by most companies (same SQL, more features)</p>
+    </div>
   </div>
 
   <!-- ==================== PITFALLS ==================== -->
   <h2>⚠️ Pitfalls — Read These Before the Exercises</h2>
 
   <div class="pitfall-box">
-    <strong>Pitfall 1: Thinking ORMs replace SQL</strong><br>
-    ORMs (like SQLAlchemy, Django ORM) are great for CRUD apps. They're <em>awful</em> for analytical queries. JOINs with aggregations and window functions written in an ORM produce unreadable, slow SQL. <strong>Fix:</strong> Write raw SQL for anything beyond simple CRUD. Your ORM is for writes. SQL is for questions.
+    <span class="pitfall-icon">🔥</span> <strong>Forgetting WHERE on DELETE or UPDATE</strong><br>
+    <code class="sql-kw">DELETE FROM movies;</code> deletes <strong>every single row</strong>. <code class="sql-kw">UPDATE movies SET rating = 0;</code> changes every row. <strong>Always</strong> write your WHERE clause first, then compose the rest of the statement.
   </div>
 
   <div class="pitfall-box">
-    <strong>Pitfall 2: Ignoring NULL handling</strong><br>
-    NULL + anything = NULL. Most bugs in SQL queries come from forgetting that NULLs propagate. <code>WHERE col != 'x'</code> won't return rows where col IS NULL. <strong>Fix:</strong> Always check your WHERE clauses for NULL exclusion. Use <code>COALESCE()</code> or <code>IS NULL</code> explicitly.
+    <span class="pitfall-icon">🚨</span> <strong>Missing semicolons</strong><br>
+    SQL statements need a semicolon (<code>;</code>) at the end. Without it, SQLite will just show you a continuation prompt (<code>...&gt;</code>) and wait. Type the semicolon and hit Enter to execute.
   </div>
 
   <div class="pitfall-box">
-    <strong>Pitfall 3: Wrong JOIN type</strong><br>
-    Using INNER JOIN when you need LEFT JOIN means silently dropping rows. Using LEFT JOIN when you need INNER JOIN means getting unexpected NULLs. <strong>Fix:</strong> Ask yourself: "Do I want ALL rows from the left table, even if they don't match in the right one?" If yes → LEFT JOIN. If only matches → INNER JOIN.
+    <span class="pitfall-icon">🧨</span> <strong>Confusing = in SQL vs == in Python</strong><br>
+    In SQL, <code class="sql-kw">WHERE title = 'The Matrix'</code> uses a single <code>=</code> for comparison. In Python, you'd write <code>title == 'The Matrix'</code> with double <code>==</code>. SQL doesn't use <code>==</code>.
   </div>
 
   <div class="pitfall-box">
-    <strong>Pitfall 4: Loading everything into memory</strong><br>
-    Pandas loads data into RAM. If your CSV is 20GB and you have 16GB of RAM, you crash. <strong>Fix:</strong> Use <code>pd.read_csv(..., chunksize=10000)</code>, or switch to polars/pyarrow/dask for larger-than-memory data. For production, Parquet + column pruning is your friend.
+    <span class="pitfall-icon">💣</span> <strong>INSERTing text without quotes</strong><br>
+    <code class="sql-kw">INSERT INTO movies VALUES (1, The Matrix, 1999, 8.7);</code> will fail because <code>The Matrix</code> isn't quoted. Text must be in <strong>single quotes</strong>: <code class="sql-str">'The Matrix'</code>.
   </div>
 
   <div class="pitfall-box">
-    <strong>Pitfall 5: Not checking for duplicates</strong><br>
-    Your AI application asks "how many orders?" and gets an inflated number because the raw CSV had duplicate rows. Every analytical query is wrong by the same factor. <strong>Fix:</strong> Always <code>df.duplicated().sum()</code> before loading into any database or generating any aggregate statistic.
+    <span class="pitfall-icon">🔑</span> <strong>Using double quotes instead of single quotes</strong><br>
+    SQLite uses <strong>single quotes</strong> for strings: <code class="sql-str">'The Matrix'</code>. Double quotes (<code>"The Matrix"</code>) are for database identifiers (table names, column names). Mixing them up causes confusing errors.
+  </div>
+
+  <div class="pitfall-box">
+    <span class="pitfall-icon">📏</span> <strong>Not closing the database connection</strong><br>
+    When you're done in SQLite, type <code>.quit</code> to exit. If you just close the terminal window, any uncommitted changes could be lost. SQLite auto-commits by default, but it's a good habit to exit properly.
   </div>
 
   <!-- ==================== EXERCISES ==================== -->
   <h2>✍️ Exercises</h2>
-  <p>Complete these <strong>in order</strong>. Everything you need is in one Python script. Write the script, run it, verify the output.</p>
+  <p>Complete these <strong>in order</strong>. Open SQLite and run the commands yourself — reading is not enough!</p>
 
   <!-- Exercise 1 -->
-  <div class="exercise-box" id="ex1">
-    <h3>Exercise 1: The Messy CSV — Clean It</h3>
-    <p><strong>Goal:</strong> Take a realistic messy CSV, clean it with pandas, and prove it's clean.</p>
-    <p>Here's your data — it's an orders file with intentional problems (nulls, duplicates, wrong types, inconsistent formatting). Write a Python script that:</p>
+  <div class="exercise-card">
+    <h3><span class="ex-num">1</span> Create a Books Table</h3>
+    <p><strong>Goal:</strong> Practice creating tables, inserting data, and writing SELECT queries.</p>
     <ol>
-      <li>Reads this CSV inline (define it as a string in your script)</li>
-      <li>Reports the shape, column types, null counts, and duplicate count</li>
-      <li>Drops rows where <code>order_id</code> or <code>user_id</code> is null</li>
-      <li>Converts <code>amount</code> to float, <code>created_at</code> to datetime</li>
-      <li>Removes duplicate rows (by <code>order_id</code>)</li>
-      <li>Fills any remaining null <code>category</code> with "unknown"</li>
-      <li>Prints a clean summary: "Clean data: X rows, Y columns, 0 nulls, 0 duplicates"</li>
+      <li>Create a table called <strong>books</strong> with these columns: <code>id</code> (INTEGER PRIMARY KEY), <code>title</code> (TEXT), <code>author</code> (TEXT), <code>year</code> (INTEGER), <code>rating</code> (REAL)</li>
+      <li>Insert 5 books (make up your favorites!)</li>
+      <li>Write a query to find all books published after 2020</li>
+      <li>Write a query to find books with a rating higher than 4.0</li>
     </ol>
 
-    <div class="code-block">
-      <div class="code-header">
-        <span class="lang-icon">▸</span> messy_orders.csv — Copy this into your script
-      </div>
-      <div class="code-body">order_id,user_id,amount,created_at,category
-1001,201,49.99,2026-01-15,electronics
-1002,202,,2026-01-16,books
-1001,201,49.99,2026-01-15,electronics
-1004,203,129.99,not-a-date,clothing
-1005,,75.00,2026-01-18,
-1006,204,hello,2026-01-19,books
-1007,205,24.99,2026-01-20,electronics
-1008,206,,,sports
-1009,207,199.99,2026-01-22,electronics
-1010,208,15.00,2026-01-23,books
-1001,201,49.99,2026-01-15,electronics</div>
-    </div>
-
     <div class="success-criteria">
-      <strong>✓ Success criteria:</strong> Your output should show 8 clean rows (after dropping 3 bad rows: missing user_id, bad amount, missing dates), 5 columns, 0 nulls, 0 duplicates. Print the cleaned DataFrame head.
+      <strong>✓ Success criteria:</strong> Your CREATE TABLE runs without errors. <code>SELECT * FROM books</code> returns 5 rows. The "after 2020" query returns the correct books. The "rating > 4.0" query returns the correct books. Save your SQL to a file called <code>exercise_1_books.sql</code>.
     </div>
     <div class="hint">
-      💡 <strong>Hint:</strong> Use <code>df = pd.read_csv(pd.StringIO(data))</code> to read from a string. Use <code>pd.to_numeric(..., errors='coerce')</code> for amount. The bad amount "hello" will become NaN, then you drop that row.
+      💡 <strong>Hint:</strong> Remember single quotes for text values! And don't forget the semicolon at the end of each statement.
     </div>
-    <p><strong>Save your script to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex01-clean-orders.py</code></p>
   </div>
 
   <!-- Exercise 2 -->
-  <div class="exercise-box" id="ex2">
-    <h3>Exercise 2: Load Clean Data into SQLite</h3>
-    <p><strong>Goal:</strong> Take the clean DataFrame from Exercise 1, load it into SQLite, and run verification queries.</p>
-    <p>Extend your script (or write a new one) to:</p>
+  <div class="exercise-card">
+    <h3><span class="ex-num">2</span> Students and Scores (Tables + JOIN)</h3>
+    <p><strong>Goal:</strong> Practice working with two related tables and a JOIN query.</p>
     <ol>
-      <li>Use SQLite (built into Python, no install needed)</li>
-      <li>Create a table <code>orders_clean</code> and insert the clean data</li>
-      <li>Run and print the results of these queries:
-        <ul>
-          <li><code>SELECT COUNT(*) FROM orders_clean</code> — should be 8</li>
-          <li><code>SELECT category, COUNT(*), SUM(amount) FROM orders_clean GROUP BY category</code></li>
-          <li><code>SELECT * FROM orders_clean WHERE amount > 50 ORDER BY amount DESC</code></li>
-        </ul>
-      </li>
+      <li>Create a table called <strong>students</strong> with columns: <code>id</code> (INTEGER PRIMARY KEY), <code>name</code> (TEXT)</li>
+      <li>Create a table called <strong>scores</strong> with columns: <code>id</code> (INTEGER PRIMARY KEY), <code>student_id</code> (INTEGER), <code>subject</code> (TEXT), <code>score</code> (INTEGER)</li>
+      <li>Insert 3-4 students and 6-8 scores (each student should have at least 2 scores)</li>
+      <li>Write a JOIN query showing student names next to their scores</li>
+      <li>Write a GROUP BY query showing the average score per student</li>
     </ol>
 
     <div class="success-criteria">
-      <strong>✓ Success criteria:</strong> All three queries run without errors and return sensible results. The GROUP BY shows at least 3 categories. The WHERE amount > 50 returns at least 2 rows.
+      <strong>✓ Success criteria:</strong> The JOIN query returns rows with student names and their individual scores. The GROUP BY query returns each student name and their average score. Save your SQL to <code>exercise_2_students.sql</code>.
     </div>
     <div class="hint">
-      💡 <strong>Hint:</strong> <code>conn = sqlite3.connect(":memory:")</code> for an in-memory database — no cleanup needed. Use <code>df.to_sql("orders_clean", conn, if_exists="replace", index=False)</code>.
+      💡 <strong>Hint:</strong> The JOIN condition is <code>ON scores.student_id = students.id</code>. For the average: <code>SELECT name, AVG(score) FROM students JOIN scores ON ... GROUP BY name</code>.
     </div>
-    <p><strong>Save to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex02-load-sqlite.py</code></p>
   </div>
 
   <!-- Exercise 3 -->
-  <div class="exercise-box" id="ex3">
-    <h3>Exercise 3: Analytical Queries for an AI Application</h3>
-    <p><strong>Goal:</strong> Write 3 analytical queries on your SQLite DB that would be useful for an AI application — the "top N per category" pattern.</p>
-    <p>Assume this data feeds a recommendation system. Write and run:</p>
+  <div class="exercise-card">
+    <h3><span class="ex-num">3</span> Books with Genres (ALTER + GROUP BY + Export)</h3>
+    <p><strong>Goal:</strong> Practice modifying a table and exporting data.</p>
     <ol>
-      <li><strong>Query 1:</strong> Rank all orders by amount descending, returning a rank column</li>
-      <li><strong>Query 2:</strong> Find the top 2 orders (by amount) within <strong>each category</strong> — this is the "top N per group" pattern for RAG context building</li>
-      <li><strong>Query 3:</strong> For each category, show: total revenue, average order amount, and the date of the most recent order</li>
+      <li>Use the <strong>books</strong> table from Exercise 1</li>
+      <li>Add a <code>genre</code> column: <code class="sql-kw">ALTER TABLE</code> books <code class="sql-kw">ADD COLUMN</code> genre <code class="sql-kw">TEXT</code></li>
+      <li>Use <code class="sql-kw">UPDATE</code> to set a genre for each book (e.g., 'Fantasy', 'Sci-Fi', 'Non-Fiction', etc.)</li>
+      <li>Write a <code class="sql-kw">GROUP BY</code> query to count how many books are in each genre</li>
+      <li>Export the result to a CSV file using <code>.mode csv</code> and <code>.output</code></li>
     </ol>
 
     <div class="success-criteria">
-      <strong>✓ Success criteria:</strong> All 3 queries run. Query 2 returns exactly 2 rows per category (or fewer if a category has < 2 orders). Query 3 shows meaningful aggregates per category. Print each query's SQL and its results.
+      <strong>✓ Success criteria:</strong> ALTER TABLE runs without error. Each book gets a genre. The GROUP BY query shows at least 2 genres with counts. The CSV file exists and contains the correct data. Save your SQL to <code>exercise_3_genres.sql</code>.
     </div>
     <div class="hint">
-      💡 <strong>Hint:</strong> Window functions are key for Query 2. Use <code>ROW_NUMBER() OVER (PARTITION BY category ORDER BY amount DESC) AS rn</code>. Wrap it in a subquery or CTE and filter <code>WHERE rn <= 2</code>.
+      💡 <strong>Hint:</strong> After running <code>.output books_by_genre.csv</code>, run your GROUP BY query. Then run <code>.output stdout</code> to reset. Check the CSV with <code>.quit</code> then <code>cat books_by_genre.csv</code>.
     </div>
-    <p><strong>Save to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex03-analytical-queries.py</code></p>
-  </div>
-
-  <!-- BONUS -->
-  <div class="exercise-box" id="ex4" style="border-color: var(--warn);">
-    <h3>⭐ Bonus: The Full ETL Pipeline</h3>
-    <p><strong>Goal:</strong> Combine everything into a single Python script that runs end-to-end.</p>
-    <p>Write ONE script that:</p>
-    <ol>
-      <li>Defines the messy CSV as a string</li>
-      <li>Cleans it with pandas (Exercise 1)</li>
-      <li>Loads the clean data into SQLite (Exercise 2)</li>
-      <li>Runs the 3 analytical queries (Exercise 3)</li>
-      <li>Exports the clean data to both CSV and Parquet</li>
-      <li>Prints a one-line summary at the end: <code>"✅ ETL complete: {n} rows → SQLite → CSV + Parquet"</code></li>
-    </ol>
-    <div class="success-criteria">
-      <strong>✓ Success criteria:</strong> Running <code>python etl_complete.py</code> produces clean output, creates <code>clean_orders.csv</code> and <code>clean_orders.parquet</code>, and prints all query results + the final summary line.
-    </div>
-    <p><strong>Save to:</strong> <code>~/ai-engineer-curriculum-2026/exercises/module-02/ex04-etl-complete.py</code></p>
   </div>
 
   <!-- ==================== CHECKLIST ==================== -->
   <h2>✅ Module Checklist</h2>
-  <p>Track your progress. Check off each item as you complete it.</p>
 
   <div class="checklist" id="checklist">
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Understand the 5 essential SQL patterns (SELECT, JOIN, GROUP BY, window functions, CTEs)</span>
+      <span>Understand what a database is (like a smarter Excel workbook)</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Know when to use each file format: CSV, JSON, Parquet</span>
+      <span>Know what SQL stands for and what it does</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Can clean a DataFrame: handle nulls, dedup, type conversion, merge</span>
+      <span>Installed SQLite and created a database file</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Understand ETL pipeline structure (Extract → Transform → Load)</span>
+      <span>Created a table with CREATE TABLE</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Exercise 1 completed: cleaned the messy CSV with pandas</span>
+      <span>Added data with INSERT INTO</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Exercise 2 completed: loaded clean data into SQLite and ran verification queries</span>
+      <span>Queried data with SELECT, WHERE, ORDER BY, LIMIT</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Exercise 3 completed: wrote 3 analytical queries including "top N per category" with window functions</span>
+      <span>Updated and deleted data safely (with WHERE!)</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Bonus: Complete end-to-end ETL pipeline (clean → SQLite → queries → CSV + Parquet export)</span>
+      <span>Used GROUP BY and COUNT to summarize data</span>
     </div>
     <div class="checklist-item" data-checked="false">
       <input type="checkbox">
-      <span>Can explain why NULL handling matters in SQL queries</span>
+      <span>Joined two tables with INNER JOIN</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exported query results to CSV</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exercise 1: Created a books table with data</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exercise 2: Joined students and scores tables</span>
+    </div>
+    <div class="checklist-item" data-checked="false">
+      <input type="checkbox">
+      <span>Exercise 3: Used ALTER TABLE, GROUP BY, and CSV export</span>
     </div>
   </div>
 
-  <hr>
+  <!-- ==================== SUCCESS BANNER ==================== -->
+  <div id="successBanner">
+    <h3>🎉 Congratulations!</h3>
+    <p>You've completed Module 2: SQL for Beginners. You now know how to create databases, run queries, and work with data — a foundational skill for every AI engineer. <strong>Next up: Module 3 — Git, CLI & Linux.</strong></p>
+  </div>
 
   <!-- ==================== SUMMARY ==================== -->
   <h2>🧠 Key Takeaways</h2>
-  <div class="pro-tip">
-    <strong>Your new default mental model:</strong><br>
-    Every AI system is a data pipeline with an LLM in the middle. The quality of your input data determines the quality of your output. SQL asks the questions. Pandas cleans the mess. ETL connects the dots.
-  </div>
   <ul>
-    <li><strong>SQL</strong> is your data query language — SELECT, JOIN, GROUP BY, window functions, CTEs</li>
-    <li><strong>Pandas</strong> is your data cleaning workbench — handle nulls, dedup, type conversion, merge</li>
-    <li><strong>File formats</strong> — CSV for dev, JSON for LLMs, Parquet for production</li>
-    <li><strong>ETL</strong> (Extract → Transform → Load) is the pattern that powers every RAG pipeline</li>
-    <li>The <strong>top N per category</strong> pattern (CTE + ROW_NUMBER + WHERE rn <= N) is your most reusable query</li>
-    <li>Pitfalls to <em>never</em> forget: NULL propagation, wrong JOIN type, ORM-for-SQL substitution, in-memory limits, unchecked duplicates</li>
+    <li><strong>Database</strong> = a structured way to store data (like Excel but more powerful)</li>
+    <li><strong>SQL</strong> = the language you use to talk to databases</li>
+    <li><strong>SQLite</strong> = a zero-setup database that's just a file — perfect for learning</li>
+    <li>The essential operations: <strong>CREATE TABLE → INSERT → SELECT → UPDATE → DELETE</strong></li>
+    <li><strong>WHERE</strong> filters rows — always use it with UPDATE and DELETE to avoid disaster</li>
+    <li><strong>ORDER BY</strong> sorts results, <strong>LIMIT</strong> picks a subset</li>
+    <li><strong>GROUP BY</strong> + <strong>COUNT</strong>/<strong>AVG</strong>/<strong>SUM</strong> lets you summarize data</li>
+    <li><strong>JOIN</strong> connects related tables by matching IDs</li>
+    <li>SQL is universal — everything you've learned works in PostgreSQL, MySQL, DuckDB, and more</li>
   </ul>
 
-  <p style="color: var(--muted); font-size: 14px; margin-top: 40px;">
-    <em>Next up: Module 3 — Git, CLI & Linux. Version control, terminal fluency, and process management for AI engineering workflows.</em>
-  </p>
+  <hr>
+
+  <footer>
+    Module 2 — AI Engineer Curriculum 2026
+  </footer>
 
 </div>
 
@@ -863,19 +1213,43 @@ conn.close()
   // ── Theme Toggle ──
   const toggle = document.getElementById('themeToggle');
   toggle.addEventListener('click', () => {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme');
-    html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-    localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    toggle.textContent = isDark ? '☀️' : '🌙';
   });
   const saved = localStorage.getItem('theme');
-  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  if (saved === 'dark') {
+    document.body.classList.add('dark');
+    toggle.textContent = '☀️';
+  }
 
-  // ── Checklist Persistence ──
+  // ── Checklist Persistence (prefix: sql_) ──
   const items = document.querySelectorAll('.checklist-item');
+  const totalItems = items.length;
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const successBanner = document.getElementById('successBanner');
+
+  function updateProgress() {
+    let done = 0;
+    items.forEach((item) => {
+      const cb = item.querySelector('input');
+      if (cb.checked) done++;
+    });
+    const pct = Math.round((done / totalItems) * 100);
+    progressBar.style.width = pct + '%';
+    progressText.textContent = done + ' / ' + totalItems + ' completed';
+    if (done === totalItems) {
+      successBanner.classList.add('show');
+    } else {
+      successBanner.classList.remove('show');
+    }
+  }
+
   items.forEach((item, i) => {
     const cb = item.querySelector('input');
-    const key = 'module02-check-' + i;
+    const key = 'sql_' + i;
     const stored = localStorage.getItem(key);
     if (stored === 'true') {
       cb.checked = true;
@@ -885,8 +1259,12 @@ conn.close()
       const checked = cb.checked;
       item.classList.toggle('done', checked);
       localStorage.setItem(key, checked);
+      updateProgress();
     });
   });
+
+  updateProgress();
 </script>
+
 </body>
 </html>
